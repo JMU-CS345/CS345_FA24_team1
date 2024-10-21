@@ -1,0 +1,5 @@
+# MacOS Cache
+.DS_Store
+
+# Node dependencies (populates when dev runs `npm i`)
+node_modules/
