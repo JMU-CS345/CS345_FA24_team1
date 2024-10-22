@@ -46,6 +46,7 @@ class UI {
 	*	Boilerplate UI drawing, need to change positioning, size etc. once Arena/Map is done.
 	*/
 	draw() {
+		background(255);
 		textSize(24);
 		fill(0);
 		noStroke();
