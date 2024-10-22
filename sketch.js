@@ -1,7 +1,14 @@
+/*
+ * Main sketch file. Delegates everything to Arena.
+ */
+
+var arena;
+
 function setup() {
-  createCanvas(400, 400);
+    arena = new Arena();
 }
 
 function draw() {
-  background(220);
+    arena.update();
+    arena.draw();
 }
