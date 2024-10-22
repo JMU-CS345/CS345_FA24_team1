@@ -27,7 +27,7 @@ class UI {
 	}
 
 	/*
-	* Stops the UI timer.
+	* 	Stops the UI timer.
 	*/
 	stopTime() {
 		setInterval(() => {
