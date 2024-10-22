@@ -1,4 +1,3 @@
-// TODO: Figure out whether to draw UI from UI class or Arena class
 // TODO: Finish writing Player class and make sure this UI class conforms to it
 
 class UI {
