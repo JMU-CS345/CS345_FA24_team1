@@ -1,0 +1,42 @@
+{
+  "name": "cs345_project",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JMU-CS345/CS345_FA24_team1.git"
+  },
+  "contributors": [
+    {
+      "name": "Jared Gonzalez",
+      "github": "https://github.com/jarexgonz"
+    },
+    {
+      "name": "Joey Pabalan",
+      "github": "https://github.com/jplnb"
+    },
+    {
+      "name": "Jonathan Urias",
+      "github": "https://github.com/jay6o"
+    },
+    {
+      "name": "Joseph Kabesha",
+      "github": "https://github.com/Giltson1"
+    },
+    {
+      "name": "Tyler Avery",
+      "github": "https://github.com/TylerAvery"
+    }
+  ],
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/JMU-CS345/CS345_FA24_team1/issues"
+  },
+  "homepage": "https://github.com/JMU-CS345/CS345_FA24_team1#readme",
+  "description": "p5js video game project for JMU CS345 Fall 2024 semester",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
