@@ -18,7 +18,7 @@ class UI {
 	}
 
 	/*
-	*	Starts the UI timer, should be parsed as y:m:d:h:m:s when drawn.
+	*	Starts the UI timer, should be parsed as h:m:s when drawn.
 	*/
 	startTime() {
 		this.timerReference = setInterval(() => {
@@ -41,5 +41,23 @@ class UI {
 	*/
 	nextLevel() {
 		this.level++;
+	}
+
+	/*
+	*	Boilerplate UI drawing, need to change positioning, size etc. once Arena/Map is done.
+	*/
+	draw() {
+		textSize(24);
+		fill(0);
+		noStroke();
+
+		text(`Health: ${this.health}`, 10, 30);
+
+		const minutes = Math.floor(this.time / 60);
+		const seconds = this.time % 60;
+		const formattedTime = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+		text(`Time: ${formattedTime}`, 10, 60);
+
+		text(`Level: ${this.level}`, 10, 90);
 	}
 }
