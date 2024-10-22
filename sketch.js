@@ -2,13 +2,21 @@
  * Main sketch file. Delegates everything to Arena.
  */
 
-var arena;
+let arena;
+let ui;
+let player;
 
 function setup() {
-    arena = new Arena();
+    createCanvas(windowWidth, windowHeight);
+    // arena = new Arena();
+    player = {health:5}; // just for now, while player class isn't finished
+    ui = new UI(player);
+    ui.startTime();
 }
 
 function draw() {
-    arena.update();
-    arena.draw();
+    background(255);
+    ui.draw();
+    // arena.update();
+    // arena.draw();
 }
