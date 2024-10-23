@@ -64,7 +64,9 @@ class Character {
 	*	@returns boolean true if box is part of Character, else false
 	*/
 	checkHit(hitBox) {
-		// TODO: finish this method
+		// TODO: UNIFINISHED, this method is failing tests
+		// TODO: finish this method so that tests pass, write more tests if necessary
+
 		let x1 = hitBox.x;
 		let x2 = x1 + hitBox.width;
 		let y1 = hitBox.y;
