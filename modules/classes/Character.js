@@ -7,11 +7,11 @@ class Character {
 	* @param health The starting health value for the Character
 	* @param sprite The sprite file for the Character
 	*/
-	constructor(vector, health, sprite) {
+	constructor(vector, health, sprite, box) {
 		this.location = vector;
 		this.health = health;
 		this.sprite = sprite;
-		this.boxes = [];
+		this.boxes = box;
 		this.alive = true;
 	}
 
@@ -22,15 +22,18 @@ class Character {
 	 *	@param y Y location
 	 */
 	move(x, y) {
-		//this.location = new Vector(x, y); Vector class unfinished
+		this.location = this.location.setLocation(x, y); // make sure Vector has this method
 	}
 
 	/*
 	 *	Decrements health by one.
 	 */
 	takeDamage() {
-		this.damage--;
-		if (this.damage <= 0) {
+		if (this.health == 0) {
+			return;
+		}
+		this.health--;
+		if (this.health <= 0) {
 			this.alive = false;
 		}
 	}
@@ -59,10 +62,12 @@ class Character {
 	*	@returns boolean true if box is part of Character, else false
 	*/
 	checkHit(hitBox) {
-		for (let box of boxes) {
-			if (box.x == hitBox.x && box.y == hitBox.y) {
-				return true;
-			}
+		x1 = hitBox.x;
+		x2 = x1 + hitBox.width;
+		y1 = hitBox.y;
+		y2 = y2 + hitBox.height;
+		if (this.box.x >= x1 && this.box.x <= x2 && this.box.y >= y1 && this.box.y <= y2) {
+			return true;
 		}
 		return false;
 	}
