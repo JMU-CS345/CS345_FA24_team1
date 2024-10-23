@@ -1,3 +1,5 @@
+// TODO: Finish checkHit method
+// TODO: Pass Character.tests.js
 class Character {
 
 	/*
@@ -11,7 +13,7 @@ class Character {
 		this.location = vector;
 		this.health = health;
 		this.sprite = sprite;
-		this.boxes = box;
+		this.box = box;
 		this.alive = true;
 	}
 
@@ -56,19 +58,31 @@ class Character {
 	}
 
 	/*
-	*	Checks if a hitBox is within the Character.
+	*	Checks if the character and another box intersect.
 	*
 	*	@param hitBox The box object to check for
 	*	@returns boolean true if box is part of Character, else false
 	*/
 	checkHit(hitBox) {
-		x1 = hitBox.x;
-		x2 = x1 + hitBox.width;
-		y1 = hitBox.y;
-		y2 = y2 + hitBox.height;
-		if (this.box.x >= x1 && this.box.x <= x2 && this.box.y >= y1 && this.box.y <= y2) {
-			return true;
+		// TODO: finish this method
+		let x1 = hitBox.x;
+		let x2 = x1 + hitBox.width;
+		let y1 = hitBox.y;
+		let y2 = y1 + hitBox.height;
+		let charX1 = this.box.x;
+		let charX2 = charX1 + this.box.width;
+		let charY1 = this.box.y;
+		let charY2 = charY1 + this.box.height;
+
+		if (charX1 > x2 || x2 < charX2) {
+			return false;
 		}
-		return false;
+		if (charY1 > y2 || y2 > charY2) {
+			return false;
+		}
+		return true;
 	}
 }
+
+
+if ((typeof exports) !== "undefined") module.exports = Character;
