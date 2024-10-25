@@ -25,18 +25,41 @@ function read_argv() {
 }
 
 /* Takes path to PPM file, returns object containing three arrays (r/g/b), one
- * for each color component for each pixel. */
+ * for each color component for each pixel. Also has width and height fields. */
 function read_image_pixels(filepath) {
-    let databuf = fs.readFileSync(filepath);
+    const databuf = fs.readFileSync(filepath);
+    const dlen = databuf.length;
 
-    // Verify PPM format with magic "P6"
-    // TODO
+    // Header info - read in start as a String[] and then go through
+    const strarr = databuf.toString('utf8', 0, Math.min(dlen, 64)).split("\n");
 
-    // Header info
-    // TODO
+    // Should have 3 newlines in header -> 4 sections
+    // Read magic "P6"
+    if ((strarr.length < 4) || (strarr[0] != "P6"))
+        throw new Error("provided file is not in proper PPM P6 format");
+
+    // Width, height
+    const line2 = strarr[1].split(" "),
+          width = Number(line2[0]),
+          height = Number(line2[1]);
+
+    // Max pixel value (may be 0-65535 - require 255)
+    const maxpixval = Number(strarr[2]);
+    if (maxpixval != 255)
+        throw new Error("unsupported maximum pixel value " + maxpixval);
+
+    // Read pixel data
+    const pixobj = {width: width, height: height, r: [], g: [], b: []};
     
-    // Read into object and return
-    // TODO
+    // P6\n<w, h>\n<mpv>\n<pixels>
+    let pos = 5 + strarr[1].length + strarr[2].length;
+    for (let i=0; i<(width*height); i++) {
+        pixobj.r.push(databuf[pos++]);
+        pixobj.g.push(databuf[pos++]);
+        pixobj.b.push(databuf[pos++]);
+    }
+
+    return pixobj;
 }
 
 /* Writes JS object obj to file at filepath as serialized JSON. */
@@ -52,9 +75,26 @@ function main() {
     let pixels = read_image_pixels(inpath_outpath.inpath);
     
     // Create JSON output object
-    let obj = {};
+    let obj = {
+        playerSpawn: {x: -1, y: -1},
+        enemySpawn: {x: -1, y: -1},
+        bounds: []
+    };
 
-    // Find red/blue pixels and load in rest to bool 2D array
+    // Find red/blue pixels
+    let cpos = 0;
+    for (let y=0; y<pixels.height; y++) {
+        for (let x=0; x<pixels.width; x++) {
+            let pxr = pixels.r[cpos],
+                pxg = pixels.g[cpos],
+                pxb = pixels.b[cpos];
+            cpos++;
+
+            // Red check TODO
+
+            // Blue check TODO
+        }
+    }
     // TODO error handling no find red or blue, or see non red/blue/white/blk?
 
     // Find optimal boxes
