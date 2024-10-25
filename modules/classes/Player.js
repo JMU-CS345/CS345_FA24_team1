@@ -4,6 +4,7 @@ class Player extends Character {
     this.x = x; // Player's x position
     this.y = y; // Player's y position
     this.health = 100;       // Player's health
+    this.speed = 10;          // Player's speed
   }
 
   getPosition() {
@@ -15,19 +16,20 @@ class Player extends Character {
     this.y = y; // Set y position
   }
 
+
   move(direction) {
     switch (direction) {
       case 'up':
-        this.y -= 1; // Move up 
+        this.y -= this.speed; // Move up 
         break;
       case 'down':
-        this.y += 1; // Move down 
+        this.y += this.speed; // Move down 
         break;
       case 'left':
-        this.x -= 1; // Move left
+        this.x -= this.speed; // Move left
         break;
       case 'right':
-        this.x += 1; // Move right
+        this.x += this.speed; // Move right
         break;
     }
   }
