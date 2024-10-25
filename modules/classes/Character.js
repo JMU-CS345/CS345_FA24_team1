@@ -1,5 +1,9 @@
 // TODO: Finish checkHit method
 // TODO: Pass Character.tests.js
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 class Character {
 
 	/*
@@ -24,7 +28,13 @@ class Character {
 	 *	@param y Y location
 	 */
 	move(x, y) {
+<<<<<<< Updated upstream
 		this.location = this.location.setLocation(x, y); // make sure Vector has this method
+=======
+		this.location.fromCartesian(x, y);
+		this.box.x = this.location.x;
+		this.box.y = this.location.y;
+>>>>>>> Stashed changes
 	}
 
 	/*
@@ -66,6 +76,7 @@ class Character {
 	checkHit(hitBox) {
 		// TODO: UNIFINISHED, this method is failing tests
 		// TODO: finish this method so that tests pass, write more tests if necessary
+<<<<<<< Updated upstream
 
 		let x1 = hitBox.x;
 		let x2 = x1 + hitBox.width;
@@ -83,6 +94,9 @@ class Character {
 			return false;
 		}
 		return true;
+=======
+		return this.box.intersect(hitBox);
+>>>>>>> Stashed changes
 	}
 }
 

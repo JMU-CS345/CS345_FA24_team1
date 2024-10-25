@@ -4,7 +4,10 @@ class Player extends Character {
     this.x = x; // Player's x position
     this.y = y; // Player's y position
     this.health = 100;       // Player's health
+<<<<<<< Updated upstream
     this.attackPower = 10;   // Damage dealt by the player
+=======
+>>>>>>> Stashed changes
   }
 
   getPosition() {
@@ -35,8 +38,14 @@ class Player extends Character {
 
   attack(target) {
     if (target && target.takeDamage) {
+<<<<<<< Updated upstream
       target.takeDamage(this.attackPower); // Deal damage to the target
     }
   }
 
+=======
+      target.takeDamage(); // Deal damage to the target
+    }
+  }
+>>>>>>> Stashed changes
 }
