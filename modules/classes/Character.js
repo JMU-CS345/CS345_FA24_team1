@@ -1,9 +1,7 @@
 // TODO: Finish checkHit method
 // TODO: Pass Character.tests.js
-<<<<<<< Updated upstream
-=======
 
->>>>>>> Stashed changes
+
 class Character {
 
 	/*
@@ -28,13 +26,9 @@ class Character {
 	 *	@param y Y location
 	 */
 	move(x, y) {
-<<<<<<< Updated upstream
-		this.location = this.location.setLocation(x, y); // make sure Vector has this method
-=======
 		this.location.fromCartesian(x, y);
 		this.box.x = this.location.x;
-		this.box.y = this.location.y;
->>>>>>> Stashed changes
+		this.box.y = this.location
 	}
 
 	/*
@@ -74,29 +68,7 @@ class Character {
 	*	@returns boolean true if box is part of Character, else false
 	*/
 	checkHit(hitBox) {
-		// TODO: UNIFINISHED, this method is failing tests
-		// TODO: finish this method so that tests pass, write more tests if necessary
-<<<<<<< Updated upstream
-
-		let x1 = hitBox.x;
-		let x2 = x1 + hitBox.width;
-		let y1 = hitBox.y;
-		let y2 = y1 + hitBox.height;
-		let charX1 = this.box.x;
-		let charX2 = charX1 + this.box.width;
-		let charY1 = this.box.y;
-		let charY2 = charY1 + this.box.height;
-
-		if (charX1 > x2 || x2 < charX2) {
-			return false;
-		}
-		if (charY1 > y2 || y2 > charY2) {
-			return false;
-		}
-		return true;
-=======
 		return this.box.intersect(hitBox);
->>>>>>> Stashed changes
 	}
 }
 

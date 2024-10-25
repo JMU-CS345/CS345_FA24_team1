@@ -4,10 +4,6 @@ class Player extends Character {
     this.x = x; // Player's x position
     this.y = y; // Player's y position
     this.health = 100;       // Player's health
-<<<<<<< Updated upstream
-    this.attackPower = 10;   // Damage dealt by the player
-=======
->>>>>>> Stashed changes
   }
 
   getPosition() {
@@ -22,10 +18,10 @@ class Player extends Character {
   move(direction) {
     switch (direction) {
       case 'up':
-        this.y -= 1; // Move up
+        this.y -= 1; // Move up 
         break;
       case 'down':
-        this.y += 1; // Move down
+        this.y += 1; // Move down 
         break;
       case 'left':
         this.x -= 1; // Move left
@@ -35,17 +31,29 @@ class Player extends Character {
         break;
     }
   }
+  // keyBoad event 
+  keyPressed(){
+    switch (event.key) {
+      case 'ArrowUp':
+        this.move('up');
+        break;
+      case 'ArrowDown':
+        this.move('down');
+        break;
+      case 'ArrowRight':
+        this.move('right');
+        break;
+      case 'ArrowLeft':
+        this.move('left');
+        break;
+  }
+  }
+
+  
 
   attack(target) {
     if (target && target.takeDamage) {
-<<<<<<< Updated upstream
-      target.takeDamage(this.attackPower); // Deal damage to the target
-    }
-  }
-
-=======
       target.takeDamage(); // Deal damage to the target
     }
   }
->>>>>>> Stashed changes
 }
