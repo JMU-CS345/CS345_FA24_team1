@@ -3,8 +3,7 @@ class Player extends Character {
     super(); // Call the parent constructor
     this.x = x; // Player's x position
     this.y = y; // Player's y position
-    this.health = 100;       // Player's health
-    this.attackPower = 10;   // Damage dealt by the players
+    this.health = 3;       // Player's health
   }
 
   getPosition() {

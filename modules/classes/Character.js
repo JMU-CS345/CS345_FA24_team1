@@ -10,12 +10,14 @@ class Character {
 	* @param health The starting health value for the Character
 	* @param sprite The sprite file for the Character
 	*/
-	constructor(vector, health, sprite, box) {
+	constructor(vector, health, sprite, box, speedX, speedY) {
 		this.location = vector;
 		this.health = health;
 		this.sprite = sprite;
 		this.box = box;
 		this.alive = true;
+		this.speedX = speedX;
+		this.speedY = speedY;
 	}
 
 	/*
