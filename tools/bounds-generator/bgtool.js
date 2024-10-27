@@ -2,8 +2,9 @@ const fs = require("node:fs");
 
 // Node script to generate JSON file describing map bounds, given the info
 // in a image representation (PPM P6 only).
+// (get PPM with '$ convert <mapboundsfile> bounds.ppm')
 // Tries to find a near-minimal number of Box objects to use for the bounds, so
-// it may take a little bit of time to run. TODO IS THIS TRUE???
+// it may take a little bit of time to run for larger image files.
 
 // Read argv and return input image file path and output JSON file path.
 // Expect "$ node bgtool.js <infile> [outfile]"
@@ -81,8 +82,9 @@ function main() {
         bounds: []
     };
 
-    // Find red/blue pixels
+    // Find red/blue pixels and create black/nonblack array
     let cpos = 0;
+    let pixblk = [];
     for (let y=0; y<pixels.height; y++) {
         for (let x=0; x<pixels.width; x++) {
             let pxr = pixels.r[cpos],
@@ -90,20 +92,102 @@ function main() {
                 pxb = pixels.b[cpos];
             cpos++;
 
-            // Red check TODO
+            // Add to pixblk
+            let sum = pxr+pxg+pxb;
+            pixblk.push((sum==0) ? true : false);
 
-            // Blue check TODO
+            // Red check
+            if ((pxr == 255) && (pxg == 0) && (pxb == 0)) {
+                obj.enemySpawn.x = x;
+                obj.enemySpawn.y = y;
+                continue;
+            }
+
+            // Blue check
+            if ((pxr == 0) && (pxg == 0) && (pxb == 255)) {
+                obj.playerSpawn.x = x;
+                obj.playerSpawn.y = y;
+                continue;
+            }
+            
+            // Not red or blue or white or black -> error
+            if ((sum != 0) && (sum != 765))
+                throw new Error("invalid pixels in image");
         }
     }
-    // TODO error handling no find red or blue, or see non red/blue/white/blk?
+    
+    // Check found both
+    if (obj.enemySpawn.x == -1)
+        throw new Error("no enemySpawn pixel in image");
+    if (obj.playerSpawn.x == -1)
+        throw new Error("no playerSpawn pixel in image");
 
-    // Find optimal boxes
-    // TODO
+    // Find boxes using pixblk
+    // Scan line by line looking for next black pixel
+    for (let i=0; i<pixblk.length; i++) {
+        if (pixblk[i]) {
+            // Black pixel - find largest area black rectangle that can be made
+            // with the top left corner as this pixel, then add box to obj and
+            // set all pixels in box to white in pixblk.
+            // Expand outwards in square, then +x, then +y.
+            let startx = i % pixels.width, // top left x
+                starty = Math.floor(i / pixels.width), // top left y
+                boxwidth = 1, // box width
+                boxheight = 1, // box height
+                mode = 0; // 0=square expand, 1=+x, 2=+y
+
+            for (;;) {
+                // New potential size
+                let nextboxwidth = boxwidth,
+                    nextboxheight = boxheight;
+                if ((mode == 0) || (mode == 1)) nextboxwidth++;
+                if ((mode == 0) || (mode == 2)) nextboxheight++;
+
+                // Enumerate new pixels to check
+                let newpixelsidxs = []; 
+                if ((mode == 0) || (mode == 1)) {
+                    // mode 0/1 -> add +x column to check
+                    let colx = startx + boxwidth;
+                    for (let y=starty; y<(starty+nextboxheight); y++)
+                        newpixelsidxs.push(y*pixels.width + colx);
+                }
+                if ((mode == 0) || (mode == 2)) {
+                    // mode 0/2 -> add +y row to check
+                    let rowy = starty + boxheight;
+                    for (let x=startx; x<(startx+nextboxwidth); x++)
+                        newpixelsidxs.push(rowy*pixels.width + x);
+                }
+                // mode 0 gets bottom corner double counted but it doesn't
+                // make a difference anyway
+                
+                // Not black -> increase mode and continue; quit if mode==2
+                if (!newpixelsidxs.every((idx) => pixblk[idx])) {
+                    if (mode == 2)
+                        break;
+
+                    mode++;
+                    continue;
+                }
+                
+                // All black, so mark those pixels as not black now, set new
+                // box width and height, and continue looping.
+                newpixelsidxs.forEach((idx) => pixblk[idx] = false);
+                boxwidth = nextboxwidth;
+                boxheight = nextboxheight;
+            }
+
+            // Add box to obj
+            let box = {
+                x: startx, y: starty, 
+                width: boxwidth, height: boxheight
+            };
+            obj.bounds.push(box);
+            //console.log(box)
+        }
+    }
 
     // Write to file
     write_obj(inpath_outpath.outpath, obj);
-    // TODO finish writing, test with map0-debug-bounds.png -> ppm -> json
-    //      -> read json and check got all correct.
 }
 
 main();
