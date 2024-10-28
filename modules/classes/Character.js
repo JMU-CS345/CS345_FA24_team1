@@ -25,7 +25,6 @@ class Character {
 	 *	@param y Y location
 	 */
 	move(x, y) {
-		this.location = this.location.setLocation(x, y); // make sure Vector has this method
 		this.location.fromCartesian(x, y);
 		this.box.x = this.location.x;
 		this.box.y = this.location.y;
@@ -68,9 +67,8 @@ class Character {
 	*	@returns boolean true if box is part of Character, else false
 	*/
 	checkHit(hitBox) {
-		return this.box.intersect(hitBox);
+		return this.box.intersects(hitBox);
 	}
 }
-
 
 if ((typeof exports) !== "undefined") module.exports = Character;
