@@ -6,11 +6,13 @@ class Character {
 	/*
 	*	Character constructor.
 	*
+	* @param arena The Arena that this Character exists in
 	* @param vector Vector object describing the Characters location
 	* @param health The starting health value for the Character
 	* @param sprite The sprite file for the Character
 	*/
-	constructor(vector, health, sprite, box) {
+	constructor(arena, vector, health, sprite, box) {
+        this.arena = arena;
 		this.location = vector;
 		this.health = health;
 		this.sprite = sprite;
@@ -21,13 +23,15 @@ class Character {
 	/*
 	 *	Changes position of Character object.
 	 *
-	 *	@param x X location
-	 *	@param y Y location
+	 *	@param loc Location vector to move to
 	 */
-	move(x, y) {
-		this.location.fromCartesian(x, y);
-		this.box.x = this.location.x;
-		this.box.y = this.location.y;
+	move(loc) {
+        if (this.arena.isValidLocation(loc)) {
+            // clone so calling class can't modify location after return
+		    this.location = loc.clone();
+		    this.box.x = this.location.x;
+		    this.box.y = this.location.y;
+        }
 	}
 
 	/*
