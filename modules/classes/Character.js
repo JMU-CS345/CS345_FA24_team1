@@ -11,13 +11,23 @@ class Character {
 	* @param health The starting health value for the Character
 	* @param sprite The sprite file for the Character
 	*/
-	constructor(arena, vector, health, sprite, box) {
+	constructor(arena, vector, health, sprite, box, speed, fireRate, damage) {
         this.arena = arena;
 		this.location = vector;
 		this.health = health;
 		this.sprite = sprite;
 		this.box = box;
+		this.speed = speed;
+		this.fireRate = fireRate;
+		this.damage = damage;
 		this.alive = true;
+	}
+
+	/**
+	 * 	Returns location of Vector
+	 */
+	getLocation() {
+		return {x: this.location.x, y: this.location.y};
 	}
 
 	/*
