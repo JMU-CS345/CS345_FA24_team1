@@ -23,6 +23,8 @@ class Player extends Character {
         this.location = this.location.fromCartesian(this.location.x + this.speed, this.location.y); // Move right
         break;
     }
+    this.box.x = this.location.x;
+    this.box.y = this.location.y;
   }
 
   attack(target) {
