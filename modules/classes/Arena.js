@@ -4,7 +4,7 @@ class Arena {
     this.img = img;
     this.characters = characters;
     this.wave = 1;
-    this.playerALive = playerAlive;
+    this.playerAlive = playerAlive;
     this.mapBounds = mapBounds;
   }
 
