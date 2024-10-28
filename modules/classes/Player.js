@@ -1,34 +1,26 @@
 class Player extends Character {
-  constructor(x = 0, y = 0) {
-    super(); // Call the parent constructor
-    this.x = x; // Player's x position
-    this.y = y; // Player's y position
-    this.health = 100;       // Player's health
-    this.attackPower = 10;   // Damage dealt by the players
+  constructor(arena, vector, health, sprite, box, speed, fireRate, damage) {
+    super(arena, vector, health, sprite, box, speed, fireRate, damage); // Call the parent constructor
   }
 
-  getPosition() {
-    return { x: this.x, y: this.y }; // Return current position
-  }
-
-  setPosition(x, y) {
-    this.x = x; // Set x position
-    this.y = y; // Set y position
-  }
-
+  /**
+   * Moves the vector location of the player using keystroke
+   * 
+   * @param {key} direction 
+   */
   move(direction) {
     switch (direction) {
       case 'up':
-        this.y -= 1; // Move up
+        this.location = this.location.fromCartesian(this.location.x, this.location.y - this.speed); // Move up
         break;
       case 'down':
-        this.y += 1; // Move down
+        this.location = this.location.fromCartesian(this.location.x, this.location.y + this.speed); // Move down
         break;
       case 'left':
-        this.x -= 1; // Move left
+        this.location = this.location.fromCartesian(this.location.x - this.speed, this.location.y); // Move left
         break;
       case 'right':
-        this.x += 1; // Move right
+        this.location = this.location.fromCartesian(this.location.x + this.speed, this.location.y); // Move right
         break;
     }
   }
