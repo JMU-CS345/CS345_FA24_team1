@@ -11,16 +11,16 @@ class Player extends Character {
   move(direction) {
     switch (direction) {
       case 'up':
-        this.location = this.location.fromCartesian(this.location.x, this.location.y - this.speed); // Move up
+        this.location.y -= this.speed; // Move up
         break;
       case 'down':
-        this.location = this.location.fromCartesian(this.location.x, this.location.y + this.speed); // Move down
+        this.location.y += this.speed; // Move down
         break;
       case 'left':
-        this.location = this.location.fromCartesian(this.location.x - this.speed, this.location.y); // Move left
+        this.location.x -= this.speed; // Move left
         break;
       case 'right':
-        this.location = this.location.fromCartesian(this.location.x + this.speed, this.location.y); // Move right
+        this.location.x += this.speed; // Move right
         break;
     }
     this.box.x = this.location.x;
