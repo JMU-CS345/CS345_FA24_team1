@@ -1,14 +1,15 @@
 /*
- * Main sketch file. Delegates everything to Arena.
+ * Main sketch file. Delegates everything to Arena and UI.
  */
 
-let arena;
+let arena, ui;
 
-function setup() {
-    // arena = new Arena(); // not implemented
+function preload() {
+    arena = new Arena();
+    ui = new UI(arena.getPlayer());
 }
 
 function draw() {
-    // arena.update();
-    // arena.draw();
+    arena.update();
+    ui.draw();
 }
