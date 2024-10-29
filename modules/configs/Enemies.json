@@ -1,0 +1,12 @@
+{
+    "enemies": [
+        {
+            "name": "development",
+            "health": 50, 
+            "sprite": null, 
+            "speed": 10,
+            "fireRate": 5, 
+            "damage": 5
+        }
+    ]
+}
