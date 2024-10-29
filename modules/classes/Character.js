@@ -1,4 +1,3 @@
-// TODO: Finish checkHit method
 // TODO: Pass Character.tests.js
 
 class Character {
@@ -10,9 +9,13 @@ class Character {
 	* @param vector Vector object describing the Characters location
 	* @param health The starting health value for the Character
 	* @param sprite The sprite file for the Character
+	* @param box The Box for the Character
+	* @param speed The movement speed for the Character
+	* @param fireRate The cooldown rate for the Characters attack (how long it must wait before the next attack)
+	* @param damage The damage done if an attack hits another Character
 	*/
 	constructor(arena, vector, health, sprite, box, speed, fireRate, damage) {
-        this.arena = arena;
+		this.arena = arena;
 		this.location = vector;
 		this.health = health;
 		this.sprite = sprite;
@@ -27,7 +30,7 @@ class Character {
 	 * 	Returns location of Vector
 	 */
 	getLocation() {
-		return {x: this.location.x, y: this.location.y};
+		return this.location;
 	}
 
 	/*
@@ -36,23 +39,40 @@ class Character {
 	 *	@param loc Location vector to move to
 	 */
 	move(loc) {
-        if (this.arena.isValidLocation(loc)) {
-            // clone so calling class can't modify location after return
-		    this.location = loc.clone();
-		    this.box.x = this.location.x;
-		    this.box.y = this.location.y;
-        }
+		if (this.arena.isValidLocation(loc)) {
+			// clone so calling class can't modify location after return
+			this.location = loc.clone();
+			this.box.x = this.location.x;
+			this.box.y = this.location.y;
+		}
 	}
 
 	/*
 	 *	Decrements health by one.
 	 */
 	takeDamage() {
-		if (this.health == 0) {
+		if (this.health <= 0) {
 			return;
 		}
 		this.health--;
 		if (this.health <= 0) {
+			this.alive = false;
+		}
+	}
+
+
+	/*
+	 *	Decrements health by specified amount.
+	 *
+	 *	@param damage The specified amount of damage to receive
+	 */
+	takeDamage(damage) {
+		if (this.health == 0) {
+			return;
+		}
+		this.health -= damage;	// health could go negative
+		if (this.health <= 0) {
+			this.health = 0;			// if negative or 0, set it to 0 and change state to dead
 			this.alive = false;
 		}
 	}
