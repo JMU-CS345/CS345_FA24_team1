@@ -19,7 +19,7 @@ class Arena {
 
     /* Returns the number of enemies currently in the Arena. */
     numEnemies() {
-        return characters.length - 1;
+        return this.characters.length - 1;
     }
 
     /* Advances the Arena to the next wave. */
