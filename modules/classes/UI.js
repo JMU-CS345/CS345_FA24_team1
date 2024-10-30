@@ -5,7 +5,6 @@ class UI {
 	constructor(arena) {
 		this.arena = arena;
 		this.time = 0;
-		this.level = 1;
 		this.timerReference = null;
 	}
 
@@ -28,14 +27,6 @@ class UI {
 	}
 
 	/*
-	*	Increments the level count.
-	*	There should be no need to go backwards, as the UI will be reset every time the game ends.
-	*/
-	nextLevel() {
-		this.level++;
-	}
-
-	/*
 	*	Boilerplate UI drawing, need to change positioning, size etc. once Arena/Map is done.
 	*/
 	draw() {
@@ -52,6 +43,6 @@ class UI {
 		const formattedTime = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 		text(`Time: ${formattedTime}`, 10, 60);
 
-		text(`Level: ${this.level}`, 10, 90);
+		text(`Level: ${this.arena.wave}`, 10, 90);
 	}
 }
