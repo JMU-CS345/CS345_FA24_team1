@@ -6,7 +6,9 @@ class Arena {
     constructor() {
         // TODO dependency injection
         this.map = this.loadMap("/assets/maps/map0-debug.png",
-                "/assets/maps/map0-debug-bounds.png");
+                "/assets/maps/map0-debug-bounds.json");
+        this.width = this.map.bgImage.width;
+        this.height = this.map.bgImage.height;
         this.characters = [new Player(this, new Vector2D(0,0), 1, "/assets/characters/player-debug.png", new Box(0,0,0,0), 1, 1, 1)]; // TODO
         this.playerAlive = true;
         this.wave = 1;
@@ -40,20 +42,58 @@ class Arena {
         // TODO - enemies move towards player and try to attack, what else?
     }
 
-    /* Draws the map onto the canvas. */
+    /* Draws the map and characters onto the canvas. */
     draw() {
-        // image(this.map.bgImage, 0, 0, width, height); TODO once map loaded
+        image(this.map.bgImage, 0, 0, this.width, this.height);
+        
+        // Currently errors until Player/Enemy written TODO
+        //this.characters.forEach(character => character.draw());
     }
 
     /* Loads the passed map files into memory. Returns an object containing
      * the background image at bgImage and the map info JSON at info. */
     loadMap(bgpath, infopath) {
-        // TODO implement (+ scale after loading?)
-        return {bgImage: null, info: null};
+        let mapobj = {
+            bgImage: loadImage(bgpath),
+            info: null
+        };
+
+        // See fetch API docs
+        fetch(infopath).then(response => response.json().then(
+                json => mapobj.info = json));
+
+        return mapobj;
     }
 
     /* Scales this.map.info to reflect the new canvas size. */
     scaleMap(oldwidth, oldheight, newwidth, newheight) {
-        // TODO implement
+        const info = this.map.info;
+
+        // Scale factors
+        const sfx = 1.0 * newwidth / oldwidth,
+              sfy = 1.0 * newheight / oldheight;
+
+        // Boxes and Vector2Ds to scale
+        const locs = [info.playerSpawn, info.enemySpawn];
+        const boxes = info.bounds;
+
+        // Scale all
+        locs.forEach(loc => {
+            loc.x *= sfx;
+            loc.y *= sfy;
+        });
+        boxes.forEach(box => {
+            box.x *= sfx;
+            box.width *= sfx;
+            box.y *= sfy;
+            box.height *= sfy;
+        });
+    }
+
+    /* Updates the size of the Arena. Scales objects as needed. */
+    setSize(newwidth, newheight) {
+        this.scaleMap(this.width, this.height, newwidth, newheight);
+        this.width = newwidth;
+        this.height = newheight;
     }
 }

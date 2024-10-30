@@ -13,6 +13,7 @@ function preload() {
 function setup() {
     // Canvas must be created no earlier than the start of setup()
     createCanvas(windowWidth, windowHeight);
+    arena.setSize(windowWidth, windowHeight);
 }
 
 function draw() {
