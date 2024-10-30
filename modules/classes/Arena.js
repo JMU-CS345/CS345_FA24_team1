@@ -5,12 +5,18 @@ class Arena {
     /* Constructs a new Arena. */
     constructor() {
         // TODO dependency injection
+
+        // Map, arena size
         this.map = this.loadMap("/assets/maps/map0-debug.png",
                 "/assets/maps/map0-debug-bounds.json");
         this.width = this.map.bgImage.width;
         this.height = this.map.bgImage.height;
+
+        // Characters (player+enemies)
         this.characters = [new Player(this, new Vector2D(0,0), 1, "/assets/characters/player-debug.png", new Box(0,0,0,0), 1, 1, 1)]; // TODO
         this.playerAlive = true;
+
+        // Wave
         this.wave = 1;
     }
 
@@ -53,25 +59,15 @@ class Arena {
     /* Loads the passed map files into memory. Returns an object containing
      * the background image at bgImage and the map info JSON at info. */
     loadMap(bgpath, infopath) {
-        let mapobj = {
+        return {
             bgImage: loadImage(bgpath),
-            info: null
+            info: loadJSON(infopath)
         };
-
-        // See fetch API docs
-        fetch(infopath).then(response => response.json().then(
-                json => mapobj.info = json));
-
-        return mapobj;
     }
 
-    /* Scales this.map.info to reflect the new canvas size. */
-    scaleMap(oldwidth, oldheight, newwidth, newheight) {
+    /* Scales this.map.info by the passed factors. */
+    scaleMap(scalex, scaley) {
         const info = this.map.info;
-
-        // Scale factors
-        const sfx = 1.0 * newwidth / oldwidth,
-              sfy = 1.0 * newheight / oldheight;
 
         // Boxes and Vector2Ds to scale
         const locs = [info.playerSpawn, info.enemySpawn];
@@ -79,21 +75,26 @@ class Arena {
 
         // Scale all
         locs.forEach(loc => {
-            loc.x *= sfx;
-            loc.y *= sfy;
+            loc.x *= scalex;
+            loc.y *= scaley;
         });
         boxes.forEach(box => {
-            box.x *= sfx;
-            box.width *= sfx;
-            box.y *= sfy;
-            box.height *= sfy;
+            box.x *= scalex;
+            box.width *= scalex;
+            box.y *= scaley;
+            box.height *= scaley;
         });
     }
 
     /* Updates the size of the Arena. Scales objects as needed. */
     setSize(newwidth, newheight) {
-        this.scaleMap(this.width, this.height, newwidth, newheight);
+        // Scale factors
+        const sfx = 1.0 * newwidth / this.width,
+              sfy = 1.0 * newheight / this.height;
         this.width = newwidth;
         this.height = newheight;
+
+        this.scaleMap(sfx, sfy);
+        this.characters.forEach(ch => ch.scale(sfx, sfy));
     }
 }
