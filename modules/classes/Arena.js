@@ -18,9 +18,14 @@ class Arena {
             ), 1, 1, 1
         )];
         this.playerAlive = true;
+        this.enemies = assets.enemies.enemies;
 
-        // Wave
-        this.wave = 1;
+        // Waves, wave, wave enemy spawn timer, next enemy to spawn
+        this.waves = assets.waves.waves;
+        this.wave = 0;
+        this.spawnTimer = null;
+        this.nextSpawnID1 = 0; // index of waves.enemies
+        this.nextSpawnID2 = 0; // spawn n'th enemy of that index
     }
 
     /* Returns the player. */
@@ -33,16 +38,50 @@ class Arena {
         return this.characters.length - 1;
     }
 
-    /* Advances the Arena to the next wave. */
+    /* Advances the Arena to the next wave. Does not check if the game state is
+     * ready for a next wave or not, and assumes that there is a next wave. */
     nextWave() {
+        // Advance wave count and grab wave info
+        const waveinfo = this.waves[this.wave];
         this.wave++;
-        // TODO spawn enemies depending on wave, what else?
+
+        // Spawn one enemy per second until queue empty
+        this.nextSpawnID1 = 0;
+        this.nextSpawnID2 = 0;
+        this.spawnTimer = setInterval(() => {
+            // Spawn
+            const enemy = waveinfo.enemies[this.nextSpawnID1],
+                  enemyinfo = this.enemies.find((eobj) =>
+                          eobj.name == enemy.name);
+            
+            this.characters.push(new Enemy(
+                this,                       // arena
+                this.map.info.enemySpawn,   // spawn location
+                enemyinfo.health,           // starting health
+                enemyinfo.sprite,           // sprite image
+                new Box(                    // hitbox
+                    this.map.info.enemySpawn.x, this.map.info.enemySpawn.y, 
+                    enemyinfo.sprite.width, enemyinfo.sprite.height
+                ),
+                enemyinfo.speed,            // movement speed
+                enemyinfo.fireRate,         // fire rate
+                enemyinfo.damage            // damage
+            ));
+
+            // Next enemy if at count; quit spawning if done
+            if ((++this.nextSpawnID2) == enemy.count) {
+                if ((++this.nextSpawnID1) == waveinfo.enemies.length) {
+                    clearInterval(this.spawnTimer);
+                    this.spawnTimer = null;
+                }
+            }
+        }, 1000);
     }
 
-    /* Returns true if passed Location is within the bounds of the map,
+    /* Returns true if passed Box is entirely within the bounds of the map,
      * false otherwise. */
-    isValidLocation(loc) {
-        return true; // TODO implement
+    isValidBoxLocation(box) {
+        return this.map.info.bounds.every(bbox => !bbox.intersects(box));
     }
 
     /* Updates everything in the Arena, advancing the state of the game by
@@ -90,5 +129,6 @@ class Arena {
 
         this.scaleMap(sfx, sfy);
         this.characters.forEach(ch => ch.scale(sfx, sfy));
+        // TODO character speed scaling (player + enemies)
     }
 }
