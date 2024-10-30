@@ -6,7 +6,7 @@ let arena, ui;
 
 function preload() {
     arena = new Arena();
-    ui = new UI(arena.getPlayer());
+    ui = new UI(arena);
 }
 
 function draw() {

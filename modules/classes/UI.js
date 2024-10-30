@@ -2,8 +2,9 @@
 
 class UI {
 
-	constructor(player) {
-		this.health = player.health;
+	constructor(arena) {
+		this.arena = arena;
+		this.health = arena.getPlayer().health;
 		this.time = 0;
 		this.level = 1;
 		this.timerReference = null;
@@ -46,7 +47,8 @@ class UI {
 	*	Boilerplate UI drawing, need to change positioning, size etc. once Arena/Map is done.
 	*/
 	draw() {
-		background(255);
+		this.arena.draw(); // Draw map
+
 		textSize(24);
 		fill(0);
 		noStroke();
