@@ -2,16 +2,20 @@
  * Main sketch file. Delegates everything to Arena and UI.
  */
 
-let arena, ui;
+let arena, ui, assets;
 
 function preload() {
-    // Create Arena and UI in preload() to allow for image loading to finish
-    arena = new Arena();
-    ui = new UI(arena);
+    // Preload all assets
+    assets = {
+        mapbg: loadImage("/assets/maps/map0-debug.png"),
+        mapinfo: loadJSON("/assets/maps/map0-debug-bounds.json"),
+        playersprite: loadImage("/assets/characters/player-debug.png")
+    };
 }
 
 function setup() {
-    // Canvas must be created no earlier than the start of setup()
+    arena = new Arena(assets);
+    ui = new UI(arena);
     createCanvas(windowWidth, windowHeight);
     arena.setSize(windowWidth, windowHeight);
 }
