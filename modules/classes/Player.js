@@ -26,6 +26,11 @@ class Player extends Character {
     this.box.x = this.location.x;
     this.box.y = this.location.y;
   }
+  draw() {
+    if (this.alive) {
+      image(this.sprite, this.location.x, this.location.y, this.box.width, this.box.height);
+    }
+  }
 
   attack(target) {
     if (target && target.takeDamage) {

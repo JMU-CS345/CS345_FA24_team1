@@ -22,6 +22,16 @@ class Arena {
         // Wave
         this.wave = 1;
     }
+    spawnEnemy() {
+      const enemySpawn = this.map.info.enemySpawn;
+      const enemy = new Enemy(
+          this, enemySpawn, 1, this.assets.enemy1sprite, 
+          new Box(enemySpawn.x, enemySpawn.y, this.assets.enemy1sprite.width, this.assets.enemy1sprite.height), 
+          1, 1, 1
+      );
+      this.characters.push(enemy);
+  }
+
 
     /* Returns the player. */
     getPlayer() {
@@ -36,24 +46,31 @@ class Arena {
     /* Advances the Arena to the next wave. */
     nextWave() {
         this.wave++;
+        for (let i = 0; i < this.wave; i++) {
+          this.spawnEnemy();
+        }
         // TODO spawn enemies depending on wave, what else?
+
     }
 
     /* Returns true if passed Location is within the bounds of the map,
      * false otherwise. */
     isValidLocation(loc) {
-        return true; // TODO implement
+        return loc.x >= 0 && loc.x <= this.width && loc.y >= 0 && loc.y <= this.height;
     }
 
     /* Updates everything in the Arena, advancing the state of the game by
      * one game tick. */
     update() {
         // TODO - enemies move towards player and try to attack, what else?
+        this.characters.forEach(character => character.update());
     }
 
     /* Draws the map and characters onto the canvas. */
     draw() {
         image(this.map.bgImage, 0, 0, this.width, this.height);
+        this.characters.forEach(character => character.draw());
+        
         
         // Currently errors until Player/Enemy written TODO
         //this.characters.forEach(character => character.draw());
