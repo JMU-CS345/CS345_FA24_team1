@@ -16,6 +16,12 @@ function setup() {
     arena.setSize(windowWidth, windowHeight);
 }
 
+function windowResized() {
+    // Keep canvas size equal to window size
+    resizeCanvas(windowWidth, windowHeight);
+    arena.setSize(windowWidth, windowHeight);
+}
+
 function draw() {
     arena.update();
     ui.draw();
