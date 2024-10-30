@@ -4,17 +4,9 @@ class UI {
 
 	constructor(arena) {
 		this.arena = arena;
-		this.health = arena.getPlayer().health;
 		this.time = 0;
 		this.level = 1;
 		this.timerReference = null;
-	}
-
-	/*
-	*	Updates health for UI, called alongside every update to a players health.
-	*/
-	updateHealth(player) {
-		this.health = player.health;
 	}
 
 	/*
@@ -53,7 +45,7 @@ class UI {
 		fill(0);
 		noStroke();
 
-		text(`Health: ${this.health}`, 10, 30);
+		text(`Health: ${this.arena.getPlayer().health}`, 10, 30);
 
 		const minutes = Math.floor(this.time / 60);
 		const seconds = this.time % 60;
