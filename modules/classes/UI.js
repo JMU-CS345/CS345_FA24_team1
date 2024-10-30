@@ -47,7 +47,7 @@ class UI {
 	*	Boilerplate UI drawing, need to change positioning, size etc. once Arena/Map is done.
 	*/
 	draw() {
-		this.arena.draw(); // Draw map
+		this.arena.draw();
 
 		textSize(24);
 		fill(0);
