@@ -3,7 +3,7 @@
         {
             "name": "development",
             "health": 50, 
-            "sprite": null, 
+            "sprite": "/assets/characters/enemy-debug.png", 
             "speed": 10,
             "fireRate": 5, 
             "damage": 5

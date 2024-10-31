@@ -1,0 +1,9 @@
+{
+    "waves": [
+        {
+            "enemies": [
+                {"name": "development", "count": 2}
+            ]
+        }
+    ]
+}
