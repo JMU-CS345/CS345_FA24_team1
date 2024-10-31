@@ -103,6 +103,22 @@ class Character {
 	checkHit(hitBox) {
 		return this.box.intersects(hitBox);
 	}
+
+
+	/*
+	 *	Scales this Character by the passed factors.
+	 *
+	 *	@param scalex Scaling multiplier in the X direction
+	 *	@param scaley Scaling multiplier in the Y direction
+	 */
+	scale(scalex, scaley) {
+		this.location.x *= scalex;
+		this.location.y *= scaley;
+		this.box.x *= scalex;
+		this.box.y *= scaley;
+		this.box.width *= scalex;
+		this.box.height *= scaley;
+	}
 }
 
 if ((typeof exports) !== "undefined") module.exports = Character;
