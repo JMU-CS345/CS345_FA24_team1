@@ -58,5 +58,4 @@ class Weapon {
         //would need to call the current players location
         //image(sprite, player.location.x, player.location.y)
     }
-
 }
