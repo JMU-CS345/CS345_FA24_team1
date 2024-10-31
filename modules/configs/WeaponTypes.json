@@ -1,0 +1,10 @@
+{
+    "WeaponTypes" : [
+        {
+            "weapon": "katana",
+            "damage": "50",
+            "fireRate": 5,
+            "sprite": null
+        }
+    ]
+}
