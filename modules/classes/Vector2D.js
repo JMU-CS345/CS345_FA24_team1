@@ -24,6 +24,14 @@ class Vector2D {
         return this;
     }
 
+    /* Initialize vector from another Vector2D */
+    /* TODO add tests for Vector2D.fromOther() */
+    fromOther(other) {
+        this.x = other.x;
+        this.y = other.y;
+        return this;
+    }
+
     /* Returns magnitude of vector (r in polar coordinates). */
     magnitude() {
         return Math.sqrt(this.x*this.x + this.y*this.y);
