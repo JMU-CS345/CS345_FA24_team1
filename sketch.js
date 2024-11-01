@@ -24,6 +24,8 @@ function setup() {
     ui = new UI(arena);
     createCanvas(windowWidth, windowHeight);
     arena.setSize(windowWidth, windowHeight);
+    ui.startTime();   // starts game time
+    arena.nextWave(); // first wave
 }
 
 function windowResized() {
