@@ -16,9 +16,13 @@ class Enemy extends Character {
    * Moves towards player every 0.2 seconds.
    */
   move() {
-    setInterval(() => {
-      // TODO: Implement method
-    }, 200);
+    const player = this.arena.getPlayer();
+    const targetX = player.location.x;
+    const targetY = player.location.y;
+
+    // Interpolate towards the player position, controlling speed with the lerp factor
+    this.location.x = lerp(this.location.x, targetX, 0.0002); // Adjust 0.02 for desired speed
+    this.location.y = lerp(this.location.y, targetY, 0.0002); // Adjust 0.02 for desired speed
   }
 
   /**
