@@ -26,6 +26,12 @@ class Box {
         // right of the other Box. Intesection if none of those are true.
         return !((ty2 < oy1) || (ty1 > oy2) || (tx2 < ox1) || (tx1 > ox2));
     }
+
+    /* Creates a deep copy of this Box. */
+    /* TODO ADD tests for Box.clone() */
+    clone() {
+        return new Box(this.x, this.y, this.width, this.height);
+    }
 }
 
 // Export if running in node (for testing)
