@@ -4,27 +4,21 @@ class Player extends Character {
   }
 
   /**
-   * Moves the vector location of the player using keystroke
-   * 
-   * @param {key} direction 
+   * Update this Player each tick. Handle movement from user input.
    */
-  move(direction) {
-    switch (direction) {
-      case 'up':
-        this.location.y -= this.speed; // Move up
-        break;
-      case 'down':
-        this.location.y += this.speed; // Move down
-        break;
-      case 'left':
-        this.location.x -= this.speed; // Move left
-        break;
-      case 'right':
-        this.location.x += this.speed; // Move right
-        break;
+  update() {
+    if (keyIsDown(UP_ARROW)) {
+      super.move(new Vector2D(0, -this.speed).add(this.location));
     }
-    this.box.x = this.location.x;
-    this.box.y = this.location.y;
+    if (keyIsDown(DOWN_ARROW)) {
+      super.move(new Vector2D(0, this.speed).add(this.location));
+    }
+    if (keyIsDown(LEFT_ARROW)) {
+      super.move(new Vector2D(-this.speed, 0).add(this.location));
+    }
+    if (keyIsDown(RIGHT_ARROW)) {
+      super.move(new Vector2D(this.speed, 0).add(this.location));
+    }
   }
 
   draw() {

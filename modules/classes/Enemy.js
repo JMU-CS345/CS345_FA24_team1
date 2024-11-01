@@ -4,25 +4,34 @@ class Enemy extends Character {
     this.cooldown = false;
   }
 
+  /**
+   * Updates enemy each tick.
+   */
+  update() {
+    // Move towards player. TODO: pathfind around obstacles in way
+    // Get the player's position
+    const player = this.arena.getPlayer();
+    const playerBox = player.box;
+
+    // Simple logic to move towards the player
+    if (this.box.x < playerBox.x) {
+      this.move(new Vector2D(this.speed, 0).add(this.location)); // right
+    } else if (this.box.x > playerBox.x) {
+      this.move(new Vector2D(-this.speed, 0).add(this.location)); // left
+    }
+
+    if (this.box.y < playerBox.y) {
+      this.move(new Vector2D(0, this.speed).add(this.location)); // down
+    } else if (this.box.y > playerBox.y) {
+      this.move(new Vector2D(0, -this.speed).add(this.location)); // up
+    }
+  }
 
   /**
    * Draws enemy onto p5 canvas.
    */
   draw() {
-    image(this.sprite, this.location.x, this.location.y, 80, 80); // should use box width and height for args 3 & 4, but image is too large
-  }
-
-  /**
-   * Moves towards player every 0.2 seconds.
-   */
-  move() {
-    const player = this.arena.getPlayer();
-    const targetX = player.location.x;
-    const targetY = player.location.y;
-
-    // Interpolate towards the player position, controlling speed with the lerp factor
-    this.location.x = lerp(this.location.x, targetX, 0.0002); // Adjust 0.02 for desired speed
-    this.location.y = lerp(this.location.y, targetY, 0.0002); // Adjust 0.02 for desired speed
+    image(this.sprite, this.location.x, this.location.y);
   }
 
   /**

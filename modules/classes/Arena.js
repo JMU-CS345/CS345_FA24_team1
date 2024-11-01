@@ -87,56 +87,8 @@ class Arena {
   /* Updates everything in the Arena, advancing the state of the game by
    * one game tick. */
   update() {
-    /* PLAYER MOVEMENT */
-    // TODO move this all to character/player and refactor
-    if (keyIsDown(UP_ARROW)) {
-      const newBox = new Box(this.getPlayer().box.x, this.getPlayer().box.y - this.getPlayer().speed, this.getPlayer().box.width, this.getPlayer().box.height);
-      if (this.isValidBoxLocation(newBox)) {
-        this.getPlayer().move("up");
-      }
-    }
-    if (keyIsDown(DOWN_ARROW)) {
-      const newBox = new Box(this.getPlayer().box.x, this.getPlayer().box.y + this.getPlayer().speed, this.getPlayer().box.width, this.getPlayer().box.height);
-      if (this.isValidBoxLocation(newBox)) {
-        this.getPlayer().move("down");
-      }
-    }
-    if (keyIsDown(LEFT_ARROW)) {
-      const newBox = new Box(this.getPlayer().box.x - this.getPlayer().speed, this.getPlayer().box.y, this.getPlayer().box.width, this.getPlayer().box.height);
-      if (this.isValidBoxLocation(newBox)) {
-        this.getPlayer().move("left");
-      }
-    }
-    if (keyIsDown(RIGHT_ARROW)) {
-      const newBox = new Box(this.getPlayer().box.x + this.getPlayer().speed, this.getPlayer().box.y, this.getPlayer().box.width, this.getPlayer().box.height);
-      if (this.isValidBoxLocation(newBox)) {
-        this.getPlayer().move("right");
-      }
-    }
-    /* END PLAYER MOVEMENT */
-
-    // TODO should be moved to Enemy and then we can call
-    // this.characters.forEach(character => character.update());
-    this.characters.forEach(character => {
-      if (character instanceof Enemy) {
-        // Get the player's position
-        const player = this.getPlayer();
-        const playerBox = player.box;
-
-        // Simple logic to move towards the player
-        if (character.box.x < playerBox.x) {
-          character.move("right");
-        } else if (character.box.x > playerBox.x) {
-          character.move("left");
-        }
-
-        if (character.box.y < playerBox.y) {
-          character.move("down");
-        } else if (character.box.y > playerBox.y) {
-          character.move("up");
-        }
-      }
-    });
+    // Update characters
+    this.characters.forEach(character => character.update());
 
     /* Wave updates when enemies == 0 */
     if (this.characters.length == 1) {
