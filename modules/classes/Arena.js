@@ -11,7 +11,8 @@ class Arena {
 
     // Characters (player+enemies)
     this.characters = [new Player(
-      this, this.map.info.playerSpawn, 1, assets.playersprite,
+      this, new Vector2D(0,0).fromOther(this.map.info.playerSpawn),
+      1, assets.playersprite,
       new Box(
         this.map.info.playerSpawn.x, this.map.info.playerSpawn.y,
         assets.playersprite.width, assets.playersprite.height
@@ -51,21 +52,20 @@ class Arena {
     this.spawnTimer = setInterval(() => {
       // Spawn
       const enemy = waveinfo.enemies[this.nextSpawnID1],
-        enemyinfo = this.enemies.find((eobj) =>
-          eobj.name == enemy.name);
+        enemyinfo = this.enemies.find((eobj) => eobj.name == enemy.name);
 
       this.characters.push(new Enemy(
-        this,                       // arena
-        this.map.info.enemySpawn,   // spawn location
-        enemyinfo.health,           // starting health
-        enemyinfo.sprite,           // sprite image
-        new Box(                    // hitbox
+        this,                                   // arena
+        new Vector2D(0,0).fromOther(this.map.info.enemySpawn), // spawn location
+        enemyinfo.health,                       // starting health
+        enemyinfo.sprite,                       // sprite image
+        new Box(                                // hitbox
           this.map.info.enemySpawn.x, this.map.info.enemySpawn.y,
           enemyinfo.sprite.width, enemyinfo.sprite.height
         ),
-        enemyinfo.speed,            // movement speed
-        enemyinfo.fireRate,         // fire rate
-        enemyinfo.damage            // damage
+        enemyinfo.speed,                        // movement speed
+        enemyinfo.fireRate,                     // fire rate
+        enemyinfo.damage                        // damage
       ));
 
       // Next enemy if at count; quit spawning if done
@@ -81,41 +81,42 @@ class Arena {
   /* Returns true if passed Box is entirely within the bounds of the map,
    * false otherwise. */
   isValidBoxLocation(box) {
-    return this.map.info.bounds.every((bbox) => !bbox.intersects(box)); // TODO: Doesn't work, I dont think they are understood as box objects
+    return this.map.info.bounds.every((bbox) => !box.intersects(bbox));
   }
 
   /* Updates everything in the Arena, advancing the state of the game by
    * one game tick. */
   update() {
-    // TODO - enemies move towards player and try to attack, what else?
-
     /* PLAYER MOVEMENT */
     // TODO: bounds check is commented out since there is an error
     if (keyIsDown(UP_ARROW)) {
-      //const newBox = new Box(this.getPlayer().box.x, this.getPlayer().box.y - this.getPlayer().speed, this.getPlayer().box.width, this.getPlayer().box.height);
-      //if (this.isValidBoxLocation(newBox)) {
-      this.getPlayer().move("up");
-      //}
+      const newBox = new Box(this.getPlayer().box.x, this.getPlayer().box.y - this.getPlayer().speed, this.getPlayer().box.width, this.getPlayer().box.height);
+      if (this.isValidBoxLocation(newBox)) {
+        this.getPlayer().move("up");
+      }
     }
     if (keyIsDown(DOWN_ARROW)) {
-      //const newBox = new Box(this.getPlayer().box.x, this.getPlayer().box.y + this.getPlayer().speed, this.getPlayer().box.width, this.getPlayer().box.height);
-      //if (this.isValidBoxLocation(newBox)) {
-      this.getPlayer().move("down");
-      //}
+      const newBox = new Box(this.getPlayer().box.x, this.getPlayer().box.y + this.getPlayer().speed, this.getPlayer().box.width, this.getPlayer().box.height);
+      if (this.isValidBoxLocation(newBox)) {
+        this.getPlayer().move("down");
+      }
     }
     if (keyIsDown(LEFT_ARROW)) {
-      //const newBox = new Box(getPlayer().box.x - this.getPlayer().speed, getPlayer().box.y, getPlayer().box.width, getPlayer().box.height);
-      //if (this.isValidBoxLocation(newBox)) {
-      this.getPlayer().move("left");
-      //}
+      const newBox = new Box(this.getPlayer().box.x - this.getPlayer().speed, this.getPlayer().box.y, this.getPlayer().box.width, this.getPlayer().box.height);
+      if (this.isValidBoxLocation(newBox)) {
+        this.getPlayer().move("left");
+      }
     }
     if (keyIsDown(RIGHT_ARROW)) {
-      //const newBox = new Box(getPlayer().box.x + this.getPlayer().speed, getPlayer().box.y, getPlayer().box.width, getPlayer().box.height);
-      //if (this.isValidBoxLocation(newBox)) {
-      this.getPlayer().move("right");
-      //}
+      const newBox = new Box(this.getPlayer().box.x + this.getPlayer().speed, this.getPlayer().box.y, this.getPlayer().box.width, this.getPlayer().box.height);
+      if (this.isValidBoxLocation(newBox)) {
+        this.getPlayer().move("right");
+      }
     }
     /* END PLAYER MOVEMENT */
+
+    // TODO should be moved to Enemy and then we can call
+    // this.characters.forEach(character => character.update());
     this.characters.forEach(character => {
       if (character instanceof Enemy) {
         // Get the player's position
@@ -141,15 +142,12 @@ class Arena {
     if (this.characters.length == 1) {
       //this.nextWave(); // enemies don't spawn yet which causes a bug
     }
-
   }
 
   /* Draws the map and characters onto the canvas. */
   draw() {
     this.update();
     image(this.map.bgImage, 0, 0, this.width, this.height);
-
-    // Currently errors until Player/Enemy written TODO
     this.characters.forEach(character => character.draw());
   }
 
