@@ -26,6 +26,34 @@ class Arena {
         this.spawnTimer = null;
         this.nextSpawnID1 = 0; // index of waves.enemies
         this.nextSpawnID2 = 0; // spawn n'th enemy of that index
+
+        this.time = 0;
+        this.timerReference = null;
+        
+        // Putting startTime here if we want the timer to go on from start to game over
+        // Will need to be moved if we want the timer to reset every time a new wave has started 
+        this.startTime();
+    }
+
+	startTime() {
+		this.timerReference = setInterval(() => {
+			this.time++;
+		}, 1000);
+	}
+
+    stopTimer() {
+        if (this.timerReference !== null) {
+            clearInterval(this.timerReference);
+            this.timerReference = null;
+        }
+    }
+
+    resetTimer() {
+        this.time = 0;
+    }
+
+    getTime() {
+        return this.time;
     }
 
     /* Returns the player. */
@@ -93,7 +121,6 @@ class Arena {
     /* Draws the map and characters onto the canvas. */
     draw() {
         image(this.map.bgImage, 0, 0, this.width, this.height);
-        
         // Currently errors until Player/Enemy written TODO
         //this.characters.forEach(character => character.draw());
     }
