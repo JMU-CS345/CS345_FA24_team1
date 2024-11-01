@@ -27,8 +27,13 @@ class Box {
         return !((ty2 < oy1) || (ty1 > oy2) || (tx2 < ox1) || (tx1 > ox2));
     }
 
+    /* true if this Box has identical values as other, false otherwise */
+    equals(other) {
+        return (this.x == other.x) && (this.y == other.y)
+            && (this.width == other.width) && (this.height == other.height);
+    }
+
     /* Creates a deep copy of this Box. */
-    /* TODO ADD tests for Box.clone() */
     clone() {
         return new Box(this.x, this.y, this.width, this.height);
     }

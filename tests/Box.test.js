@@ -29,6 +29,49 @@ describe("Box class", () => {
         }).toThrow(RangeError);
     });
 
+    test("equals", () => {
+        let b0 = new Box(0, 0, 0, 0),
+            b1 = new Box(5, 6, 7, 8),
+            b2 = new Box(8, 7, 6, 5),
+            b3 = new Box(5, 6, 7, 8);
+
+        expect(b0.equals(b0)).toBeTruthy();
+        expect(b0.equals(b1)).toBeFalsy();
+        expect(b0.equals(b2)).toBeFalsy();
+        expect(b0.equals(b3)).toBeFalsy();
+
+        expect(b1.equals(b0)).toBeFalsy();
+        expect(b1.equals(b1)).toBeTruthy();
+        expect(b1.equals(b2)).toBeFalsy();
+        expect(b1.equals(b3)).toBeTruthy();
+
+        expect(b2.equals(b0)).toBeFalsy();
+        expect(b2.equals(b1)).toBeFalsy();
+        expect(b2.equals(b2)).toBeTruthy();
+        expect(b2.equals(b3)).toBeFalsy();
+
+        expect(b3.equals(b0)).toBeFalsy();
+        expect(b3.equals(b1)).toBeTruthy();
+        expect(b3.equals(b2)).toBeFalsy();
+        expect(b3.equals(b3)).toBeTruthy();
+    });
+
+    test("clone", () => {
+        let b0 = new Box(0, 0, 10, 10),
+            b1 = new Box(0, 0, 1, 1),
+            b2 = new Box(5, 5, 1, 1),
+            b3 = new Box(5, -9999, 1, 100),
+            b4 = new Box(100, 1, 10, 10),
+            b5 = new Box(-14, 0, 15, 1);
+
+        expect(b0.clone().equals(new Box(0, 0, 10, 10))).toBeTruthy();
+        expect(b1.clone().equals(new Box(0, 0, 1, 1))).toBeTruthy();
+        expect(b2.clone().equals(new Box(5, 5, 1, 1))).toBeTruthy();
+        expect(b3.clone().equals(new Box(5, -9999, 1, 100))).toBeTruthy();
+        expect(b4.clone().equals(new Box(100, 1, 10, 10))).toBeTruthy();
+        expect(b5.clone().equals(new Box(-14, 0, 15, 1))).toBeTruthy();
+    });
+
     test("intersects", () => {
         let b0 = new Box(0, 0, 10, 10),
             b1 = new Box(10, 10, 1, 1),
