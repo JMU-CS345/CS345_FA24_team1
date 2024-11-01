@@ -14,16 +14,19 @@ class Enemy extends Character {
     const playerBox = player.box;
 
     // Simple logic to move towards the player
-    if (this.box.x < playerBox.x) {
-      this.move(new Vector2D(this.speed, 0).add(this.location)); // right
-    } else if (this.box.x > playerBox.x) {
-      this.move(new Vector2D(-this.speed, 0).add(this.location)); // left
-    }
+    // Only move if not already on top of player
+    if (!this.box.intersects(playerBox)) {
+      if (this.box.x < playerBox.x) {
+        this.move(new Vector2D(this.speed, 0).add(this.location)); // right
+      } else if (this.box.x > playerBox.x) {
+        this.move(new Vector2D(-this.speed, 0).add(this.location)); // left
+      }
 
-    if (this.box.y < playerBox.y) {
-      this.move(new Vector2D(0, this.speed).add(this.location)); // down
-    } else if (this.box.y > playerBox.y) {
-      this.move(new Vector2D(0, -this.speed).add(this.location)); // up
+      if (this.box.y < playerBox.y) {
+        this.move(new Vector2D(0, this.speed).add(this.location)); // down
+      } else if (this.box.y > playerBox.y) {
+        this.move(new Vector2D(0, -this.speed).add(this.location)); // up
+      }
     }
   }
 
