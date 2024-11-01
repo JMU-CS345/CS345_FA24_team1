@@ -81,21 +81,56 @@ class Arena {
     /* Returns true if passed Box is entirely within the bounds of the map,
      * false otherwise. */
     isValidBoxLocation(box) {
-        return this.map.info.bounds.every(bbox => !bbox.intersects(box));
+        return this.map.info.bounds.every((bbox) => !bbox.intersects(box)); // TODO: Doesn't work, I dont think they are understood as box objects
     }
 
     /* Updates everything in the Arena, advancing the state of the game by
      * one game tick. */
     update() {
         // TODO - enemies move towards player and try to attack, what else?
+
+        /* PLAYER MOVEMENT */
+        // TODO: bounds check is commented out since there is an error
+        if (keyIsDown(UP_ARROW)) {
+            //const newBox = new Box(this.getPlayer().box.x, this.getPlayer().box.y - this.getPlayer().speed, this.getPlayer().box.width, this.getPlayer().box.height);
+            //if (this.isValidBoxLocation(newBox)) {
+                this.getPlayer().move("up");
+            //}
+        }
+        if (keyIsDown(DOWN_ARROW)) {
+            //const newBox = new Box(this.getPlayer().box.x, this.getPlayer().box.y + this.getPlayer().speed, this.getPlayer().box.width, this.getPlayer().box.height);
+            //if (this.isValidBoxLocation(newBox)) {
+                this.getPlayer().move("down");
+            //}
+        }
+        if (keyIsDown(LEFT_ARROW)) {
+            //const newBox = new Box(getPlayer().box.x - this.getPlayer().speed, getPlayer().box.y, getPlayer().box.width, getPlayer().box.height);
+            //if (this.isValidBoxLocation(newBox)) {
+                this.getPlayer().move("left");
+            //}
+        }
+        if (keyIsDown(RIGHT_ARROW)) {
+            //const newBox = new Box(getPlayer().box.x + this.getPlayer().speed, getPlayer().box.y, getPlayer().box.width, getPlayer().box.height);
+            //if (this.isValidBoxLocation(newBox)) {
+                this.getPlayer().move("right");
+            //}
+        }
+        /* END PLAYER MOVEMENT */
+
+        /* Wave updates when enemies == 0 */
+        if (this.characters.length == 1) {
+            //this.nextWave(); // enemies don't spawn yet which causes a bug
+        }
+
     }
 
     /* Draws the map and characters onto the canvas. */
     draw() {
+        this.update();
         image(this.map.bgImage, 0, 0, this.width, this.height);
         
         // Currently errors until Player/Enemy written TODO
-        //this.characters.forEach(character => character.draw());
+        this.characters.forEach(character => character.draw());
     }
 
     /* Scales this.map.info by the passed factors. */
