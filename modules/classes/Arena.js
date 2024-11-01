@@ -88,7 +88,7 @@ class Arena {
    * one game tick. */
   update() {
     /* PLAYER MOVEMENT */
-    // TODO: bounds check is commented out since there is an error
+    // TODO move this all to character/player and refactor
     if (keyIsDown(UP_ARROW)) {
       const newBox = new Box(this.getPlayer().box.x, this.getPlayer().box.y - this.getPlayer().speed, this.getPlayer().box.width, this.getPlayer().box.height);
       if (this.isValidBoxLocation(newBox)) {
@@ -146,7 +146,6 @@ class Arena {
 
   /* Draws the map and characters onto the canvas. */
   draw() {
-    this.update();
     image(this.map.bgImage, 0, 0, this.width, this.height);
     this.characters.forEach(character => character.draw());
   }
