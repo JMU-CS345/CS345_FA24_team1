@@ -27,6 +27,10 @@ class Player extends Character {
     this.box.y = this.location.y;
   }
 
+  draw() {
+    image(this.sprite, this.location.x, this.location.y, this.box.width, this.box.height); // is positioning right, are the spawns wrong?
+  }
+
   attack(target) {
     if (target && target.takeDamage) {
       target.takeDamage(); // Deal damage to the target
