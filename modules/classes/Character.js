@@ -39,11 +39,14 @@ class Character {
 	 *	@param loc Location vector to move to
 	 */
 	move(loc) {
-		if (this.arena.isValidLocation(loc)) {
+		const newBox = new Box(
+			loc.x, loc.y,
+			this.box.width, this.box.height
+		);
+		if (this.arena.isValidBoxLocation(newBox)) {
 			// clone so calling class can't modify location after return
 			this.location = loc.clone();
-			this.box.x = this.location.x;
-			this.box.y = this.location.y;
+			this.box = newBox;
 		}
 	}
 
@@ -83,6 +86,14 @@ class Character {
 	*	must be implemented in subclasses.
 	*/
 	attack() {
+		throw new Error("This method should be implemented within the Player/Enemy subclasses.");
+	}
+
+	/*
+	*	Abstract update method for updating information about this Character,
+	*	must be implemented in subclasses.
+	*/
+	update() {
 		throw new Error("This method should be implemented within the Player/Enemy subclasses.");
 	}
 
