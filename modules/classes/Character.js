@@ -24,6 +24,7 @@ class Character {
 		this.fireRate = fireRate;
 		this.damage = damage;
 		this.alive = true;
+		this.facing = Direction.LEFT;
 	}
 
 	/**
@@ -44,6 +45,9 @@ class Character {
 			this.box.width, this.box.height
 		);
 		if (this.arena.isValidBoxLocation(newBox)) {
+			// Update direction facing
+			this.facing = Direction.primaryDirectionChange(this.location, loc);
+
 			// clone so calling class can't modify location after return
 			this.location = loc.clone();
 			this.box = newBox;
