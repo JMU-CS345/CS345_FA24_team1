@@ -1,62 +1,69 @@
 class Weapon {
+    /* Constructs a Weapon object from the passed weapon type object and owning
+     * character object. */
+    constructor(wtype, owner) {
+        this.wtype = wtype;
+        this.owner = owner;
 
-    constructor (weapon, damage, fireRate, sprite, player) {
-        this.weapon = weapon; // Weapon
-        this.damage = damage; // Damage dealt by the weapon (double)
-        this.fireRate = fireRate; // Hits per second (double)
-        this.sprite = sprite; // The sprite for the weapon
-        this.player = player;
-        this.lastFireTime = 0; // Timestamp of the last fire action (long)
+        // Instance-specific weapon info - last fire time + projectiles
+        // For melee-only weapons, projectiles will always be empty
+        // Otherwise, each element is of form {vel: <Vector2D>, pos: <Vector2D>}
+        this.lastFireTime = -1;
+        this.projectiles = []
     }
-
-    fire () {
-        const currentTime = Date.now();
+    
+    /* Tries to fire this weapon. Fails if not enough time has elapsed since
+     * the last firing of the weapon. */
+    fire() {
+        const currentTime = Date.now(); // timestamp in ms
         const timeSinceLastFire = currentTime - this.lastFireTime;
 
-        // Check if the weapon can fire again based on fire rate
-        if (timeSinceLastFire >= (1000 / this.fireRate)) {
-            this.lastFireTime = currentTime; // Update last fire time
+        // Ensure the weapon can fire again based on fire rate
+        if (timeSinceLastFire < (1000 / this.wtype.firerate)) return;
 
-        //further implementation of fire
+        this.lastFireTime = currentTime; // Update last fire time
+
+        // Register damage to nearby enemies if melee
+        if (this.wtype.hasmelee) {
+            // Damage is dealt to any character in the owning character's
+            // hitbox, extended out meleerange pixels in the direction
+            // that the owner is facing.
+
+            // Owner's box -> clone -> extend width/height in direction
+            //  -> move back x/y if facing left or up
+            let weaponbox = this.owner.box.clone();
+            let movement = new Vector2D(0, 0).fromPolar(
+                Direction.radians(this.owner.facing), this.wtype.meleerange
+            );
+            weaponbox.width += movement.x;
+            weaponbox.height += movement.y;
+            if (this.owner.facing == Direction.LEFT) weaponbox.x -= movement.x;
+            if (this.owner.facing == Direction.UP) weaponbox.y -= movement.y;
+
+            // Hit all characters that intersect weaponbox
+            this.owner.arena.characters.forEach((character) => {
+                // Don't hit characters of the same type (Player/Enemy)
+                if ((this.owner instanceof Enemy)
+                        == (character instanceof Enemy)) return;
+
+                if (character.checkHit(weaponbox))
+                    character.takeDamage(this.wtype.damage);
+            });
+        }
+
+        // Create projectiles if ranged
+        if (this.wtype.hasranged) {
+            // TODO
         }
     }
 
-    switch_Weapon(newWeapon, newWeaponSprite) {
-        //switches weapon equipped
-        this.weapon = newWeapon;
-        change_sprite(newWeaponSprite);
-        draw();
+    /* Updates the movement of any projectiles created by this Weapon. */
+    update() {
+        // TODO move projectiles
     }
 
-    change_sprite(newWeaponSprite) {
-        //can be called by player if the player changes direction or if player switches weapons
-        this.sprite = newWeaponSprite;
-    }
-
-    get_sprite() {
-        return this.sprite;
-    }
-
-    get_current_weapon() {
-        return this.weapon;
-    }
-
-    get_damage() {
-        return this.damage;
-    }
-
-    get_type() {
-        return this.type;
-    }
-
-    get_fireRate() {
-        return this.fireRate;
-    }
-
+    /* Draws any additional effects or projectiles made by this Weapon. */
     draw() {
-        //draws the sprite for the current weapon
-        //would need to call the current players location
-        //image(sprite, player.location.x, player.location.y)
+        // TODO projectile drawing
     }
-
 }
