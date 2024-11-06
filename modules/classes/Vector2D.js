@@ -80,6 +80,17 @@ class Vector2D {
     clone() {
         return new Vector2D(this.x, this.y);
     }
+
+    /**
+     * Returns the Euclidean distance of this vector and another vector.
+     * @param {Vector2D} otherVector 
+     */
+    getDistance(otherVector) {
+        const dx = this.x - otherVector.x;
+        const dy = this.y - otherVector.y;
+        return Math.sqrt((dx * dx) + (dy * dy));
+    }
+
 }
 
 

@@ -2,6 +2,7 @@ class Enemy extends Character {
   constructor(arena, vector, health, sprite, box, speed, fireRate, damage) {
     super(arena, vector, health, sprite, box, speed, fireRate, damage);
     this.cooldown = false;
+    this.alive = true;
   }
 
   /**
@@ -12,6 +13,11 @@ class Enemy extends Character {
     // Get the player's position
     const player = this.arena.getPlayer();
     const playerBox = player.box;
+
+    // If enemy is dead do nothing.
+    if (!this.alive) {
+      return
+    }
 
     // Simple logic to move towards the player
     // Only move if not already on top of player
@@ -28,6 +34,11 @@ class Enemy extends Character {
         this.move(new Vector2D(0, -this.speed).add(this.location)); // up
       }
     }
+
+    // Attacks when enemies box intersects the players box
+    if (this.box.intersects(playerBox)) {
+      this.attack();
+    }
   }
 
   /**
@@ -41,16 +52,19 @@ class Enemy extends Character {
    * Attacks when player is within range
    */
   attack() {
-    if (this.cooldown == false) {
-      if (this.box.checkHit(arena.getPlayer().box)) {
-        arena.getPlayer().takeDamage(this.damage);
-        this.cooldown = true;
-      }
+    const player = arena.getPlayer();
+    if (!this.cooldown && player.alive) {
+      setTimeout(() => {  // delay before zombie attacks
+        if (this.box.intersects(player.box)) {
+          player.takeDamage(this.damage);
+          this.cooldown = true;
+        }
+      }, this.fireRate * 200);
+      setTimeout(() => {  // remove cooldown after fireRate passes
+        this.cooldown = false;
+      }, this.fireRate * 1000);
     } else {
       return;
     }
-    setTimeout(() => {  // remove cooldown after fireRate passes
-    }, this.fireRate * 1000);
-    this.cooldown = false;
   }
 }

@@ -24,6 +24,7 @@ function setup() {
     ui = new UI(arena);
     createCanvas(windowWidth, windowHeight);
     arena.setSize(windowWidth, windowHeight);
+    arena.nextWave();
 }
 
 function windowResized() {

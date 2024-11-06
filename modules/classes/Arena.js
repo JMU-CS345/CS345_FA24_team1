@@ -16,7 +16,7 @@ class Arena {
       new Box(
         this.map.info.playerSpawn.x, this.map.info.playerSpawn.y,
         assets.playersprite.width, assets.playersprite.height
-      ), 1, 1, 1
+      ), 5, 1, 1
     )];
     this.playerAlive = true;
     this.enemies = assets.enemies.enemies;
