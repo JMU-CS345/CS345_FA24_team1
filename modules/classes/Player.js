@@ -1,6 +1,6 @@
 class Player extends Character {
-  constructor(arena, vector, health, sprite, box, speed, fireRate, damage) {
-    super(arena, vector, health, sprite, box, speed, fireRate, damage); // Call the parent constructor
+  constructor(arena, vector, health, sprite, box, speed) {
+    super(arena, vector, health, sprite, box, speed); // Call the parent constructor
   }
 
   /**

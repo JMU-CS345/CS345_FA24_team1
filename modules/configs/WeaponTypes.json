@@ -1,11 +1,19 @@
 {
-    "WeaponTypes" : [
+    "weapons" : [
         {
-            "weapon": "katana",
-            "damage": "50",
-            "fireRate": 5,
-            "sprite": null
+            "name": "fists",
+            "damage": 2,
+            "firerate": 1,
+            "isauto": false,
+            "hasmelee": true,
+            "meleerange": 30
+        }, {
+            "name": "katana",
+            "damage": 10,
+            "firerate": 2,
+            "isauto": true,
+            "hasmelee": true,
+            "meleerange": 50
         }
-        
     ]
 }

@@ -1,6 +1,6 @@
 class Enemy extends Character {
-  constructor(arena, vector, health, sprite, box, speed, fireRate, damage) {
-    super(arena, vector, health, sprite, box, speed, fireRate, damage);
+  constructor(arena, vector, health, sprite, box, speed) {
+    super(arena, vector, health, sprite, box, speed);
     this.cooldown = false;
   }
 
@@ -41,6 +41,7 @@ class Enemy extends Character {
    * Attacks when player is within range
    */
   attack() {
+    /*
     if (this.cooldown == false) {
       if (this.box.checkHit(arena.getPlayer().box)) {
         arena.getPlayer().takeDamage(this.damage);
@@ -52,5 +53,6 @@ class Enemy extends Character {
     setTimeout(() => {  // remove cooldown after fireRate passes
     }, this.fireRate * 1000);
     this.cooldown = false;
+    */
   }
 }
