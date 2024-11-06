@@ -11,18 +11,19 @@ class Character {
 	* @param sprite The sprite file for the Character
 	* @param box The Box for the Character
 	* @param speed The movement speed for the Character
-	* @param fireRate The cooldown rate for the Characters attack (how long it must wait before the next attack)
-	* @param damage The damage done if an attack hits another Character
 	*/
-	constructor(arena, vector, health, sprite, box, speed, fireRate, damage) {
+	constructor(arena, vector, health, sprite, box, speed, weapons, startWID) {
 		this.arena = arena;
 		this.location = vector;
 		this.health = health;
 		this.sprite = sprite;
 		this.box = box;
 		this.speed = speed;
-		this.fireRate = fireRate;
-		this.damage = damage;
+
+		// Characters start off with no weapons
+		this.weapons = [];
+		this.curWID = -1; // Current weapon index
+
 		this.alive = true;
 		this.facing = Direction.LEFT;
 	}
@@ -119,6 +120,39 @@ class Character {
 		return this.box.intersects(hitBox);
 	}
 
+	/*
+	*	Returns the current weapon held by this Character.
+	*
+	*	@returns the current Weapon object that this Character has equipped,
+	*	         or null if this Character is not holding a weapon.
+	*/
+	currentWeapon() {
+		return (this.curWID == -1) ? null : this.weapons[this.curWID];
+	}
+
+	/*
+	*	Switches to the weapon at the given index. Pass -1 to unequip all.
+	*
+	*	@param wid the index of the weapon (in this.weapons) to equip
+	*	@returns true if switch successful, false on invalid index
+	*/
+	switchWeapon(wid) {
+		if ((wid < -1) || (wid >= this.weapons.length)) return false;
+		this.curWID = wid;
+		return true;
+	}
+
+	/*
+	*	Adds the passed Weapon object to the list of weapons owned by this
+    *	Character. If equip is true, the weapon is immediately equipped.
+	*
+	*	@param weapon the Weapon to add
+	*	@param equip whether or not to equip the weapon immediately
+	*/
+	addWeapon(weapon, equip) {
+		this.weapons.push(weapon);
+		if (equip) this.curWID = this.weapons.length - 1;
+	}
 
 	/*
 	 *	Scales this Character by the passed factors.
