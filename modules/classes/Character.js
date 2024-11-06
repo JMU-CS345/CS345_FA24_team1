@@ -60,10 +60,12 @@ class Character {
 	 */
 	takeDamage() {
 		if (this.health <= 0) {
+			this.alive = false;
 			return;
 		}
 		this.health--;
 		if (this.health <= 0) {
+			this.health = 0;
 			this.alive = false;
 		}
 	}
@@ -75,14 +77,13 @@ class Character {
 	 */
 	takeDamage(damage) {
 		if (this.health == 0) {
-			console.log("player dead");
+			this.alive = false;
 			return;
 		}
 		this.health -= damage;	// health could go negative
 		if (this.health <= 0) {
-			this.health = 0;			// if negative or 0, set it to 0 and change state to dead
+			this.health = 0;	// if negative or 0, set it to 0 and change state to dead
 			this.alive = false;
-			console.log("player dead");
 		}
 	}
 

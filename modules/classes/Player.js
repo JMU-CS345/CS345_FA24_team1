@@ -43,37 +43,25 @@ class Player extends Character {
     if (this.cooldown) {
       return null;
     }
-    
-    let closestEnemy = null;
-    let closestDistance = Infinity;
-
-    for (let i = 1; i < arena.characters.length; i++) {
-      const enemy = arena.characters[i];
-
-      if (enemy instanceof Enemy && enemy.alive) {
-        const distance = this.location.getDistance(enemy.location)
-
-        console.log(distance)
-        if (this.box.intersects(enemy.box) && this.isFacingEnemy() && distance < closestDistance) {
-          closestDistance = distance;
-          closestEnemy = enemy;
-        }
-      }
-    }
+    super.currentWeapon().fire(); 
   }
 
   isFacingEnemy(enemyVector) {
     const dx = enemyVector.x - this.location.x;
     const dy = enemyVector.y - this.location.y;
     
-    switch(this.lastDirection) {
-      case "up":
+    switch(super.facing) {
+      case "UP":
+        console.log(dx, dy)
         return;
-      case "down":
+      case "DOWN":
+        console.log(dx, dy)
         return;
-      case "left":
+      case "LEFT":
+        console.log(dx, dy)
         return;
-      case "right":
+      case "RIGHT":
+        console.log(dx, dy)
         return;
       default:
         return false;

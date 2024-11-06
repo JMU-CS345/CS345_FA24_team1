@@ -15,6 +15,9 @@ class Weapon {
     /* Tries to fire this weapon. Fails if not enough time has elapsed since
      * the last firing of the weapon. */
     fire() {
+        // Don't fire if dead
+        if (!this.owner.alive) return;
+
         const currentTime = Date.now(); // timestamp in ms
         const timeSinceLastFire = currentTime - this.lastFireTime;
 
@@ -47,6 +50,7 @@ class Weapon {
                         == (character instanceof Enemy)) return;
 
                 if (character.checkHit(weaponbox))
+                    console.log(`character ${character} took ${this.wtype.damage} damage and is ${character.alive}`);
                     character.takeDamage(this.wtype.damage);
             });
         }
