@@ -1,37 +1,38 @@
 class Enemy extends Character {
-  constructor(arena, vector, health, sprite, box, speed, fireRate, damage) {
-    super(arena, vector, health, sprite, box, speed, fireRate, damage);
+  constructor(arena, vector, health, sprite, box, speed) {
+    super(arena, vector, health, sprite, box, speed);
     this.cooldown = false;
-    this.alive = true;
   }
 
   /**
    * Updates enemy each tick.
    */
   update() {
-    // Move towards player. TODO: pathfind around obstacles in way
-    // Get the player's position
-    const player = this.arena.getPlayer();
-    const playerBox = player.box;
 
     // If enemy is dead do nothing.
     if (!this.alive) {
       return
     }
 
+    // Move towards player. TODO: pathfind around obstacles in way
+    // Get the player's position
+    const player = this.arena.getPlayer();
+    const playerBox = player.box;
+
+
     // Simple logic to move towards the player
     // Only move if not already on top of player
     if (!this.box.intersects(playerBox)) {
       if (this.box.x < playerBox.x) {
-        this.move(new Vector2D(this.speed, 0).add(this.location)); // right
+        super.move(new Vector2D(this.speed, 0).add(this.location)); // right
       } else if (this.box.x > playerBox.x) {
-        this.move(new Vector2D(-this.speed, 0).add(this.location)); // left
+        super.move(new Vector2D(-this.speed, 0).add(this.location)); // left
       }
 
       if (this.box.y < playerBox.y) {
-        this.move(new Vector2D(0, this.speed).add(this.location)); // down
+        super.move(new Vector2D(0, this.speed).add(this.location)); // down
       } else if (this.box.y > playerBox.y) {
-        this.move(new Vector2D(0, -this.speed).add(this.location)); // up
+        super.move(new Vector2D(0, -this.speed).add(this.location)); // up
       }
     }
 
@@ -49,22 +50,12 @@ class Enemy extends Character {
   }
 
   /**
-   * Attacks when player is within range
+   * Attacks player
    */
   attack() {
     const player = arena.getPlayer();
-    if (!this.cooldown && player.alive) {
-      setTimeout(() => {  // delay before zombie attacks
-        if (this.box.intersects(player.box)) {
-          player.takeDamage(this.damage);
-          this.cooldown = true;
-        }
-      }, this.fireRate * 200);
-      setTimeout(() => {  // remove cooldown after fireRate passes
-        this.cooldown = false;
-      }, this.fireRate * 1000);
-    } else {
-      return;
+    if (arena.getPlayer().alive) {
+      super.currentWeapon().fire();
     }
   }
 }

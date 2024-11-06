@@ -13,6 +13,7 @@ function preload() {
                     enemy.sprite = loadImage(enemy.sprite));
         }),
         waves: loadJSON("/modules/configs/waves.json"),
+        weapons: loadJSON("/modules/configs/WeaponTypes.json"),
         mapbg: loadImage("/assets/maps/map0-debug.png"),
         mapinfo: loadJSON("/assets/maps/map0-debug-bounds.json"),
         playersprite: loadImage("/assets/characters/player-debug.png")

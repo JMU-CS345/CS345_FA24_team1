@@ -5,8 +5,7 @@
             "health": 50, 
             "sprite": "/assets/characters/enemy-debug.png", 
             "speed": 3,
-            "fireRate": 5, 
-            "damage": 5
+            "weapon": "fists"
         }
     ]
 }

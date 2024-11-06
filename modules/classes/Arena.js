@@ -9,15 +9,21 @@ class Arena {
     this.width = this.map.bgImage.width;
     this.height = this.map.bgImage.height;
 
+    // Weapons
+    this.weapons = assets.weapons.weapons;
+
     // Characters (player+enemies)
+    // Create player, add and equip first weapon
     this.characters = [new Player(
       this, new Vector2D(0,0).fromOther(this.map.info.playerSpawn),
       1, assets.playersprite,
       new Box(
         this.map.info.playerSpawn.x, this.map.info.playerSpawn.y,
         assets.playersprite.width, assets.playersprite.height
-      ), 5, 1, 1
+      ), 5
     )];
+    this.getPlayer().addWeapon(new Weapon(this.weapons.find(
+            (wtype) => wtype.name == "katana"), this.getPlayer()), true);
     this.playerAlive = true;
     this.enemies = assets.enemies.enemies;
 
@@ -86,7 +92,7 @@ class Arena {
       const enemy = waveinfo.enemies[this.nextSpawnID1],
         enemyinfo = this.enemies.find((eobj) => eobj.name == enemy.name);
 
-      this.characters.push(new Enemy(
+      const enemyobj = new Enemy(
         this,                                   // arena
         new Vector2D(0,0).fromOther(this.map.info.enemySpawn), // spawn location
         enemyinfo.health,                       // starting health
@@ -96,9 +102,14 @@ class Arena {
           enemyinfo.sprite.width, enemyinfo.sprite.height
         ),
         enemyinfo.speed,                        // movement speed
-        enemyinfo.fireRate,                     // fire rate
-        enemyinfo.damage                        // damage
-      ));
+      );
+    
+      // Equip enemy with weapon
+      enemyobj.addWeapon(new Weapon(this.weapons.find(
+            (wtype) => wtype.name == enemyinfo.weapon), enemyobj), true);
+
+      // Add to characters
+      this.characters.push(enemyobj);
 
       // Next enemy if at count; quit spawning if done
       if ((++this.nextSpawnID2) == enemy.count) {
@@ -119,6 +130,13 @@ class Arena {
   /* Updates everything in the Arena, advancing the state of the game by
    * one game tick. */
   update() {
+
+    // Game freezes when player dies (everything stops moving)
+    if (!this.getPlayer().alive) {
+      this.stopTimer();
+      return;
+    }
+
     // Update characters
     this.characters.forEach(character => character.update());
 

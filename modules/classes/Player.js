@@ -1,14 +1,13 @@
 class Player extends Character {
-  constructor(arena, vector, health, sprite, box, speed, fireRate, damage) {
-    super(arena, vector, health, sprite, box, speed, fireRate, damage); // Call the parent constructor
-    this.cooldown = false;
-    this.lastDirection = "right"; // right by default, assumes player spawns facing left
+  constructor(arena, vector, health, sprite, box, speed) {
+    super(arena, vector, health, sprite, box, speed); // Call the parent constructor
   }
 
   /**
    * Update this Player each tick. Handle movement from user input.
    */
   update() {
+
     // Player doesn't update when dead
     if (!this.alive) {
       arena.stopTimer();  // timer stops when player dies (game over)
@@ -18,19 +17,15 @@ class Player extends Character {
     // Movement
     if (keyIsDown(UP_ARROW)) {
       super.move(new Vector2D(0, -this.speed).add(this.location));
-      this.lastDirection = "up";
     }
     if (keyIsDown(DOWN_ARROW)) {
       super.move(new Vector2D(0, this.speed).add(this.location));
-      this.lastDirection = "down";
     }
     if (keyIsDown(LEFT_ARROW)) {
       super.move(new Vector2D(-this.speed, 0).add(this.location));
-      this.lastDirection = "left";
     }
     if (keyIsDown(RIGHT_ARROW)) {
       super.move(new Vector2D(this.speed, 0).add(this.location));
-      this.lastDirection = "right";
     }
     if (keyIsDown(32)) {
       this.attack();
