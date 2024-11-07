@@ -1,18 +1,43 @@
 class Player extends Character {
   constructor(arena, vector, health, sprite, box, speed) {
     super(arena, vector, health, sprite, box, speed); // Call the parent constructor
-    this.idle = true;
+    this.state = "idle";
     this.currentFrame = 0;
-    this.frameCount = 4;
-    this.frameDelay = 5;
+    this.movingFrameCount = 2;
+    this.attackingFrameCount = 2;
+    this.frameDelay = 12;
     this.frameTimer = 0;
+
+    this.animations = {
+      // movement for default player, make new ones for any other sprites added to sheet
+      defaultIdle: {
+        0: {0:0},
+        1: {64:0},
+        2: {128:0},
+        3: {192:0}
+      },
+      defaultMoving: {
+        0: {32:0, 0:32}, // l attack: 32:32
+        1: {96:0, 32:64}, // r attack: 96:32
+        2: {160:0, 128:32}, // u attack: 160:32
+        3: {224:0, 192:32} // d attack: 224:32
+      },
+      defaultAttack: {
+        0: {0:0, 32:32},
+        1: {64:0, 96:32},
+        2: {128:0, 160:32},
+        3: {192:0, 224:32}
+      }
+    };
+
+    // default facing down from spawn
+    this.facing = Direction.DOWN;
   }
 
   /**
    * Update this Player each tick. Handle movement from user input.
    */
   update() {
-
     // Player doesn't update when dead
     if (!this.alive) {
       arena.stopTimer();  // timer stops when player dies (game over)
@@ -20,49 +45,70 @@ class Player extends Character {
     }
 
     if (!keyIsPressed) {
-      this.idle = true;
+      if (this.state !== "idle") {
+        this.state = "idle";
+      }
+      this.currentFrame = 0;
+      return;
     }
 
     // Movement
     if (keyIsDown(UP_ARROW)) {
-      this.idle = false;
-      // draw sprite
+      this.state = "moving";
       super.move(new Vector2D(0, -this.speed).add(this.location));
     } else if (keyIsDown(DOWN_ARROW)) {
-      this.idle = false;
+      this.state = "moving";
       // draw sprite
       super.move(new Vector2D(0, this.speed).add(this.location));
     } else if (keyIsDown(LEFT_ARROW)) {
-      this.idle = false;
+      this.state = "moving";
       // draw sprite
       super.move(new Vector2D(-this.speed, 0).add(this.location));
     } else if (keyIsDown(RIGHT_ARROW)) {
-      this.idle = false;
+      this.state = "moving";
       // draw sprite
       super.move(new Vector2D(this.speed, 0).add(this.location));
     }
     if (keyIsDown(32)) {
+      this.state = "attacking";
       this.attack();
     }
 
-    this.frameTimer++;
-    if (this.frameTimer >= this.frameDelay) {
-      this.currentFrame = (this.currentFrame + 1) % this.frameCount;
-      this.frameTimer = 0;
+    // Sprite movement animation frames
+    if (this.state === "moving" || this.state === "attacking") {
+      this.frameTimer++;
+      if (this.frameTimer >= this.frameDelay) {
+        this.currentFrame++;
+        if (this.currentFrame >= 2) {
+          this.currentFrame = 0;
+        }
+        this.frameTimer = 0;
+      }
     }
   }
 
   draw() {
+
     let sx, sy;
+    const sw = 32;
+    const sh = 32;
 
-    const sw = this.box.width;
-    const sh = this.box.height;
-
-    if (this.idel) {
-      sx = 0;
+    if (this.state === "idle") {
+      sx = Object.keys(this.animations.defaultIdle[this.facing])[0];
+      sy = Object.values(this.animations.defaultIdle[this.facing])[0];
+    } else if (this.state === "moving") {
+      console.log('Current X:' + Object.keys(this.animations.defaultMoving[this.facing])[this.currentFrame]);
+      console.log(`Current Y:` + Object.values(this.animations.defaultMoving[this.facing])[this.currentFrame]);
+      sx = Object.keys(this.animations.defaultMoving[this.facing])[this.currentFrame];
+      sy = Object.values(this.animations.defaultMoving[this.facing])[this.currentFrame];
+    } else if (this.state === "attacking") {
+      console.log(this.currentFrame)
+      sx = Object.keys(this.animations.defaultAttack[this.facing])[this.currentFrame];
+      sy = Object.values(this.animations.defaultAttack[this.facing])[this.currentFrame];
     }
-    image(this.sprite, this.location.x, this.location.y, this.box.width, this.box.height);
-  }
+    // using fixed width and height for easier visibility, sprite is really small
+    image(this.sprite, this.location.x, this.location.y, 96, 96, sx, sy, sw, sh);
+  };
 
   /**
    *  Attacks enemies if player is facing their direction & in their box
@@ -73,27 +119,4 @@ class Player extends Character {
     }
     super.currentWeapon().fire(); 
   }
-
-  isFacingEnemy(enemyVector) {
-    const dx = enemyVector.x - this.location.x;
-    const dy = enemyVector.y - this.location.y;
-    
-    switch(super.facing) {
-      case "UP":
-        console.log(dx, dy)
-        return;
-      case "DOWN":
-        console.log(dx, dy)
-        return;
-      case "LEFT":
-        console.log(dx, dy)
-        return;
-      case "RIGHT":
-        console.log(dx, dy)
-        return;
-      default:
-        return false;
-    }
-  }
-
 }

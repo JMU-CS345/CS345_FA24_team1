@@ -19,7 +19,7 @@ class Arena {
       1, assets.playersprite,
       new Box(
         this.map.info.playerSpawn.x, this.map.info.playerSpawn.y,
-        assets.playersprite.width, assets.playersprite.height
+        32, 32
       ), 5
     )];
     this.getPlayer().addWeapon(new Weapon(this.weapons.find(
