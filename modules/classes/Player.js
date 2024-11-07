@@ -3,8 +3,6 @@ class Player extends Character {
     super(arena, vector, health, sprite, box, speed); // Call the parent constructor
     this.state = "idle";
     this.currentFrame = 0;
-    this.movingFrameCount = 2;
-    this.attackingFrameCount = 2;
     this.frameDelay = 12;
     this.frameTimer = 0;
 
@@ -17,10 +15,10 @@ class Player extends Character {
         3: {192:0}
       },
       defaultMoving: {
-        0: {32:0, 0:32}, // l attack: 32:32
-        1: {96:0, 32:64}, // r attack: 96:32
-        2: {160:0, 128:32}, // u attack: 160:32
-        3: {224:0, 192:32} // d attack: 224:32
+        0: {32:0, 0:32},  
+        1: {96:0, 64:32},
+        2: {160:0, 128:32},
+        3: {224:0, 192:32}
       },
       defaultAttack: {
         0: {0:0, 32:32},
@@ -97,12 +95,9 @@ class Player extends Character {
       sx = Object.keys(this.animations.defaultIdle[this.facing])[0];
       sy = Object.values(this.animations.defaultIdle[this.facing])[0];
     } else if (this.state === "moving") {
-      console.log('Current X:' + Object.keys(this.animations.defaultMoving[this.facing])[this.currentFrame]);
-      console.log(`Current Y:` + Object.values(this.animations.defaultMoving[this.facing])[this.currentFrame]);
       sx = Object.keys(this.animations.defaultMoving[this.facing])[this.currentFrame];
       sy = Object.values(this.animations.defaultMoving[this.facing])[this.currentFrame];
     } else if (this.state === "attacking") {
-      console.log(this.currentFrame)
       sx = Object.keys(this.animations.defaultAttack[this.facing])[this.currentFrame];
       sy = Object.values(this.animations.defaultAttack[this.facing])[this.currentFrame];
     }
