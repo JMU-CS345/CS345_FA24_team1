@@ -65,7 +65,6 @@ class Character {
 		}
 		this.health--;
 		if (this.health <= 0) {
-			this.health = 0;
 			this.alive = false;
 		}
 	}

@@ -36,6 +36,5 @@ function windowResized() {
 
 function draw() {
     arena.update();
-    console.log(arena.characters);
     ui.draw();
 }

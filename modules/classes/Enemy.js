@@ -1,7 +1,6 @@
 class Enemy extends Character {
   constructor(arena, vector, health, sprite, box, speed) {
     super(arena, vector, health, sprite, box, speed);
-    this.cooldown = false;
   }
 
   /**
@@ -16,7 +15,6 @@ class Enemy extends Character {
       // Get the player's position
       const player = this.arena.getPlayer();
       const playerBox = player.box;
-
 
       // Simple logic to move towards the player
       // Only move if not already on top of player
