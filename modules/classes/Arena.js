@@ -15,7 +15,7 @@ class Arena {
     // Characters (player+enemies)
     // Create player, add and equip first weapon
     this.characters = [new Player(
-      this, new Vector2D(0,0).fromOther(this.map.info.playerSpawn),
+      this, new Vector2D(0, 0).fromOther(this.map.info.playerSpawn),
       1, assets.playersprite,
       new Box(
         this.map.info.playerSpawn.x, this.map.info.playerSpawn.y,
@@ -23,7 +23,7 @@ class Arena {
       ), 1
     )];
     this.getPlayer().addWeapon(new Weapon(this.weapons.find(
-            (wtype) => wtype.name == "katana"), this.getPlayer()), true);
+      (wtype) => wtype.name == "katana"), this.getPlayer()), true);
     this.playerAlive = true;
     this.enemies = assets.enemies.enemies;
 
@@ -33,13 +33,13 @@ class Arena {
     this.spawnTimer = null;
     this.nextSpawnID1 = 0; // index of waves.enemies
     this.nextSpawnID2 = 0; // spawn n'th enemy of that index
-      
+
     // Timer
     // TODO this is a really inefficient implementation - should probably use
     // Unix timestamps instead of interval timers
     this.time = 0;
     this.timerReference = null;
-        
+
     // Putting startTime here if we want the timer to go on from start to game
     // over. Will need to be moved if we want the timer to reset every time a
     // new wave has started 
@@ -81,21 +81,31 @@ class Arena {
    * ready for a next wave or not, and assumes that there is a next wave. */
   nextWave() {
     // Advance wave count and grab wave info
-    const waveinfo = this.waves[this.wave];
+
     this.wave++;
+    const waveinfo = this.waves[this.wave];
+
+    // Multipliers for health and damage based on wave number
+    const healthMultiplier = 1 + this.wave * 0.1; // 10% increase per wave
+    //const damageMultiplier = 1 + this.wave * 0.05; // 5% increase per wave
+
 
     // Spawn one enemy per second until queue empty
     this.nextSpawnID1 = 0;
     this.nextSpawnID2 = 0;
     this.spawnTimer = setInterval(() => {
-      // Spawn
+      // Spawn enemies according to wave information 
+
       const enemy = waveinfo.enemies[this.nextSpawnID1],
         enemyinfo = this.enemies.find((eobj) => eobj.name == enemy.name);
 
+      // Scale heath 
+        const scaledHealth = enemyinfo.health * healthMultiplier;
+
       const enemyobj = new Enemy(
         this,                                   // arena
-        new Vector2D(0,0).fromOther(this.map.info.enemySpawn), // spawn location
-        enemyinfo.health,                       // starting health
+        new Vector2D(0, 0).fromOther(this.map.info.enemySpawn), // spawn location
+        scaledHealth,                           // Apply scaled health
         enemyinfo.sprite,                       // sprite image
         new Box(                                // hitbox
           this.map.info.enemySpawn.x, this.map.info.enemySpawn.y,
@@ -103,10 +113,10 @@ class Arena {
         ),
         enemyinfo.speed,                        // movement speed
       );
-    
+
       // Equip enemy with weapon
       enemyobj.addWeapon(new Weapon(this.weapons.find(
-            (wtype) => wtype.name == enemyinfo.weapon), enemyobj), true);
+        (wtype) => wtype.name == enemyinfo.weapon), enemyobj), true);
 
       // Add to characters
       this.characters.push(enemyobj);
