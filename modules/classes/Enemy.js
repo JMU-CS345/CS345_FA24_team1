@@ -1,6 +1,27 @@
 class Enemy extends Character {
   constructor(arena, vector, health, sprite, box, speed) {
     super(arena, vector, health, sprite, box, speed);
+    
+    this.animations = {
+      defaultIdle: {
+        0: {0:0},
+        1: {64:0},
+        2: {128:0},
+        3: {192:0}
+      },
+      defaultMoving: {
+        0: {32:0, 0:32},  
+        1: {96:0, 64:32},
+        2: {160:0, 128:32},
+        3: {224:0, 192:32}
+      },
+      defaultAttacking: {
+        0: {0:0, 32:32},
+        1: {64:0, 96:32},
+        2: {128:0, 160:32},
+        3: {192:0, 224:32}
+      }
+    };
   }
 
   /**
@@ -8,8 +29,6 @@ class Enemy extends Character {
    */
   update() {
 
-    // If enemy is dead do nothing.
-    console.log(`alive: ${this.alive}`);
     if (this.alive) {
       // Move towards player. TODO: pathfind around obstacles in way
       // Get the player's position

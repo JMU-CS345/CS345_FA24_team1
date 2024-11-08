@@ -7,7 +7,6 @@ class Player extends Character {
     this.frameTimer = 0;
 
     this.animations = {
-      // movement for default player, make new ones for any other sprites added to sheet
       defaultIdle: {
         0: {0:0},
         1: {64:0},
@@ -102,7 +101,7 @@ class Player extends Character {
       sy = Object.values(this.animations.defaultAttack[this.facing])[this.currentFrame];
     }
     // using fixed width and height for easier visibility, sprite is really small
-    image(this.sprite, this.location.x, this.location.y, 96, 96, sx, sy, sw, sh);
+    image(this.sprite, this.location.x, this.location.y, this.box.width, this.box.height, sx, sy, sw, sh);
   };
 
   /**
