@@ -26,6 +26,11 @@ class Character {
 
 		this.alive = true;
 		this.facing = Direction.LEFT;
+
+    	this.state = "idle";
+    	this.currentFrame = 0;
+    	this.frameDelay = 12;
+    	this.frameTimer = 0;
 	}
 
 	/**

@@ -19,7 +19,7 @@ class Arena {
       1, assets.playersprite,
       new Box(
         this.map.info.playerSpawn.x, this.map.info.playerSpawn.y,
-        32, 32
+        80, 80
       ), 5
     )];
     this.getPlayer().addWeapon(new Weapon(this.weapons.find(
@@ -99,7 +99,7 @@ class Arena {
         enemyinfo.sprite,                       // sprite image
         new Box(                                // hitbox
           this.map.info.enemySpawn.x, this.map.info.enemySpawn.y,
-          enemyinfo.sprite.width, enemyinfo.sprite.height
+          80, 80
         ),
         enemyinfo.speed,                        // movement speed
       );

@@ -1,7 +1,8 @@
 class Enemy extends Character {
   constructor(arena, vector, health, sprite, box, speed) {
     super(arena, vector, health, sprite, box, speed);
-    
+    this.state = "moving";
+
     this.animations = {
       defaultIdle: {
         0: {0:0},
@@ -20,6 +21,9 @@ class Enemy extends Character {
         1: {64:0, 96:32},
         2: {128:0, 160:32},
         3: {192:0, 224:32}
+      },
+      defaultDead: {
+        0: {0:224}
       }
     };
   }
@@ -38,6 +42,7 @@ class Enemy extends Character {
       // Simple logic to move towards the player
       // Only move if not already on top of player
       if (!this.box.intersects(playerBox)) {
+        this.state = "moving";
         if (this.box.x < playerBox.x) {
           super.move(new Vector2D(this.speed, 0).add(this.location)); // right
         } else if (this.box.x > playerBox.x) {
@@ -56,8 +61,21 @@ class Enemy extends Character {
 
         // timeout to give player a chance to kill enemy
         setTimeout(() => {
+          this.state = "attacking";
           super.currentWeapon().fire();
-        }, super.currentWeapon().wtype.firerate * 5000);
+        }, super.currentWeapon().wtype.firerate * 1000);
+      }
+
+      // Sprite movement animation frames
+      if (this.state === "moving" || this.state === "attacking") {
+        this.frameTimer++;
+        if (this.frameTimer >= this.frameDelay) {
+          this.currentFrame++;
+          if (this.currentFrame >= 2) {
+            this.currentFrame = 0;
+          }
+          this.frameTimer = 0;
+        }
       }
     }
   }
@@ -66,7 +84,25 @@ class Enemy extends Character {
    * Draws enemy onto p5 canvas.
    */
   draw() {
-    image(this.sprite, this.location.x, this.location.y);
+    let sx, sy;
+    let sw = 32;
+    let sh = 32;
+    if (this.state === "moving" ) {
+      sx = Object.keys(this.animations.defaultMoving[this.facing])[this.currentFrame];
+      sy = Object.values(this.animations.defaultMoving[this.facing])[this.currentFrame];
+    } else if (this.state === "attacking") {
+      sx = Object.keys(this.animations.defaultAttacking[this.facing])[this.currentFrame];
+      sy = Object.keys(this.animations.defaultAttacking[this.facing])[this.currentFrame];
+    } else if (this.state === "idle") {
+      sx = Object.keys(this.animations.defaultIdle[this.facing])[0];
+      sy = Object.values(this.animations.defaultIdle[this.facing])[0];
+    }
+    if (!this.alive) {
+      sx = Object.keys(this.animations.defaultDead[0])[0];
+      sy = Object.values(this.animations.defaultDead[0])[0];
+    }
+      
+    image(this.sprite, this.location.x, this.location.y, this.box.width, this.box.height, sx, sy, sw, sh);
   }
 
   /**

@@ -1,10 +1,6 @@
 class Player extends Character {
   constructor(arena, vector, health, sprite, box, speed) {
     super(arena, vector, health, sprite, box, speed); // Call the parent constructor
-    this.state = "idle";
-    this.currentFrame = 0;
-    this.frameDelay = 12;
-    this.frameTimer = 0;
 
     this.animations = {
       defaultIdle: {
