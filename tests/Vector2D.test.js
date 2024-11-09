@@ -11,7 +11,7 @@ describe("Vector2D class", () => {
         expect(vec.y).toBe(-4390);
     });
 
-    test("fromCartesian, fromPolar", () => {
+    test("fromCartesian, fromPolar, fromOther", () => {
         let vec = new Vector2D(123, 456);
     
         vec.fromCartesian(10, 20);
@@ -21,6 +21,12 @@ describe("Vector2D class", () => {
         vec.fromPolar(10, 2);
         expect(vec.x).toBeCloseTo(-4.16146); // 10cos2
         expect(vec.y).toBeCloseTo(9.09297); // 10sin2
+
+        let v2 = new Vector2D(0, 0).fromOther(vec);
+        expect(vec.x).toBeCloseTo(-4.16146); // 10cos2
+        expect(vec.y).toBeCloseTo(9.09297); // 10sin2
+        expect(v2.x).toBeCloseTo(-4.16146); // 10cos2
+        expect(v2.y).toBeCloseTo(9.09297); // 10sin2
     });
 
     test("magnitude, angle, asPolar", () => {
