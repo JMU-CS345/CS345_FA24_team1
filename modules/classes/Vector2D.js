@@ -25,7 +25,6 @@ class Vector2D {
     }
 
     /* Initialize vector from another Vector2D */
-    /* TODO add tests for Vector2D.fromOther() */
     fromOther(other) {
         this.x = other.x;
         this.y = other.y;
