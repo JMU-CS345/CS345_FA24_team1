@@ -1,6 +1,6 @@
 class Enemy extends Character {
-  constructor(arena, vector, health, sprite, box, speed) {
-    super(arena, vector, health, sprite, box, speed);
+  constructor(arena, vector, health, sprite, box, speed, fireRate, damage) {
+    super(arena, vector, health, sprite, box, speed, fireRate, damage);
     this.cooldown = false;
   }
 
@@ -34,14 +34,13 @@ class Enemy extends Character {
    * Draws enemy onto p5 canvas.
    */
   draw() {
-    image(this.sprite, this.location.x, this.location.y);
+    image(this.sprite, this.location.x, this.location.y,20,10);
   }
 
   /**
    * Attacks when player is within range
    */
   attack() {
-    /*
     if (this.cooldown == false) {
       if (this.box.checkHit(arena.getPlayer().box)) {
         arena.getPlayer().takeDamage(this.damage);
@@ -53,6 +52,5 @@ class Enemy extends Character {
     setTimeout(() => {  // remove cooldown after fireRate passes
     }, this.fireRate * 1000);
     this.cooldown = false;
-    */
   }
 }

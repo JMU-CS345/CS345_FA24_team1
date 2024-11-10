@@ -87,7 +87,7 @@ class Arena {
 
     // Multipliers for health and damage based on wave number
     const healthMultiplier = 1 + this.wave * 0.1; // 10% increase per wave
-    //const damageMultiplier = 1 + this.wave * 0.05; // 5% increase per wave
+    const damageMultiplier = 1 + this.wave * 0.05; // 5% increase per wave
 
 
     // Spawn one enemy per second until queue empty
@@ -100,7 +100,7 @@ class Arena {
         enemyinfo = this.enemies.find((eobj) => eobj.name == enemy.name);
 
       // Scale heath 
-        const scaledHealth = enemyinfo.health * healthMultiplier;
+      const scaledHealth = enemyinfo.health * healthMultiplier;
 
       const enemyobj = new Enemy(
         this,                                   // arena
@@ -114,9 +114,11 @@ class Arena {
         enemyinfo.speed,                        // movement speed
       );
 
-      // Equip enemy with weapon
-      enemyobj.addWeapon(new Weapon(this.weapons.find(
-        (wtype) => wtype.name == enemyinfo.weapon), enemyobj), true);
+      // Equip enemy with a weapon and apply damage scaling
+      const weapon = new Weapon(this.weapons.find(
+        (wtype) => wtype.name == enemyinfo.weapon), enemyobj);
+      weapon.damage *= damageMultiplier; // Scale the weapon's damage
+      enemyobj.addWeapon(weapon, true); // Equip enemy with the scaled weapon
 
       // Add to characters
       this.characters.push(enemyobj);
