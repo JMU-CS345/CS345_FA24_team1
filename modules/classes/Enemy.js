@@ -104,14 +104,4 @@ class Enemy extends Character {
       
     image(this.sprite, this.location.x, this.location.y, this.box.width, this.box.height, sx, sy, sw, sh);
   }
-
-  /**
-   * Attacks player
-   */
-  attack() {
-    const player = arena.getPlayer();
-    if (arena.getPlayer().alive) {
-      super.currentWeapon().fire();
-    }
-  }
 }

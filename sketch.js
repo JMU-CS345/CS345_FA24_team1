@@ -17,7 +17,6 @@ function preload() {
         mapbg: loadImage("/assets/maps/OriginalMap.jpg"),
         mapinfo: loadJSON("/assets/maps/OriginalMap-bounds.json"),
         playersprite: loadImage("/assets/characters/sprite_sheets/samurai.png"),
-        enemysprite: loadImage("/assets/characters/sprite_sheets/zombie_normal.png")
     };
 }
 

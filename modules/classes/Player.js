@@ -33,7 +33,6 @@ class Player extends Character {
   update() {
     // Player doesn't update when dead
     if (!this.alive) {
-      arena.stopTimer();  // timer stops when player dies (game over)
       return null;
     }
 
@@ -51,15 +50,12 @@ class Player extends Character {
       super.move(new Vector2D(0, -this.speed).add(this.location));
     } else if (keyIsDown(DOWN_ARROW)) {
       this.state = "moving";
-      // draw sprite
       super.move(new Vector2D(0, this.speed).add(this.location));
     } else if (keyIsDown(LEFT_ARROW)) {
       this.state = "moving";
-      // draw sprite
       super.move(new Vector2D(-this.speed, 0).add(this.location));
     } else if (keyIsDown(RIGHT_ARROW)) {
       this.state = "moving";
-      // draw sprite
       super.move(new Vector2D(this.speed, 0).add(this.location));
     }
     if (keyIsDown(32)) {

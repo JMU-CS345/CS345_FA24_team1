@@ -50,7 +50,6 @@ class Weapon {
                         == (character instanceof Enemy)) return;
 
                 if (character.checkHit(weaponbox)) {
-                    console.log(`character ${character} took ${this.wtype.damage} damage and is ${character.alive}`);
                     character.takeDamage(this.wtype.damage);
                 }
             });

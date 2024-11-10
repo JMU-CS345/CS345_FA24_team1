@@ -64,12 +64,9 @@ class Character {
 	 *	Decrements health by one.
 	 */
 	takeDamage() {
-		if (this.health <= 0) {
-			this.alive = false;
-			return;
-		}
 		this.health--;
 		if (this.health <= 0) {
+			this.health = 0;
 			this.alive = false;
 		}
 	}
@@ -80,13 +77,9 @@ class Character {
 	 *	@param damage The specified amount of damage to receive
 	 */
 	takeDamage(damage) {
-		if (this.health == 0) {
-			this.alive = false;
-			return;
-		}
-		this.health -= damage;	// health could go negative
+		this.health -= damage;
 		if (this.health <= 0) {
-			this.health = 0;	// if negative or 0, set it to 0 and change state to dead
+			this.health = 0;
 			this.alive = false;
 		}
 	}
