@@ -19,8 +19,8 @@ class Arena {
       1, assets.playersprite,
       new Box(
         this.map.info.playerSpawn.x, this.map.info.playerSpawn.y,
-        assets.playersprite.width, assets.playersprite.height
-      ), 1
+        80, 80
+      ), 5
     )];
     this.getPlayer().addWeapon(new Weapon(this.weapons.find(
             (wtype) => wtype.name == "katana"), this.getPlayer()), true);
@@ -99,7 +99,7 @@ class Arena {
         enemyinfo.sprite,                       // sprite image
         new Box(                                // hitbox
           this.map.info.enemySpawn.x, this.map.info.enemySpawn.y,
-          enemyinfo.sprite.width, enemyinfo.sprite.height
+          80, 80
         ),
         enemyinfo.speed,                        // movement speed
       );
@@ -130,6 +130,13 @@ class Arena {
   /* Updates everything in the Arena, advancing the state of the game by
    * one game tick. */
   update() {
+
+    // Game freezes when player dies (everything stops moving)
+    if (!this.getPlayer().alive) {
+      this.stopTimer();
+      return;
+    }
+
     // Update characters
     this.characters.forEach(character => character.update());
 

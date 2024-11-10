@@ -15,7 +15,7 @@ class UI {
         this.arena.draw();
 
         textSize(24);
-        fill(0);
+        fill(255);
         noStroke();
 
         text(`Health: ${this.arena.getPlayer().health}`, 10, 30);

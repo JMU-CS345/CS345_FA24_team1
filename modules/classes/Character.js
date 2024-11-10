@@ -26,6 +26,11 @@ class Character {
 
 		this.alive = true;
 		this.facing = Direction.LEFT;
+
+    	this.state = "idle";
+    	this.currentFrame = 0;
+    	this.frameDelay = 12;
+    	this.frameTimer = 0;
 	}
 
 	/**
@@ -59,15 +64,12 @@ class Character {
 	 *	Decrements health by one.
 	 */
 	takeDamage() {
-		if (this.health <= 0) {
-			return;
-		}
 		this.health--;
 		if (this.health <= 0) {
+			this.health = 0;
 			this.alive = false;
 		}
 	}
-
 
 	/*
 	 *	Decrements health by specified amount.
@@ -75,12 +77,9 @@ class Character {
 	 *	@param damage The specified amount of damage to receive
 	 */
 	takeDamage(damage) {
-		if (this.health == 0) {
-			return;
-		}
-		this.health -= damage;	// health could go negative
+		this.health -= damage;
 		if (this.health <= 0) {
-			this.health = 0;			// if negative or 0, set it to 0 and change state to dead
+			this.health = 0;
 			this.alive = false;
 		}
 	}

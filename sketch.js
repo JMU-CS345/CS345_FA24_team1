@@ -16,7 +16,7 @@ function preload() {
         weapons: loadJSON("/modules/configs/WeaponTypes.json"),
         mapbg: loadImage("/assets/maps/OriginalMap.jpg"),
         mapinfo: loadJSON("/assets/maps/OriginalMap-bounds.json"),
-        playersprite: loadImage("/assets/characters/player-debug.png")
+        playersprite: loadImage("/assets/characters/sprite_sheets/samurai.png"),
     };
 }
 
@@ -25,6 +25,7 @@ function setup() {
     ui = new UI(arena);
     createCanvas(windowWidth, windowHeight);
     arena.setSize(windowWidth, windowHeight);
+    arena.nextWave();
 }
 
 function windowResized() {
