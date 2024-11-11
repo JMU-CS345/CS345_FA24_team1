@@ -1,57 +1,61 @@
-/*
- * Arena class: the arena that the map + all characters exist within.
- */
 class Arena {
-  /* Constructs a new Arena. Passed object has references to loaded assets. */
   constructor(assets) {
-    // Map, arena size
+    // Initialize map properties and dimensions
     this.map = { bgImage: assets.mapbg, info: assets.mapinfo };
     this.width = this.map.bgImage.width;
     this.height = this.map.bgImage.height;
 
-    // Weapons
+    // Initialize weapon and character arrays
     this.weapons = assets.weapons.weapons;
+    this.characters = [
+      new Player(
+        this,
+        new Vector2D(0, 0).fromOther(this.map.info.playerSpawn), // Player spawn location
+        1, // Player health
+        assets.playersprite, // Player sprite
+        new Box(
+          this.map.info.playerSpawn.x,
+          this.map.info.playerSpawn.y,
+          80,
+          80
+        ), // Player hitbox
+        5 // Player speed
+      ),
+    ];
 
-    // Characters (player+enemies)
-    // Create player, add and equip first weapon
-    this.characters = [new Player(
-      this, new Vector2D(0,0).fromOther(this.map.info.playerSpawn),
-      1, assets.playersprite,
-      new Box(
-        this.map.info.playerSpawn.x, this.map.info.playerSpawn.y,
-        80, 80
-      ), 5
-    )];
-    this.getPlayer().addWeapon(new Weapon(this.weapons.find(
-            (wtype) => wtype.name == "katana"), this.getPlayer()), true);
-    this.playerAlive = true;
-    this.enemies = assets.enemies.enemies;
+    // Equip player with initial weapon
+    this.getPlayer().addWeapon(
+      new Weapon(
+        this.weapons.find((wtype) => wtype.name == "katana"), // Initial weapon (katana)
+        this.getPlayer()
+      ),
+      true
+    );
 
-    // Waves, wave, wave enemy spawn timer, next enemy to spawn
+    this.playerAlive = true; // Track if player is alive
+    this.enemies = assets.enemies.enemies; // Load enemy definitions
+
+    // Initialize waves and wave management variables
     this.waves = assets.waves.waves;
-    this.wave = 0;
-    this.spawnTimer = null;
-    this.nextSpawnID1 = 0; // index of waves.enemies
-    this.nextSpawnID2 = 0; // spawn n'th enemy of that index
-      
-    // Timer
-    // TODO this is a really inefficient implementation - should probably use
-    // Unix timestamps instead of interval timers
-    this.time = 0;
-    this.timerReference = null;
-        
-    // Putting startTime here if we want the timer to go on from start to game
-    // over. Will need to be moved if we want the timer to reset every time a
-    // new wave has started 
-    this.startTime();
+    this.wave = 0; // Current wave number
+    this.spawnTimer = null; // Timer for enemy spawn intervals
+    this.nextSpawnID1 = 0; // Enemy type index within the wave
+    this.nextSpawnID2 = 0; // Count of specific enemy type in the wave
+
+    this.time = 0; // Game time tracker
+    this.timerReference = null; // Reference for game time interval
+
+    this.startTime(); // Start game timer
   }
 
+  // Start the game timer
   startTime() {
     this.timerReference = setInterval(() => {
       this.time++;
     }, 1000);
   }
 
+  // Stop the game timer
   stopTimer() {
     if (this.timerReference !== null) {
       clearInterval(this.timerReference);
@@ -59,117 +63,139 @@ class Arena {
     }
   }
 
+  // Reset the game timer
   resetTimer() {
     this.time = 0;
   }
 
+  // Get the current game time
   getTime() {
     return this.time;
   }
 
-  /* Returns the player. */
+  // Get the player object
   getPlayer() {
     return this.characters[0];
   }
 
-  /* Returns the number of enemies currently in the Arena. */
+  // Get the current number of enemies
   numEnemies() {
     return this.characters.length - 1;
   }
 
-  /* Advances the Arena to the next wave. Does not check if the game state is
-   * ready for a next wave or not, and assumes that there is a next wave. */
   nextWave() {
-    // Advance wave count and grab wave info
-    const waveinfo = this.waves[this.wave];
+    const waveIndex = this.wave % this.waves.length;
+    const waveInfo = this.waves[waveIndex];
     this.wave++;
-
-    // Spawn one enemy per second until queue empty
     this.nextSpawnID1 = 0;
     this.nextSpawnID2 = 0;
+
+    // Scaling multipliers based on the wave number
+    const healthMultiplier = 1 + this.wave * 0.1; // Increase health by 10% each wave
+    const damageMultiplier = 1 + this.wave * 0.1; // Increase damage by 10% each wave
+
+    // Clear any previous spawn timer
+    clearInterval(this.spawnTimer);
     this.spawnTimer = setInterval(() => {
-      // Spawn
-      const enemy = waveinfo.enemies[this.nextSpawnID1],
-        enemyinfo = this.enemies.find((eobj) => eobj.name == enemy.name);
+      const enemy = waveInfo.enemies[this.nextSpawnID1];
+      const enemyInfo = this.enemies.find((e) => e.name == enemy.name);
 
-      const enemyobj = new Enemy(
-        this,                                   // arena
-        new Vector2D(0,0).fromOther(this.map.info.enemySpawn), // spawn location
-        enemyinfo.health,                       // starting health
-        enemyinfo.sprite,                       // sprite image
-        new Box(                                // hitbox
-          this.map.info.enemySpawn.x, this.map.info.enemySpawn.y,
-          80, 80
-        ),
-        enemyinfo.speed,                        // movement speed
-      );
-    
-      // Equip enemy with weapon
-      enemyobj.addWeapon(new Weapon(this.weapons.find(
-            (wtype) => wtype.name == enemyinfo.weapon), enemyobj), true);
+      if (enemyInfo) {
+        // Use fixed spawn location without randomization
+        const spawnLocation = new Vector2D(0, 0).fromOther(
+          this.map.info.enemySpawn
+        );
 
-      // Add to characters
-      this.characters.push(enemyobj);
+        // Scale enemy health
+        const scaledHealth = enemyInfo.health * healthMultiplier;
 
-      // Next enemy if at count; quit spawning if done
-      if ((++this.nextSpawnID2) == enemy.count) {
-        if ((++this.nextSpawnID1) == waveinfo.enemies.length) {
+        const enemyObj = new Enemy(
+          this, // Reference to the arena
+          spawnLocation, //  spawn location
+          scaledHealth, // Scaled health
+          enemyInfo.sprite, // Sprite image
+          new Box(spawnLocation.x, spawnLocation.y, 80, 80), // Hitbox
+          enemyInfo.speed // Movement speed
+        );
+
+        // Scale weapon damage if enemy has a weapon
+        const weaponInfo = this.weapons.find((w) => w.name == enemyInfo.weapon);
+        if (weaponInfo) {
+          const scaledDamage = weaponInfo.damage * damageMultiplier;
+          const scaledWeapon = new Weapon(
+            { ...weaponInfo, damage: scaledDamage }, // Weapon with scaled damage
+            enemyObj
+          );
+          enemyObj.addWeapon(scaledWeapon, true);
+        }
+
+        this.characters.push(enemyObj); // Add enemy to characters list
+      }
+
+      // Manage spawning logic for each enemy type in the wave
+      if (++this.nextSpawnID2 === enemy.count) {
+        this.nextSpawnID1++;
+        this.nextSpawnID2 = 0;
+
+        // Stop spawn timer if all enemies in the wave are spawned
+        if (this.nextSpawnID1 === waveInfo.enemies.length) {
           clearInterval(this.spawnTimer);
           this.spawnTimer = null;
         }
       }
-    }, 1000);
+    }, 1000); 
   }
 
-  /* Returns true if passed Box is entirely within the bounds of the map,
-   * false otherwise. */
-  isValidBoxLocation(box) {
-    return this.map.info.bounds.every((bbox) => !box.intersects(bbox));
-  }
-
-  /* Updates everything in the Arena, advancing the state of the game by
-   * one game tick. */
+  // Update game state for each frame
   update() {
-
-    // Game freezes when player dies (everything stops moving)
     if (!this.getPlayer().alive) {
       this.stopTimer();
       return;
     }
 
-    // Update characters
-    this.characters.forEach(character => character.update());
+    // Filter out dead enemies and update active characters
+    this.characters = this.characters.filter((character) => {
+      if (character instanceof Enemy && character.health <= 0) {
+        character.alive = false;
+        return false; // Remove dead enemies
+      }
+      character.update();
+      return true;
+    });
 
-    /* Wave updates when enemies == 0 */
-    if (this.characters.length == 1) {
-      //this.nextWave(); // enemies don't spawn yet which causes a bug
+    // Check if all enemies are defeated and start the next wave if true
+    const enemiesRemaining = this.characters.some(
+      (c) => c instanceof Enemy && c.alive
+    );
+    if (!enemiesRemaining && !this.spawnTimer) {
+      this.nextWave();
     }
   }
 
-  /* Draws the map and characters onto the canvas. */
+  // Draw all game elements to the screen
   draw() {
     image(this.map.bgImage, 0, 0, this.width, this.height);
-
-    // Loop through and draw in reverse order, to draw the player last over
-    // any potential overlapping enemies.
-    for (let i=(this.characters.length-1); i>=0; i--)
-      this.characters[i].draw();
+    this.characters.forEach((character) => character.draw());
   }
 
-  /* Scales this.map.info by the passed factors. */
+  // Check if a box location is valid (does not intersect map boundaries)
+  isValidBoxLocation(box) {
+    return this.map.info.bounds.every((bbox) => !box.intersects(bbox));
+  }
+
+  // Scale the map and character dimensions
   scaleMap(scalex, scaley) {
     const info = this.map.info;
-
-    // Boxes and Vector2Ds to scale
     const locs = [info.playerSpawn, info.enemySpawn];
     const boxes = info.bounds;
 
-    // Scale all
-    locs.forEach(loc => {
+    // Scale player and enemy spawn points
+    locs.forEach((loc) => {
       loc.x *= scalex;
       loc.y *= scaley;
     });
-    boxes.forEach(box => {
+    // Scale boundary boxes
+    boxes.forEach((box) => {
       box.x *= scalex;
       box.width *= scalex;
       box.y *= scaley;
@@ -177,16 +203,14 @@ class Arena {
     });
   }
 
-  /* Updates the size of the Arena. Scales objects as needed. */
+  // Resize the arena and adjust all characters accordingly
   setSize(newwidth, newheight) {
-    // Scale factors
-    const sfx = 1.0 * newwidth / this.width,
-      sfy = 1.0 * newheight / this.height;
+    const sfx = (1.0 * newwidth) / this.width;
+    const sfy = (1.0 * newheight) / this.height;
     this.width = newwidth;
     this.height = newheight;
 
-    this.scaleMap(sfx, sfy);
-    this.characters.forEach(ch => ch.scale(sfx, sfy));
-    // TODO character speed scaling (player + enemies)
+    this.scaleMap(sfx, sfy); // Adjust map scale
+    this.characters.forEach((ch) => ch.scale(sfx, sfy)); // Scale each character
   }
 }
