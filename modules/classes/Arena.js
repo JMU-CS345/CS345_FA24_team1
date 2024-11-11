@@ -149,7 +149,11 @@ class Arena {
   /* Draws the map and characters onto the canvas. */
   draw() {
     image(this.map.bgImage, 0, 0, this.width, this.height);
-    this.characters.forEach(character => character.draw());
+
+    // Loop through and draw in reverse order, to draw the player last over
+    // any potential overlapping enemies.
+    for (let i=(this.characters.length-1); i>=0; i--)
+      this.characters[i].draw();
   }
 
   /* Scales this.map.info by the passed factors. */
