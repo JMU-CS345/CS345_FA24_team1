@@ -18,8 +18,7 @@ class Arena {
       this, new Vector2D(0,0).fromOther(this.map.info.playerSpawn),
       1, assets.playersprite,
       new Box(
-        this.map.info.playerSpawn.x, this.map.info.playerSpawn.y,
-        80, 80
+        this.map.info.playerSpawn.x, this.map.info.playerSpawn.y, 80, 80
       ), 5
     )];
     this.getPlayer().addWeapon(new Weapon(this.weapons.find(
@@ -98,8 +97,7 @@ class Arena {
         enemyinfo.health,                       // starting health
         enemyinfo.sprite,                       // sprite image
         new Box(                                // hitbox
-          this.map.info.enemySpawn.x, this.map.info.enemySpawn.y,
-          80, 80
+          this.map.info.enemySpawn.x, this.map.info.enemySpawn.y, 80, 80
         ),
         enemyinfo.speed,                        // movement speed
       );
@@ -130,13 +128,6 @@ class Arena {
   /* Updates everything in the Arena, advancing the state of the game by
    * one game tick. */
   update() {
-
-    // Game freezes when player dies (everything stops moving)
-    if (!this.getPlayer().alive) {
-      this.stopTimer();
-      return;
-    }
-
     // Update characters
     this.characters.forEach(character => character.update());
 
@@ -144,6 +135,10 @@ class Arena {
     if (this.characters.length == 1) {
       //this.nextWave(); // enemies don't spawn yet which causes a bug
     }
+
+    // Stop timer if player dead
+    if (!this.getPlayer().alive && (this.timerReference != null))
+      this.stopTimer();
   }
 
   /* Draws the map and characters onto the canvas. */

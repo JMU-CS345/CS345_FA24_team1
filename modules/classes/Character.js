@@ -102,11 +102,23 @@ class Character {
 	}
 
 	/*
-	*	Abstract draw method for drawing the Character onto canvas every frame,
-	*	must be implemented in subclasses due to different sprites.
+	*	Draw method for drawing the Character onto canvas every frame,
 	*/
 	draw() {
-		throw new Error("This method should be implemented within the Player/Enemy subclasses, as the sprites are different");
+		// Width/height of each spritesheet box
+		const sw = 32;
+		const sh = 32;
+
+		// All animations -> for current state -> for facing
+		const aniframes = this.animations[this.state][this.facing];
+
+		// -> exact frame x/y
+		const sx = Object.keys(aniframes)[this.currentFrame];
+		const sy = Object.values(aniframes)[this.currentFrame];
+
+		// using fixed width and height for easier visibility, sprite is really small
+		image(this.sprite, this.location.x, this.location.y,
+				this.box.width, this.box.height, sx, sy, sw, sh);
 	}
 
 	/*
