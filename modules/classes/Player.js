@@ -20,6 +20,9 @@ class Player extends Character {
         1: {64:0, 96:32},
         2: {128:0, 160:32},
         3: {192:0, 224:32}
+      },
+      defaultDead: {
+        0: {0:224}
       }
     };
 
@@ -76,8 +79,10 @@ class Player extends Character {
     }
   }
 
+  /**
+   * Draws player onto p5 canvas.
+   */
   draw() {
-
     let sx, sy;
     const sw = 32;
     const sh = 32;
@@ -91,6 +96,10 @@ class Player extends Character {
     } else if (this.state === "attacking") {
       sx = Object.keys(this.animations.defaultAttack[this.facing])[this.currentFrame];
       sy = Object.values(this.animations.defaultAttack[this.facing])[this.currentFrame];
+    }
+    if (!this.alive) {
+      sx = Object.keys(this.animations.defaultDead[0])[0];
+      sy = Object.values(this.animations.defaultDead[0])[0];
     }
     // using fixed width and height for easier visibility, sprite is really small
     image(this.sprite, this.location.x, this.location.y, this.box.width, this.box.height, sx, sy, sw, sh);
