@@ -11,8 +11,9 @@ class Character {
 	* @param sprite The sprite file for the Character
 	* @param box The Box for the Character
 	* @param speed The movement speed for the Character
+	* @param animations Sprite animation information object
 	*/
-	constructor(arena, vector, health, sprite, box, speed, weapons, startWID) {
+	constructor(arena, vector, health, sprite, box, speed, animations) {
 		this.arena = arena;
 		this.location = vector;
 		this.health = health;
@@ -27,6 +28,7 @@ class Character {
 		this.alive = true;
 		this.facing = Direction.LEFT;
 
+    	this.animations = animations;
     	this.state = "idle";
     	this.currentFrame = 0;
     	this.frameDelay = 12;
@@ -64,11 +66,7 @@ class Character {
 	 *	Decrements health by one.
 	 */
 	takeDamage() {
-		this.health--;
-		if (this.health <= 0) {
-			this.health = 0;
-			this.alive = false;
-		}
+		this.takeDamage(1);
 	}
 
 	/*
@@ -109,12 +107,11 @@ class Character {
 		const sw = 32;
 		const sh = 32;
 
-		// All animations -> for current state -> for facing
-		const aniframes = this.animations[this.state][this.facing];
-
-		// -> exact frame x/y
-		const sx = Object.keys(aniframes)[this.currentFrame];
-		const sy = Object.values(aniframes)[this.currentFrame];
+		// All animations -> for current state -> for facing -> for frame
+		const aniframe =
+				this.animations[this.state][this.facing][this.currentFrame];
+		const sx = aniframe.x,
+              sy = aniframe.y;
 
 		// using fixed width and height for easier visibility, sprite is really small
 		image(this.sprite, this.location.x, this.location.y,

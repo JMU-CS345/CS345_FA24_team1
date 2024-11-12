@@ -1,34 +1,7 @@
 class Enemy extends Character {
-  constructor(arena, vector, health, sprite, box, speed) {
-    super(arena, vector, health, sprite, box, speed);
+  constructor(arena, vector, health, sprite, box, speed, animations) {
+    super(arena, vector, health, sprite, box, speed, animations);
     this.state = "moving";
-
-    this.animations = {
-      "idle": {
-        0: {0:0},
-        1: {64:0},
-        2: {128:0},
-        3: {192:0}
-      },
-      "moving": {
-        0: {32:0, 0:32},  
-        1: {96:0, 64:32},
-        2: {160:0, 128:32},
-        3: {224:0, 192:32}
-      },
-      "attacking": {
-        0: {0:0, 32:32},
-        1: {64:0, 96:32},
-        2: {128:0, 160:32},
-        3: {192:0, 224:32}
-      },
-      "dead": {
-        0: {0:224},
-        1: {0:224},
-        2: {0:224},
-        3: {0:224}
-      }
-    };
   }
 
   /**
@@ -38,6 +11,7 @@ class Enemy extends Character {
     // Enemy doesn't update when dead
     if (!this.alive) {
       this.state = "dead";
+      this.currentFrame = 0;
       return;
     }
 

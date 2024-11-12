@@ -9,8 +9,9 @@ class Arena {
     this.width = this.map.bgImage.width;
     this.height = this.map.bgImage.height;
 
-    // Weapons
+    // Weapons, character sprite animations
     this.weapons = assets.weapons.weapons;
+    this.charanimations = assets.charanimations.charanimations;
 
     // Characters (player+enemies)
     // Create player, add and equip first weapon
@@ -19,7 +20,7 @@ class Arena {
       1, assets.playersprite,
       new Box(
         this.map.info.playerSpawn.x, this.map.info.playerSpawn.y, 80, 80
-      ), 5
+      ), 5, this.charanimations
     )];
     this.getPlayer().addWeapon(new Weapon(this.weapons.find(
             (wtype) => wtype.name == "katana"), this.getPlayer()), true);
@@ -100,6 +101,7 @@ class Arena {
           this.map.info.enemySpawn.x, this.map.info.enemySpawn.y, 80, 80
         ),
         enemyinfo.speed,                        // movement speed
+        this.charanimations                     // character animations
       );
     
       // Equip enemy with weapon
