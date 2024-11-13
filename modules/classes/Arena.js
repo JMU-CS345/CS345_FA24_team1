@@ -91,8 +91,8 @@ class Arena {
     this.nextSpawnID2 = 0;
 
     // Scaling multipliers based on the wave number
-    const healthMultiplier = 1 + this.wave * 0.1; // Increase health by 10% each wave
-    const damageMultiplier = 1 + this.wave * 0.1; // Increase damage by 10% each wave
+    const healthMultiplier = 1 + this.wave * 0.5; // Increase health by 10% each wave
+    const damageMultiplier = 1 + this.wave * 0.5; // Increase damage by 10% each wave
 
     // Clear any previous spawn timer
     clearInterval(this.spawnTimer);
