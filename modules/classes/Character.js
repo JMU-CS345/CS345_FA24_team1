@@ -1,7 +1,4 @@
-// TODO: Pass Character.tests.js
-
 class Character {
-
 	/*
 	*	Character constructor.
 	*
@@ -20,10 +17,6 @@ class Character {
 		this.sprite = sprite;
 		this.box = box;
 		this.speed = speed;
-
-		// Characters start off with no weapons
-		this.weapons = [];
-		this.curWID = -1; // Current weapon index
 
 		this.alive = true;
 		this.facing = Direction.LEFT;
@@ -63,43 +56,6 @@ class Character {
 	}
 
 	/*
-	 *	Decrements health by one.
-	 */
-	takeDamage() {
-		this.takeDamage(1);
-	}
-
-	/*
-	 *	Decrements health by specified amount.
-	 *
-	 *	@param damage The specified amount of damage to receive
-	 */
-	takeDamage(damage) {
-		this.health -= damage;
-		if (this.health <= 0) {
-			this.health = 0;
-			this.alive = false;
-		}
-	}
-
-
-	/*
-	*	Abstract attack method for creating attack animation,
-	*	must be implemented in subclasses.
-	*/
-	attack() {
-		throw new Error("This method should be implemented within the Player/Enemy subclasses.");
-	}
-
-	/*
-	*	Abstract update method for updating information about this Character,
-	*	must be implemented in subclasses.
-	*/
-	update() {
-		throw new Error("This method should be implemented within the Player/Enemy subclasses.");
-	}
-
-	/*
 	*	Draw method for drawing the Character onto canvas every frame,
 	*/
 	draw() {
@@ -129,50 +85,6 @@ class Character {
 	}
 
 	/*
-	*	Checks if the character and another box intersect.
-	*
-	*	@param hitBox The box object to check for
-	*	@returns boolean true if box is part of Character, else false
-	*/
-	checkHit(hitBox) {
-		return this.box.intersects(hitBox);
-	}
-
-	/*
-	*	Returns the current weapon held by this Character.
-	*
-	*	@returns the current Weapon object that this Character has equipped,
-	*	         or null if this Character is not holding a weapon.
-	*/
-	currentWeapon() {
-		return (this.curWID == -1) ? null : this.weapons[this.curWID];
-	}
-
-	/*
-	*	Switches to the weapon at the given index. Pass -1 to unequip all.
-	*
-	*	@param wid the index of the weapon (in this.weapons) to equip
-	*	@returns true if switch successful, false on invalid index
-	*/
-	switchWeapon(wid) {
-		if ((wid < -1) || (wid >= this.weapons.length)) return false;
-		this.curWID = wid;
-		return true;
-	}
-
-	/*
-	*	Adds the passed Weapon object to the list of weapons owned by this
-    *	Character. If equip is true, the weapon is immediately equipped.
-	*
-	*	@param weapon the Weapon to add
-	*	@param equip whether or not to equip the weapon immediately
-	*/
-	addWeapon(weapon, equip) {
-		this.weapons.push(weapon);
-		if (equip) this.curWID = this.weapons.length - 1;
-	}
-
-	/*
 	 *	Scales this Character by the passed factors.
 	 *
 	 *	@param scalex Scaling multiplier in the X direction
@@ -187,5 +99,3 @@ class Character {
 		this.box.height *= scaley;
 	}
 }
-
-if ((typeof exports) !== "undefined") module.exports = Character;
