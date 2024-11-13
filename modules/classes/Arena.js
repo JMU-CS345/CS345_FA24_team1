@@ -19,7 +19,7 @@ class Arena {
       this, new Vector2D(0,0).fromOther(this.map.info.playerSpawn),
       1, assets.playersprite,
       new Box(
-        this.map.info.playerSpawn.x, this.map.info.playerSpawn.y, 80, 80
+        this.map.info.playerSpawn.x, this.map.info.playerSpawn.y, 24, 51
       ), 5, this.charanimations
     )];
     this.getPlayer().addWeapon(new Weapon(this.weapons.find(
@@ -98,7 +98,7 @@ class Arena {
         enemyinfo.health,                       // starting health
         enemyinfo.sprite,                       // sprite image
         new Box(                                // hitbox
-          this.map.info.enemySpawn.x, this.map.info.enemySpawn.y, 80, 80
+          this.map.info.enemySpawn.x, this.map.info.enemySpawn.y, 24, 51
         ),
         enemyinfo.speed,                        // movement speed
         this.charanimations                     // character animations

@@ -103,19 +103,29 @@ class Character {
 	*	Draw method for drawing the Character onto canvas every frame,
 	*/
 	draw() {
-		// Width/height of each spritesheet box
-		const sw = 32;
-		const sh = 32;
-
 		// All animations -> for current state -> for facing -> for frame
 		const aniframe =
 				this.animations[this.state][this.facing][this.currentFrame];
 		const sx = aniframe.x,
-              sy = aniframe.y;
+		      sy = aniframe.y,
+		      sw = this.animations.cellWidth,
+		      sh = this.animations.cellHeight,
+		      cw = this.animations.charWidth,
+		      ch = this.animations.charHeight;
 
-		// using fixed width and height for easier visibility, sprite is really small
-		image(this.sprite, this.location.x, this.location.y,
-				this.box.width, this.box.height, sx, sy, sw, sh);
+		// Need to scale body so that it goes from (charWidth, charHeight) to
+		// (box.width, box.height) -> * by box.width,height / charWidth,Height
+		const dw = sw * this.box.width / cw,
+		      dh = sh * this.box.height / ch;
+
+		// Actual body (which should take up 100% of hitbox) has bottom
+		// left corner at (bx, sh-1) and width=charWidth height=charHeight.
+		// Top left at (bx, sh-charHeight-2).
+		// So shift sprite backwards by that, scaled up by dw/dh.
+		const dx = this.location.x - dw * (aniframe.bx / sw),
+		      dy = this.location.y - dh * ((sh - ch - 2) / sh);
+
+		image(this.sprite, dx, dy, dw, dh, sx, sy, sw, sh);
 	}
 
 	/*
