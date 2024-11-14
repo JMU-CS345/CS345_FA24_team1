@@ -11,10 +11,6 @@ class Arena {
     );
   }
 
-  isValidBoxLocation(box) {
-    return true;
-  }
-
   update() {
     this.player.update();
   }

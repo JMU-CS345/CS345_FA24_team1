@@ -28,33 +28,6 @@ class Character {
     	this.frameTimer = 0;
 	}
 
-	/**
-	 * 	Returns location of Vector
-	 */
-	getLocation() {
-		return this.location;
-	}
-
-	/*
-	 *	Changes position of Character object.
-	 *
-	 *	@param loc Location vector to move to
-	 */
-	move(loc) {
-		const newBox = new Box(
-			loc.x, loc.y,
-			this.box.width, this.box.height
-		);
-		if (this.arena.isValidBoxLocation(newBox)) {
-			// Update direction facing
-			this.facing = Direction.primaryDirectionChange(this.location, loc);
-
-			// clone so calling class can't modify location after return
-			this.location = loc.clone();
-			this.box = newBox;
-		}
-	}
-
 	/*
 	*	Draw method for drawing the Character onto canvas every frame,
 	*/
@@ -82,6 +55,18 @@ class Character {
 		      dy = this.location.y - dh * ((sh - ch - 2) / sh);
 
 		image(this.sprite, dx, dy, dw, dh, sx, sy, sw, sh);
+
+        // DRAW DETAILS TO RIGHT
+        textSize(20);
+        stroke(0, 0, 0);
+        text("dx: " + dx, dx+300, dy);
+        text("dy: " + dy, dx+300, dy+50);
+        text("dw: " + dw, dx+300, dy+100);
+        text("dh: " + dh, dx+300, dy+150);
+        text("sx: " + sx, dx+300, dy+200);
+        text("sy: " + sy, dx+300, dy+250);
+        text("sw: " + sw, dx+300, dy+300);
+        text("sh: " + sh, dx+300, dy+350);
 	}
 
 	/*

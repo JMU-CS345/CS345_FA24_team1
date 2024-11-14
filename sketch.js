@@ -2,7 +2,7 @@
  * Main sketch file. Delegates everything to Arena and UI.
  */
 
-let arena, ui, assets;
+let arena, assets;
 
 function preload() {
     // Preload all assets
@@ -14,7 +14,6 @@ function preload() {
 
 function setup() {
     arena = new Arena(assets);
-    ui = new UI(arena);
     createCanvas(windowWidth, windowHeight);
     arena.setSize(windowWidth, windowHeight);
 }
@@ -27,5 +26,5 @@ function windowResized() {
 
 function draw() {
     arena.update();
-    ui.draw();
+    arena.draw();
 }
