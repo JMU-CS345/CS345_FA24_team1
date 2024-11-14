@@ -11,8 +11,9 @@ class Character {
 	* @param sprite The sprite file for the Character
 	* @param box The Box for the Character
 	* @param speed The movement speed for the Character
+	* @param animations Sprite animation information object
 	*/
-	constructor(arena, vector, health, sprite, box, speed, weapons, startWID) {
+	constructor(arena, vector, health, sprite, box, speed, animations) {
 		this.arena = arena;
 		this.location = vector;
 		this.health = health;
@@ -27,6 +28,7 @@ class Character {
 		this.alive = true;
 		this.facing = Direction.LEFT;
 
+    	this.animations = animations;
     	this.state = "idle";
     	this.currentFrame = 0;
     	this.frameDelay = 12;
@@ -64,11 +66,7 @@ class Character {
 	 *	Decrements health by one.
 	 */
 	takeDamage() {
-		this.health--;
-		if (this.health <= 0) {
-			this.health = 0;
-			this.alive = false;
-		}
+		this.takeDamage(1);
 	}
 
 	/*
@@ -102,11 +100,32 @@ class Character {
 	}
 
 	/*
-	*	Abstract draw method for drawing the Character onto canvas every frame,
-	*	must be implemented in subclasses due to different sprites.
+	*	Draw method for drawing the Character onto canvas every frame,
 	*/
 	draw() {
-		throw new Error("This method should be implemented within the Player/Enemy subclasses, as the sprites are different");
+		// All animations -> for current state -> for facing -> for frame
+		const aniframe =
+				this.animations[this.state][this.facing][this.currentFrame];
+		const sx = aniframe.x,
+		      sy = aniframe.y,
+		      sw = this.animations.cellWidth,
+		      sh = this.animations.cellHeight,
+		      cw = this.animations.charWidth,
+		      ch = this.animations.charHeight;
+
+		// Need to scale body so that it goes from (charWidth, charHeight) to
+		// (box.width, box.height) -> * by box.width,height / charWidth,Height
+		const dw = sw * this.box.width / cw,
+		      dh = sh * this.box.height / ch;
+
+		// Actual body (which should take up 100% of hitbox) has bottom
+		// left corner at (bx, sh-1) and width=charWidth height=charHeight.
+		// Top left at (bx, sh-charHeight-2).
+		// So shift sprite backwards by that, scaled up by dw/dh.
+		const dx = this.location.x - dw * (aniframe.bx / sw),
+		      dy = this.location.y - dh * ((sh - ch - 2) / sh);
+
+		image(this.sprite, dx, dy, dw, dh, sx, sy, sw, sh);
 	}
 
 	/*

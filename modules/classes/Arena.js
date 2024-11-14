@@ -9,8 +9,9 @@ class Arena {
     this.width = this.map.bgImage.width;
     this.height = this.map.bgImage.height;
 
-    // Weapons
+    // Weapons, character sprite animations
     this.weapons = assets.weapons.weapons;
+    this.charanimations = assets.charanimations.charanimations;
 
     // Characters (player+enemies)
     // Create player, add and equip first weapon
@@ -18,9 +19,8 @@ class Arena {
       this, new Vector2D(0,0).fromOther(this.map.info.playerSpawn),
       1, assets.playersprite,
       new Box(
-        this.map.info.playerSpawn.x, this.map.info.playerSpawn.y,
-        80, 80
-      ), 5
+        this.map.info.playerSpawn.x, this.map.info.playerSpawn.y, 24, 51
+      ), 5, this.charanimations
     )];
     this.getPlayer().addWeapon(new Weapon(this.weapons.find(
             (wtype) => wtype.name == "katana"), this.getPlayer()), true);
@@ -98,10 +98,10 @@ class Arena {
         enemyinfo.health,                       // starting health
         enemyinfo.sprite,                       // sprite image
         new Box(                                // hitbox
-          this.map.info.enemySpawn.x, this.map.info.enemySpawn.y,
-          80, 80
+          this.map.info.enemySpawn.x, this.map.info.enemySpawn.y, 24, 51
         ),
         enemyinfo.speed,                        // movement speed
+        this.charanimations                     // character animations
       );
     
       // Equip enemy with weapon
@@ -130,13 +130,6 @@ class Arena {
   /* Updates everything in the Arena, advancing the state of the game by
    * one game tick. */
   update() {
-
-    // Game freezes when player dies (everything stops moving)
-    if (!this.getPlayer().alive) {
-      this.stopTimer();
-      return;
-    }
-
     // Update characters
     this.characters.forEach(character => character.update());
 
@@ -144,6 +137,10 @@ class Arena {
     if (this.characters.length == 1) {
       //this.nextWave(); // enemies don't spawn yet which causes a bug
     }
+
+    // Stop timer if player dead
+    if (!this.getPlayer().alive && (this.timerReference != null))
+      this.stopTimer();
   }
 
   /* Draws the map and characters onto the canvas. */

@@ -1,27 +1,6 @@
 class Player extends Character {
-  constructor(arena, vector, health, sprite, box, speed) {
-    super(arena, vector, health, sprite, box, speed); // Call the parent constructor
-
-    this.animations = {
-      defaultIdle: {
-        0: {0:0},
-        1: {64:0},
-        2: {128:0},
-        3: {192:0}
-      },
-      defaultMoving: {
-        0: {32:0, 0:32},  
-        1: {96:0, 64:32},
-        2: {160:0, 128:32},
-        3: {224:0, 192:32}
-      },
-      defaultAttack: {
-        0: {0:0, 32:32},
-        1: {64:0, 96:32},
-        2: {128:0, 160:32},
-        3: {192:0, 224:32}
-      }
-    };
+  constructor(arena, vector, health, sprite, box, speed, animations) {
+    super(arena, vector, health, sprite, box, speed, animations);
 
     // default facing down from spawn
     this.facing = Direction.DOWN;
@@ -33,13 +12,13 @@ class Player extends Character {
   update() {
     // Player doesn't update when dead
     if (!this.alive) {
-      return null;
+      this.state = "dead";
+      this.currentFrame = 0;
+      return;
     }
 
     if (!keyIsPressed) {
-      if (this.state !== "idle") {
-        this.state = "idle";
-      }
+      this.state = "idle";
       this.currentFrame = 0;
       return;
     }
@@ -75,26 +54,6 @@ class Player extends Character {
       }
     }
   }
-
-  draw() {
-
-    let sx, sy;
-    const sw = 32;
-    const sh = 32;
-
-    if (this.state === "idle") {
-      sx = Object.keys(this.animations.defaultIdle[this.facing])[0];
-      sy = Object.values(this.animations.defaultIdle[this.facing])[0];
-    } else if (this.state === "moving") {
-      sx = Object.keys(this.animations.defaultMoving[this.facing])[this.currentFrame];
-      sy = Object.values(this.animations.defaultMoving[this.facing])[this.currentFrame];
-    } else if (this.state === "attacking") {
-      sx = Object.keys(this.animations.defaultAttack[this.facing])[this.currentFrame];
-      sy = Object.values(this.animations.defaultAttack[this.facing])[this.currentFrame];
-    }
-    // using fixed width and height for easier visibility, sprite is really small
-    image(this.sprite, this.location.x, this.location.y, this.box.width, this.box.height, sx, sy, sw, sh);
-  };
 
   /**
    *  Attacks enemies if player is facing their direction & in their box

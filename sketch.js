@@ -14,9 +14,10 @@ function preload() {
         }),
         waves: loadJSON("/modules/configs/waves.json"),
         weapons: loadJSON("/modules/configs/WeaponTypes.json"),
+        charanimations: loadJSON("/modules/configs/character_animations.json"),
         mapbg: loadImage("/assets/maps/OriginalMap.jpg"),
         mapinfo: loadJSON("/assets/maps/OriginalMap-bounds.json"),
-        playersprite: loadImage("/assets/characters/sprite_sheets/samurai.png"),
+        playersprite: loadImage("/assets/characters/sprite_sheets/samurai.png")
     };
 }
 
