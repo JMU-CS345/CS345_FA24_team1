@@ -25,6 +25,7 @@ function windowResized() {
 }
 
 function draw() {
+    noSmooth(); // NO ANTIALIASING!!!!!!!!!!!!!!!!
     arena.update();
     arena.draw();
 }
