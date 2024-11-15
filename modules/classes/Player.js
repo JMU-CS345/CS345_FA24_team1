@@ -4,8 +4,16 @@ class Player extends Character {
   }
 
   update() {
+    if (keyIsDown(UP_ARROW))
+      this.facing = Direction.UP;
+    if (keyIsDown(DOWN_ARROW))
+      this.facing = Direction.DOWN;
+    if (keyIsDown(LEFT_ARROW))
+      this.facing = Direction.LEFT;
+    if (keyIsDown(RIGHT_ARROW))
+      this.facing = Direction.RIGHT;
+
     this.state = "moving";
-    this.facing = Direction.LEFT;
 
     this.frameTimer++;
     if (this.frameTimer >= this.frameDelay) {

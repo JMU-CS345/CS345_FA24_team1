@@ -8,7 +8,7 @@ function preload() {
     // Preload all assets
     assets = {
         charanimations: loadJSON("/modules/configs/character_animations.json"),
-        playersprite: loadImage("/assets/characters/sprite_sheets/samurai.png")
+        playersprite: loadImage("/assets/characters/sprite_sheets/zombie_normal.png")
     };
 }
 
