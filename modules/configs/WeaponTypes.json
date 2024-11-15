@@ -4,16 +4,24 @@
             "name": "fists",
             "damage": 2,
             "firerate": 1,
-            "isauto": false,
             "hasmelee": true,
-            "meleerange": 30
+            "meleerange": 30,
+            "hasranged": false
         }, {
             "name": "katana",
             "damage": 10,
             "firerate": 2,
-            "isauto": true,
             "hasmelee": true,
-            "meleerange": 50
+            "meleerange": 50,
+            "hasranged": false
+        }, {
+            "name": "test_gun",
+            "damage": 1,
+            "firerate": 5,
+            "hasmelee": false,
+            "hasranged": true,
+            "projspeed": 50,
+            "projsprite": "assets/other/projectile-debug.png"
         }
     ]
 }

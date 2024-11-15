@@ -13,7 +13,11 @@ function preload() {
                     enemy.sprite = loadImage(enemy.sprite));
         }),
         waves: loadJSON("modules/configs/waves.json"),
-        weapons: loadJSON("modules/configs/WeaponTypes.json"),
+        weapons: loadJSON("modules/configs/WeaponTypes.json", (obj) => {
+            // Load projectile sprites
+            obj.weapons.forEach((wtype) =>
+                    wtype.projsprite = loadImage(wtype.projsprite));
+        }),
         charanimations: loadJSON("modules/configs/character_animations.json"),
         mapbg: loadImage("assets/maps/OriginalMap.jpg"),
         mapinfo: loadJSON("assets/maps/OriginalMap-bounds.json"),
