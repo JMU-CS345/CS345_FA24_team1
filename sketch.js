@@ -15,8 +15,10 @@ function preload() {
         waves: loadJSON("modules/configs/waves.json"),
         weapons: loadJSON("modules/configs/WeaponTypes.json", (obj) => {
             // Load projectile sprites
-            obj.weapons.forEach((wtype) =>
-                    wtype.projsprite = loadImage(wtype.projsprite));
+            obj.weapons.forEach((wtype) => {
+                if (wtype.hasranged)
+                    wtype.projsprite = loadImage(wtype.projsprite);
+            });
         }),
         charanimations: loadJSON("modules/configs/character_animations.json"),
         mapbg: loadImage("assets/maps/OriginalMap.jpg"),
