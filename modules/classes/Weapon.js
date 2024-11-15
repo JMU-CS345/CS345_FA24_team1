@@ -56,51 +56,32 @@ class Weapon {
         }
 
         // Create projectiles if ranged
-        if (this.wtype.hasranged) {
             // TODO
             // pistol, shotgun, rifle
-            projectileposition = this.owner.box.clone();
-
             //for now using a boxlike projectile
-            if (currentWeapon() == "pistol") {
-                
-            }
-            if (currentWeapon() == "shotgun") {
-                
-            }
-            if (currentWeapon() == "rifle") {
-                
-            }
             
-        }
+        
     }
 
     /* Updates the movement of any projectiles created by this Weapon. */
     update() {
-        if (this.wtype.hasranged()) {
-            projectilepos = this.owner.box.clone();
-            if (character.currentWeapon() == "pistol") {
-                if (this.fire()) {
-                    while (!(projectilepos.x > 400 || projectilepos.x < 0 ||
-                        projectilpos.y > 400
-                    )) {
-                        if (this.owner.facing == Direction.LEFT) projectilepos.x -= 1;
-                        if (this.owner.facing == Direction.RIGHT) projectilepos.x += 1;
-                        if (this.owner.facing == Direction.UP) projectilepos.y -= 1;
-                        if (this.owner.facing == Direction.DOWN) projectilepos.y += 1;
-                    }   
-                }
+        if (this.projectiles != null) {
+            if (this.lastFireTime == currentTime) {
+                while (this.projectilebox.x < Arena.width && this.projectilebox.x >= 0 ||
+                    this.projectilebox.y < Arena.height && this.projectilebox.y >= 0 && 
+                    !(this.projectilebox.intersects(Enemy.Box))) {
+
+                    this.projectiles[0][1].x = (this.projectiles[0][0].x + this.projectiles[0][1].x) * 2;
+                    this.projectiles[0][1].y = (this.projectiles[0][0].y + this.projectiles[0][1].y) * 2;
+                }            
             }
         }
-        // TODO move projectiles
     }
+        // TODO move projectiles
 
     /* Draws any additional effects or projectiles made by this Weapon. */
     draw() {
-        if (currentWeapon == "pistol") {
-            
-        }
+        image(projectilesprite, projectiles[0][1].x, projectiles[0][1].y);
         // TODO projectile drawing
-
     }
 }
