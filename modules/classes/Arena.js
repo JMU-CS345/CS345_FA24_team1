@@ -92,16 +92,18 @@ class Arena {
       const enemy = waveinfo.enemies[this.nextSpawnID1],
         enemyinfo = this.enemies.find((eobj) => eobj.name == enemy.name);
 
+      // Random spawn location
+      const randidx = Math.floor(Math.random()*this.map.info.enemySpawn.length),
+            enemySpawn = this.map.info.enemySpawn[randidx];
+
       const enemyobj = new Enemy(
-        this,                                   // arena
-        new Vector2D(0,0).fromOther(this.map.info.enemySpawn), // spawn location
-        enemyinfo.health,                       // starting health
-        enemyinfo.sprite,                       // sprite image
-        new Box(                                // hitbox
-          this.map.info.enemySpawn.x, this.map.info.enemySpawn.y, 24, 51
-        ),
-        enemyinfo.speed,                        // movement speed
-        this.charanimations                     // character animations
+        this,                                        // arena
+        new Vector2D(0,0).fromOther(enemySpawn),     // spawn location
+        enemyinfo.health,                            // starting health
+        enemyinfo.sprite,                            // sprite image
+        new Box(enemySpawn.x, enemySpawn.y, 24, 51), // hitbox
+        enemyinfo.speed,                             // movement speed
+        this.charanimations                          // character animations
       );
     
       // Equip enemy with weapon
@@ -158,7 +160,7 @@ class Arena {
     const info = this.map.info;
 
     // Boxes and Vector2Ds to scale
-    const locs = [info.playerSpawn, info.enemySpawn];
+    const locs = [info.playerSpawn].concat(info.enemySpawn);
     const boxes = info.bounds;
 
     // Scale all
