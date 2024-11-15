@@ -78,7 +78,7 @@ function main() {
     // Create JSON output object
     let obj = {
         playerSpawn: {x: -1, y: -1},
-        enemySpawn: {x: -1, y: -1},
+        enemySpawn: [],
         bounds: []
     };
 
@@ -98,8 +98,7 @@ function main() {
 
             // Red check
             if ((pxr == 255) && (pxg == 0) && (pxb == 0)) {
-                obj.enemySpawn.x = x;
-                obj.enemySpawn.y = y;
+                obj.enemySpawn.push({x: x, y: y});
                 continue;
             }
 
@@ -116,9 +115,9 @@ function main() {
         }
     }
     
-    // Check found both
-    if (obj.enemySpawn.x == -1)
-        throw new Error("no enemySpawn pixel in image");
+    // Check found both player and enemy spawns (with at least 1 enemySpawn)
+    if (obj.enemySpawn.length == 0)
+        throw new Error("no enemySpawn pixels in image");
     if (obj.playerSpawn.x == -1)
         throw new Error("no playerSpawn pixel in image");
 
