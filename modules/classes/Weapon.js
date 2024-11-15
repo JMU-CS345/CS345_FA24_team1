@@ -36,7 +36,7 @@ class Weapon {
             //  -> move back x/y if facing left or up
             let weaponbox = this.owner.box.clone();
             let movement = new Vector2D(0, 0).fromPolar(
-                Direction.radians(this.owner.facing), this.wtype.meleerange
+                this.wtype.meleerange, Direction.radians(this.owner.facing)
             );
             weaponbox.width += movement.x;
             weaponbox.height += movement.y;
