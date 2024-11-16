@@ -115,20 +115,10 @@ class Arena {
   }
 
   update() {
-    if (!this.getPlayer().alive) {
+    if (!this.getPlayer().alive && (this.timerReference != null))
       this.stopTimer();
-      return;
-    }
 
-    // Filter out dead enemies and update active characters
-    this.characters = this.characters.filter((character) => {
-      if (character instanceof Enemy && character.health <= 0) {
-        character.alive = false;
-        return false; // Remove dead enemies
-      }
-      character.update();
-      return true;
-    });
+    this.characters.forEach(character => character.update());
 
     // Check if all enemies are defeated and start the next wave if true
     const enemiesRemaining = this.characters.some(
