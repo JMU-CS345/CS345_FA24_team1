@@ -27,6 +27,19 @@ class Box {
         return !((ty2 < oy1) || (ty1 > oy2) || (tx2 < ox1) || (tx1 > ox2));
     }
 
+    /* Extends this Box in the direction of the passed Vector2D vector. */
+    /* TODO write tests for extend() */
+    extend(vector) {
+        // Add absolute value of x,y to box width,height
+        this.width += Math.abs(vector.x);
+        this.height += Math.abs(vector.y);
+
+        // Shift box x,y backwards if vector x,y negative
+        // No shift if vector x,y >= zero
+        this.x += Math.min(vector.x, 0);
+        this.y += Math.min(vector.y, 0);
+    }
+
     /* true if this Box has identical values as other, false otherwise */
     equals(other) {
         return (this.x == other.x) && (this.y == other.y)

@@ -32,16 +32,11 @@ class Weapon {
             // hitbox, extended out meleerange pixels in the direction
             // that the owner is facing.
 
-            // Owner's box -> clone -> extend width/height in direction
-            //  -> move back x/y if facing left or up
+            // Owner's box -> clone -> extend in direction
             let weaponbox = this.owner.box.clone();
-            let movement = new Vector2D(0, 0).fromPolar(
-                Direction.radians(this.owner.facing), this.wtype.meleerange
-            );
-            weaponbox.width += movement.x;
-            weaponbox.height += movement.y;
-            if (this.owner.facing == Direction.LEFT) weaponbox.x -= movement.x;
-            if (this.owner.facing == Direction.UP) weaponbox.y -= movement.y;
+            weaponbox.extend(new Vector2D(0, 0).fromPolar(
+                this.wtype.meleerange, Direction.radians(this.owner.facing)
+            ));
 
             // Hit all characters that intersect weaponbox
             this.owner.arena.characters.forEach((character) => {

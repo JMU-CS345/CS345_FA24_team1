@@ -3,7 +3,7 @@
         {
             "name": "development",
             "health": 10, 
-            "sprite": "/assets/characters/sprite_sheets/zombie_normal.png", 
+            "sprite": "assets/characters/sprite_sheets/zombie_normal.png", 
             "speed": 3,
             "weapon": "fists"
         }
