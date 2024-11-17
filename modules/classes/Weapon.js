@@ -58,22 +58,24 @@ class Weapon {
         // Create projectiles if ranged
             // TODO
             // pistol, shotgun, rifle
-            //for now using a boxlike projectile
-            
-        
     }
 
     /* Updates the movement of any projectiles created by this Weapon. */
     update() {
-        if (this.projectiles != null) {
-            if (this.lastFireTime == currentTime) {
-                while (this.projectilebox.x < Arena.width && this.projectilebox.x >= 0 ||
-                    this.projectilebox.y < Arena.height && this.projectilebox.y >= 0 && 
-                    !(this.projectilebox.intersects(Enemy.Box))) {
-
-                    this.projectiles[0][1].x = (this.projectiles[0][0].x + this.projectiles[0][1].x) * 2;
-                    this.projectiles[0][1].y = (this.projectiles[0][0].y + this.projectiles[0][1].y) * 2;
-                }            
+        if (this.projectiles.length > 0) {
+            if (this.lastFireTime == currentTime) {                 
+                for (let i = 0; i < this.projectiles.length; i++) {
+                    this.projectiles[i][1].x += this.projectiles[i][0].x //multiplier?;
+                    this.projectiles[i][1].y += this.projectiles[i][0].y //multiplier?;
+                    
+                    if (this.projectiles[i][1].x > Arena.width || this.projectiles[i][1].x < 0
+                        || this.projectiles[i][1].y > Arena.height || this.projectiles[i][1].y < 0
+                        || this.projeciles[i][1].checkHit(Enemy.Box)
+                    ) {
+                        this.projectiles.splice(i, 1);
+                        i--;
+                    }
+                }                       
             }
         }
     }
@@ -81,7 +83,7 @@ class Weapon {
 
     /* Draws any additional effects or projectiles made by this Weapon. */
     draw() {
-        image(projectilesprite, projectiles[0][1].x, projectiles[0][1].y);
+        image(projectilesprite, this.projectiles[0][1].x, this.projectiles[0][1].y);
         // TODO projectile drawing
     }
 }
