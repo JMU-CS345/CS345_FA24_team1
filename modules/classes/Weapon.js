@@ -66,12 +66,13 @@ class Weapon {
     update() {
         if (this.projectiles.length > 0) {                 
             for (let i = 0; i < this.projectiles.length; i++) {
-                this.projectiles[i][1].x += this.projectiles[i][0].x //multiplier?;
-                this.projectiles[i][1].y += this.projectiles[i][0].y //multiplier?;
+                this.projectiles[i].position.x += this.projectiles[i].velocity.x;
+                this.projectiles[i].position.y += this.projectiles[i].velocity.y;
+
                 
-                if (this.projectiles[i][1].x > Arena.width || this.projectiles[i][1].x < 0
-                    || this.projectiles[i][1].y > Arena.height || this.projectiles[i][1].y < 0
-                    || this.projeciles[i][1].checkHit(Enemy.Box)
+                if (this.projectiles[i].position.x > Arena.width || this.projectiles[i].position.x < 0
+                    || this.projectiles[i].position.y > Arena.height || this.projectiles[i].position.y < 0
+                    || this.projectiles[i].position.checkHit(Enemy.Box)
                 ) {
                     this.projectiles.splice(i, 1);
                     i--;
@@ -79,13 +80,11 @@ class Weapon {
             }                      
         }
     }
-        // TODO move projectiles
 
     /* Draws any additional effects or projectiles made by this Weapon. */
     draw() {
         for (let i = 0; i < this.projectiles.length; i++) {
-            image(this.wtype.projsprite, this.projectiles[i][1].x, this.projectiles[i][1].y);
+            image(this.wtype.projsprite, this.projectiles[i].position.x, this.projectiles[i].position.y);
         }
-        // TODO projectile drawing
     }
 }
