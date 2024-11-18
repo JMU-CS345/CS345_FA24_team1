@@ -51,14 +51,14 @@ class Weapon {
         }
 
         // Create projectiles if ranged
-        let velocity;
+        let projvelocity;
         if (this.wtype.hasranged) {
-            if (this.owner.facing == Direction.DOWN) velocity = new Vector2D(0,2);
-            if (this.owner.facing == Direction.UP) velocity = new Vector2D(0,-2);
-            if (this.owner.facing == Direction.LEFT) velocity = new Vector2D(-2,0);
-            if (this.owner.facing == Direction.RIGHT) velocity = new Vector2D(2,0);
-            let position = this.owner.box.clone();
-            this.projectiles.push({velocity, position});
+            if (this.owner.facing == Direction.DOWN) projvelocity = new Vector2D(0,2);
+            if (this.owner.facing == Direction.UP) projvelocity = new Vector2D(0,-2);
+            if (this.owner.facing == Direction.LEFT) projvelocity = new Vector2D(-2,0);
+            if (this.owner.facing == Direction.RIGHT) projvelocity = new Vector2D(2,0);
+            let projposition = this.owner.box.clone();
+            this.projectiles.push({projvelocity, projposition});
         }
     }
 
@@ -66,14 +66,16 @@ class Weapon {
     update() {
         if (this.projectiles.length > 0) {                 
             for (let i = 0; i < this.projectiles.length; i++) {
-                this.projectiles[i].position.x += this.projectiles[i].velocity.x;
-                this.projectiles[i].position.y += this.projectiles[i].velocity.y;
+                this.projectiles[i].projposition.x += this.projectiles[i].projvelocity.x;
+                this.projectiles[i].projposition.y += this.projectiles[i].projvelocity.y;
 
                 
-                if (this.projectiles[i].position.x > Arena.width || this.projectiles[i].position.x < 0
-                    || this.projectiles[i].position.y > Arena.height || this.projectiles[i].position.y < 0
-                    || this.projectiles[i].position.checkHit(Enemy.Box)
-                ) {
+                if (!(isValidLocation(this.projectiles[i].projposition)) || this.projectiles[i].projposition.checkHit(Enemy.Box)) {
+                    this.owner.arena.characters.forEach((character) => {
+                        if (character instanceof Enemy && character.checkHit(this.projectiles[i].position)) {
+                            character.takeDamage(this.wtype.damage);
+                        }
+                    });
                     this.projectiles.splice(i, 1);
                     i--;
                 }
@@ -84,7 +86,7 @@ class Weapon {
     /* Draws any additional effects or projectiles made by this Weapon. */
     draw() {
         for (let i = 0; i < this.projectiles.length; i++) {
-            image(this.wtype.projsprite, this.projectiles[i].position.x, this.projectiles[i].position.y);
+            image(this.wtype.projsprite, this.projectiles[i].projposition.x, this.projectiles[i].projposition.y);
         }
     }
 }
