@@ -6,6 +6,10 @@ class UI {
 		this.arena = arena;
 		this.time = 0;
 		this.timerReference = null;
+        this.weaponSlotCount = 5;
+        this.slotSize = 50;
+        this.slotPadding = 10;
+        this.selectedWeaponIndex = 0;
 	}
 
 	/*
@@ -28,5 +32,45 @@ class UI {
         text(`Time: ${formattedTime}`, 10, 60);
 
         text(`Level: ${this.arena.wave}`, 10, 90);
+        this.checkSlotSwitch();
+        this.drawWeaponHotbar();
+    }
+
+    checkSlotSwitch() {
+        if (keyIsDown(49)) this.selectedWeaponIndex = 0; // Key "1"
+        else if (keyIsDown(50)) this.selectedWeaponIndex = 1; // Key "2"
+        else if (keyIsDown(51)) this.selectedWeaponIndex = 2; // Key "3"
+        else if (keyIsDown(52)) this.selectedWeaponIndex = 3; // Key "4"
+        else if (keyIsDown(53)) this.selectedWeaponIndex = 4; // Key "5"
+    }
+
+    drawWeaponHotbar() {
+        const hotbarWidth = (this.slotSize * this.weaponSlotCount) + (this.slotPadding * (this.weaponSlotCount - 1));
+        const hotbarX = (width - hotbarWidth) / 2;  // Center hotbar horizontally
+        const hotbarY = height - this.slotSize - 20;
+        const weaponImageKeys = ["katana", "pistol", "shotgun", "rifle", "rocket"];
+    
+        for (let i = 0; i < this.weaponSlotCount; i++) {
+            const slotX = hotbarX + i * (this.slotSize + this.slotPadding);
+    
+            // Highlight selected weapon slot based on key press
+            if (i === this.selectedWeaponIndex) {
+                fill(200, 200, 50); // Highlight color for the selected slot
+                stroke(255);
+                strokeWeight(3);
+            } else {
+                fill(100);
+                noStroke();
+            }
+            
+            // Draw the slot
+            rect(slotX, hotbarY, this.slotSize, this.slotSize);
+
+            const weaponImage = assets.weaponImages[weaponImageKeys[i]];
+            if (weaponImage) {
+                image(weaponImage, slotX, hotbarY, this.slotSize, this.slotSize);
+            }
+        }
     }
 }
+
