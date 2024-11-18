@@ -38,6 +38,8 @@ class Arena {
     // Timer for tracking game duration
     this.time = 0;
     this.timerReference = null;
+    
+    this.enemyCount = 3;
 
     // Start the timer
     this.startTime();
@@ -131,7 +133,7 @@ class Arena {
       this.characters.push(enemyobj);
 
       // Advance spawn indices, stop timer when all enemies are spawned
-      if ((++this.nextSpawnID2) == enemy.count) {
+      if ((++this.nextSpawnID2) == this.enemyCount) {
         if ((++this.nextSpawnID1) == waveinfo.enemies.length) {
           clearInterval(this.spawnTimer);
           this.spawnTimer = null;
@@ -157,6 +159,7 @@ class Arena {
       (c) => c instanceof Enemy && c.alive
     );
     if (!enemiesRemaining && !this.spawnTimer) {
+      this.enemyCount = Math.ceil(this.enemyCount * 1.4);
       this.nextWave();
     }
   }
