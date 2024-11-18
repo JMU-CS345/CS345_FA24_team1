@@ -51,34 +51,41 @@ class Weapon {
         }
 
         // Create projectiles if ranged
-            // TODO
-            // pistol, shotgun, rifle
+        let velocity;
+        if (this.wtype.hasranged) {
+            if (this.owner.facing == Direction.DOWN) velocity = new Vector2D(0,2);
+            if (this.owner.facing == Direction.UP) velocity = new Vector2D(0,-2);
+            if (this.owner.facing == Direction.LEFT) velocity = new Vector2D(-2,0);
+            if (this.owner.facing == Direction.RIGHT) velocity = new Vector2D(2,0);
+            let position = this.owner.box.clone();
+            this.projectiles.push({velocity, position});
+        }
     }
 
     /* Updates the movement of any projectiles created by this Weapon. */
     update() {
-        if (this.projectiles.length > 0) {
-            if (this.lastFireTime == currentTime) {                 
-                for (let i = 0; i < this.projectiles.length; i++) {
-                    this.projectiles[i][1].x += this.projectiles[i][0].x //multiplier?;
-                    this.projectiles[i][1].y += this.projectiles[i][0].y //multiplier?;
-                    
-                    if (this.projectiles[i][1].x > Arena.width || this.projectiles[i][1].x < 0
-                        || this.projectiles[i][1].y > Arena.height || this.projectiles[i][1].y < 0
-                        || this.projeciles[i][1].checkHit(Enemy.Box)
-                    ) {
-                        this.projectiles.splice(i, 1);
-                        i--;
-                    }
-                }                       
-            }
+        if (this.projectiles.length > 0) {                 
+            for (let i = 0; i < this.projectiles.length; i++) {
+                this.projectiles[i][1].x += this.projectiles[i][0].x //multiplier?;
+                this.projectiles[i][1].y += this.projectiles[i][0].y //multiplier?;
+                
+                if (this.projectiles[i][1].x > Arena.width || this.projectiles[i][1].x < 0
+                    || this.projectiles[i][1].y > Arena.height || this.projectiles[i][1].y < 0
+                    || this.projeciles[i][1].checkHit(Enemy.Box)
+                ) {
+                    this.projectiles.splice(i, 1);
+                    i--;
+                }
+            }                      
         }
     }
         // TODO move projectiles
 
     /* Draws any additional effects or projectiles made by this Weapon. */
     draw() {
-        image(projectilesprite, this.projectiles[0][1].x, this.projectiles[0][1].y);
+        for (let i = 0; i < this.projectiles.length; i++) {
+            image(this.wtype.projsprite, this.projectiles[i][1].x, this.projectiles[i][1].y);
+        }
         // TODO projectile drawing
     }
 }
