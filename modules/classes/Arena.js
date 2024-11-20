@@ -167,6 +167,37 @@ class Arena {
   /* Draws the arena map and characters. */
   draw() {
     image(this.map.bgImage, 0, 0, this.width, this.height);
+
+    // TODO
+    // TODO by in move() keep track of current closest node, only check
+    // neighbors on move and see if any are closer than current
+    // TODO also verify that there is a hasLOS() from px,py to node x,y
+    // TODO also rerun dijkstra when node changes
+    let closestidx = -1,
+        cval = 99999999999;
+    const px = this.getPlayer().box.x;
+    const py = this.getPlayer().box.y;
+    this.map.info.graph.forEach((node, nodeidx) => {
+        const y2y1 = node.y - py;
+        const x2x1 = node.x - px;
+        const score = y2y1*y2y1+x2x1*x2x1;
+        if (score < cval) {
+            cval = score;
+            closestidx = nodeidx;
+        }
+    });
+    this.map.info.graph.forEach((node, nodeidx) => {
+        noStroke();
+        fill(220, 0, 0);
+        if (nodeidx == closestidx) fill(0, 220, 0);
+        circle(node.x, node.y, 15);
+        node.edges.forEach((otheridx) => {
+            stroke(0, 0, 0);
+            const other = this.map.info.graph[otheridx];
+            //line(node.x, node.y, other.x, other.y);
+        });
+    });
+
     // Draw characters, ensuring the player is drawn last
     for (let i = (this.characters.length - 1); i >= 0; i--)
       this.characters[i].draw();
@@ -175,7 +206,7 @@ class Arena {
   /* Scales the map and associated elements by the given factors. */
   scaleMap(scalex, scaley) {
     const info = this.map.info;
-    const locs = [info.playerSpawn].concat(info.enemySpawn);
+    const locs = [info.playerSpawn].concat(info.enemySpawn).concat(info.graph); // TODO
     const boxes = info.bounds;
 
     // Scale spawn locations and bounding boxes
