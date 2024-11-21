@@ -63,5 +63,6 @@ class Player extends Character {
       return null;
     }
     super.currentWeapon().fire(); 
+    // play sound
   }
 }

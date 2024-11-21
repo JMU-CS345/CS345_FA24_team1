@@ -27,6 +27,7 @@ class Arena {
       (wtype) => wtype.name == "katana"), this.getPlayer()), true);
     this.playerAlive = true;
     this.enemies = assets.enemies.enemies;
+    this.gameaudio = assets.gameaudio;
 
     // Wave information
     this.waves = assets.waves.waves;
@@ -40,9 +41,6 @@ class Arena {
     this.timerReference = null;
     
     this.enemyCount = 3;
-
-    // Start the timer
-    this.startTime();
   }
 
   /* Starts the game timer, incrementing time every second. */
@@ -149,8 +147,11 @@ class Arena {
 
   /* Updates the arena's state and handles game logic per tick. */
   update() {
-    if (!this.getPlayer().alive && (this.timerReference != null))
+    if (!this.getPlayer().alive && (this.timerReference != null)) {
       this.stopTimer();
+      this.gameaudio.stop();
+      // this.gameover.loop();
+    }
   
     this.characters.forEach(character => character.update());
   
@@ -158,7 +159,7 @@ class Arena {
     const enemiesRemaining = this.characters.some(
       (c) => c instanceof Enemy && c.alive
     );
-    if (!enemiesRemaining && !this.spawnTimer) {
+    if (!enemiesRemaining && !this.spawnTimer && this.timerReference) {
       this.enemyCount = Math.ceil(this.enemyCount * 1.4);
       this.nextWave();
     }

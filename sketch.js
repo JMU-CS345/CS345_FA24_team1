@@ -2,7 +2,7 @@
  * Main sketch file. Delegates everything to Arena and UI.
  */
 
-let arena, ui, assets;
+let arena, ui, assets, gameAudio;
 
 function preload() {
     // Preload all assets
@@ -30,16 +30,31 @@ function preload() {
             shotgun: loadImage("assets/weapons/shotgun_slot_3.png"),
             rifle: loadImage("assets/weapons/rifle_slot_4.png"),
             rocket: loadImage("assets/weapons/rocket_slot_5.png")
-        }
+        },
+        gameaudio: loadSound("assets/sound/game_loop.mp3")
     };
 }
 
 function setup() {
+    getAudioContext().suspend();
     arena = new Arena(assets);
     ui = new UI(arena);
     createCanvas(windowWidth, windowHeight);
     arena.setSize(windowWidth, windowHeight);
-    arena.nextWave();
+}
+
+// This is primarily to handle game audio, since audio will not start without user interaction first.
+function keyPressed() {
+    if (key === " ") {
+        userStartAudio();
+        if (arena.getPlayer().alive && arena.timerReference == null) {
+            arena.startTime();
+            arena.nextWave();
+        }
+        if (arena.getPlayer().alive && !assets.gameaudio.isPlaying()) {
+            assets.gameaudio.loop();
+        }
+    }
 }
 
 function windowResized() {

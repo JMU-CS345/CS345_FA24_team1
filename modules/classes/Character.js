@@ -75,10 +75,13 @@ class Character {
 	 *	@param damage The specified amount of damage to receive
 	 */
 	takeDamage(damage) {
-		this.health -= damage;
-		if (this.health <= 0) {
-			this.health = 0;
-			this.alive = false;
+		if (this.health > 0) {
+			this.health -= damage;
+			if (this.health <= 0) {
+				this.health = 0;
+				this.alive = false;
+			}
+			// play characters damage sound;
 		}
 	}
 
