@@ -31,7 +31,9 @@ function preload() {
             rifle: loadImage("assets/weapons/rifle_slot_4.png"),
             rocket: loadImage("assets/weapons/rocket_slot_5.png")
         },
-        gameaudio: loadSound("assets/sound/game_loop.mp3")
+        gameaudio: loadSound("assets/sound/game_loop.mp3"),
+        gameoveraudio: loadSound("assets/sound/game_over.wav"),
+        playergrunt: loadSound("assets/sound/player_grunt.wav") // https://opengameart.org/content/grunt
     };
 }
 
@@ -47,11 +49,10 @@ function setup() {
 function keyPressed() {
     if (key === " ") {
         userStartAudio();
-        if (arena.getPlayer().alive && arena.timerReference == null) {
+        if (arena.getPlayer().alive && arena.timerReference == null && !assets.gameaudio.isPlaying()) {
             arena.startTime();
             arena.nextWave();
-        }
-        if (arena.getPlayer().alive && !assets.gameaudio.isPlaying()) {
+            assets.gameaudio.setVolume(0.45);
             assets.gameaudio.loop();
         }
     }

@@ -18,7 +18,7 @@ class Arena {
     this.characters = [new Player(
       this,
       new Vector2D(0, 0).fromOther(this.map.info.playerSpawn),
-      1, assets.playersprite,
+      25, assets.playersprite,
       new Box(
         this.map.info.playerSpawn.x, this.map.info.playerSpawn.y, 24, 51
       ), 5, this.charanimations
@@ -28,6 +28,9 @@ class Arena {
     this.playerAlive = true;
     this.enemies = assets.enemies.enemies;
     this.gameaudio = assets.gameaudio;
+    this.gameoveraudio = assets.gameoveraudio;
+    this.playergrunt = assets.playergrunt;
+
 
     // Wave information
     this.waves = assets.waves.waves;
@@ -150,7 +153,7 @@ class Arena {
     if (!this.getPlayer().alive && (this.timerReference != null)) {
       this.stopTimer();
       this.gameaudio.stop();
-      // this.gameover.loop();
+      this.gameoveraudio.play();
     }
   
     this.characters.forEach(character => character.update());

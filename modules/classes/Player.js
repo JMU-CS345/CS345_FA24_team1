@@ -59,10 +59,6 @@ class Player extends Character {
    *  Attacks enemies if player is facing their direction & in their box
    */
   attack() {
-    if (this.cooldown) {
-      return null;
-    }
     super.currentWeapon().fire(); 
-    // play sound
   }
 }

@@ -13,7 +13,8 @@
             "firerate": 2,
             "hasmelee": true,
             "meleerange": 50,
-            "hasranged": false
+            "hasranged": false,
+            "fireaudio": "../assets/sound/katana.mp3"
         }, {
             "name": "test_gun",
             "damage": 1,

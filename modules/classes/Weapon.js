@@ -4,6 +4,10 @@ class Weapon {
     constructor(wtype, owner) {
         this.wtype = wtype;
         this.owner = owner;
+        if (this.wtype.fireaudio) {
+            this.fireAudio = loadSound(this.wtype.fireaudio);
+        }
+        
 
         // Instance-specific weapon info - last fire time + projectiles
         // For melee-only weapons, projectiles will always be empty
@@ -25,6 +29,12 @@ class Weapon {
         if (timeSinceLastFire < (1000 / this.wtype.firerate)) return;
 
         this.lastFireTime = currentTime; // Update last fire time
+
+
+        // Play weapon attack sound if they have one
+        if (this.fireAudio) {
+            this.fireAudio.play();
+        }
 
         // Register damage to nearby enemies if melee
         if (this.wtype.hasmelee) {

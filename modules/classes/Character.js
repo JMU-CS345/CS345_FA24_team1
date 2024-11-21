@@ -76,12 +76,14 @@ class Character {
 	 */
 	takeDamage(damage) {
 		if (this.health > 0) {
-			this.health -= damage;
+			this.health -= Math.floor(damage);
 			if (this.health <= 0) {
 				this.health = 0;
 				this.alive = false;
 			}
-			// play characters damage sound;
+			if (this instanceof Player) {
+				this.arena.playergrunt.play();
+			}
 		}
 	}
 
