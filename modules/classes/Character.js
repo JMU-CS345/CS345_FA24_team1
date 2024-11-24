@@ -57,8 +57,10 @@ class Character {
 			this.facing = Direction.primaryDirectionChange(this.location, loc);
 
 			// clone so calling class can't modify location after return
+            // set box x/y so that references stay the same
 			this.location = loc.clone();
-			this.box = newBox;
+			this.box.x = loc.x;
+			this.box.y = loc.y;
 		}
 	}
 
