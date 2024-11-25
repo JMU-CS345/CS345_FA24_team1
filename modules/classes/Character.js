@@ -33,6 +33,9 @@ class Character {
     	this.currentFrame = 0;
     	this.frameDelay = 12;
     	this.frameTimer = 0;
+
+        // Random ID
+        this.id = Math.floor(Math.random() * 1000000)
 	}
 
 	/**
@@ -57,8 +60,10 @@ class Character {
 			this.facing = Direction.primaryDirectionChange(this.location, loc);
 
 			// clone so calling class can't modify location after return
+            // set box x/y so that references stay the same
 			this.location = loc.clone();
-			this.box = newBox;
+			this.box.x = loc.x;
+			this.box.y = loc.y;
 		}
 	}
 

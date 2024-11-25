@@ -27,6 +27,36 @@ class Box {
         return !((ty2 < oy1) || (ty1 > oy2) || (tx2 < ox1) || (tx1 > ox2));
     }
 
+    /* true if this Box intersects the line segment from point start to point
+     * end, false otherwise */
+    /* TODO write tests for intersectsSegment() */
+    intersectsSegment(start, end) {
+        const xmin = this.x, xmax = this.x + this.width,
+              ymin = this.y, ymax = this.y + this.height,
+              xseglen = end.x - start.x, yseglen = end.y - start.y;
+
+        // https://michvalwin.com/posts/2023/04/26/ray-collisions.html
+        // Time on line entering Box xmin, xmax, ymin, ymax
+        const txmin = (xmin - start.x) / xseglen,
+              txmax = (xmax - start.x) / xseglen,
+              tymin = (ymin - start.y) / yseglen,
+              tymax = (ymax - start.y) / yseglen;
+
+        // Time entering and leaving x, entering and leaving y ranges
+        const txnear = Math.min(txmin, txmax),
+              txfar  = Math.max(txmin, txmax),
+              tynear = Math.min(tymin, tymax),
+              tyfar  = Math.max(tymin, tymax);
+        
+        // Time at which near sides have been entired
+        // Time at which far sides have been left
+        const tnear = Math.max(txnear, tynear),
+              tfar = Math.min(txfar, tyfar);
+
+        // Intersects if 0 <= near <= far <= 1
+        return (0 <= tnear) && (tnear <= tfar) && (tfar <= 1) ;
+    }
+
     /* Extends this Box in the direction of the passed Vector2D vector. */
     /* TODO write tests for extend() */
     extend(vector) {

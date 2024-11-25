@@ -28,6 +28,9 @@ class Arena {
     this.playerAlive = true;
     this.enemies = assets.enemies.enemies;
 
+    // Initialize pathfinding
+    this.pathing = new Pathfinding(this.map, this.getPlayer().box);
+
     // Wave information
     this.waves = assets.waves.waves;
     this.wave = 0; // Current wave index
@@ -167,6 +170,7 @@ class Arena {
   /* Draws the arena map and characters. */
   draw() {
     image(this.map.bgImage, 0, 0, this.width, this.height);
+    
     // Draw characters, ensuring the player is drawn last
     for (let i = (this.characters.length - 1); i >= 0; i--)
       this.characters[i].draw();
@@ -175,7 +179,7 @@ class Arena {
   /* Scales the map and associated elements by the given factors. */
   scaleMap(scalex, scaley) {
     const info = this.map.info;
-    const locs = [info.playerSpawn].concat(info.enemySpawn);
+    const locs = [info.playerSpawn].concat(info.enemySpawn).concat(info.graph);
     const boxes = info.bounds;
 
     // Scale spawn locations and bounding boxes
