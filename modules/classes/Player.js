@@ -24,19 +24,27 @@ class Player extends Character {
     }
 
     // Movement
-    if (keyIsDown(UP_ARROW)) {
-      this.state = "moving";
+    const keydownUP = keyIsDown(UP_ARROW),
+          keydownDOWN = keyIsDown(DOWN_ARROW),
+          keydownLEFT = keyIsDown(LEFT_ARROW),
+          keydownRIGHT = keyIsDown(RIGHT_ARROW),
+          moving = keydownUP || keydownDOWN || keydownLEFT || keydownRIGHT;
+
+    if (keydownUP) {
       super.move(new Vector2D(0, -this.speed).add(this.location));
-    } else if (keyIsDown(DOWN_ARROW)) {
-      this.state = "moving";
+    } else if (keydownDOWN) {
       super.move(new Vector2D(0, this.speed).add(this.location));
-    } else if (keyIsDown(LEFT_ARROW)) {
-      this.state = "moving";
+    } else if (keydownLEFT) {
       super.move(new Vector2D(-this.speed, 0).add(this.location));
-    } else if (keyIsDown(RIGHT_ARROW)) {
-      this.state = "moving";
+    } else if (keydownRIGHT) {
       super.move(new Vector2D(this.speed, 0).add(this.location));
     }
+
+    if (moving) {
+      this.state = "moving";
+      this.arena.pathing.updatePlayerBox(); // Recalculate pathfinding
+    }
+
     if (keyIsDown(32)) {
       this.state = "attacking";
       this.attack();
