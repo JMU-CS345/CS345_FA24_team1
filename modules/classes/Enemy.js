@@ -18,26 +18,20 @@ class Enemy extends Character {
     // Do nothing if player dead
     if (!this.arena.getPlayer().alive) return;
 
-    // Move towards player. TODO: pathfind around obstacles in way
     // Get the player's position
     const player = this.arena.getPlayer();
     const playerBox = player.box;
 
-    // Simple logic to move towards the player
     // Only move if not already on top of player
     if (!this.box.intersects(playerBox)) {
       this.state = "moving";
-      if (this.box.x < playerBox.x) {
-        super.move(new Vector2D(this.speed, 0).add(this.location)); // right
-      } else if (this.box.x > playerBox.x) {
-        super.move(new Vector2D(-this.speed, 0).add(this.location)); // left
-      }
-
-      if (this.box.y < playerBox.y) {
-        super.move(new Vector2D(0, this.speed).add(this.location)); // down
-      } else if (this.box.y > playerBox.y) {
-        super.move(new Vector2D(0, -this.speed).add(this.location)); // up
-      }
+      super.move(
+        new Vector2D(0, 0).fromPolar(
+          this.speed,
+          Direction.radians(
+              this.arena.pathing.travelDirection(this.box, this.id))
+        ).add(this.location)
+      );
     }
 
     // Attacks when enemies box intersects the players box if the enemy is alive

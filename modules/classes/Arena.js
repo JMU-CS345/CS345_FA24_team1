@@ -174,9 +174,6 @@ class Arena {
     // Draw characters, ensuring the player is drawn last
     for (let i = (this.characters.length - 1); i >= 0; i--)
       this.characters[i].draw();
-
-    // TODO
-    this.pathing.debug_draw();
   }
 
   /* Scales the map and associated elements by the given factors. */

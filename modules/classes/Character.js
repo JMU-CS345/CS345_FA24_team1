@@ -33,6 +33,9 @@ class Character {
     	this.currentFrame = 0;
     	this.frameDelay = 12;
     	this.frameTimer = 0;
+
+        // Random ID
+        this.id = Math.floor(Math.random() * 1000000)
 	}
 
 	/**
