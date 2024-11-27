@@ -18,7 +18,7 @@ class Arena {
     this.characters = [new Player(
       this,
       new Vector2D(0, 0).fromOther(this.map.info.playerSpawn),
-      25, assets.playersprite,
+      25, assets.playersprites.katana,
       new Box(
         this.map.info.playerSpawn.x, this.map.info.playerSpawn.y, 24, 51
       ), 5, this.charanimations

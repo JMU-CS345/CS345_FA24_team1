@@ -23,7 +23,13 @@ function preload() {
         charanimations: loadJSON("modules/configs/character_animations.json"),
         mapbg: loadImage("assets/maps/OriginalMap.jpg"),
         mapinfo: loadJSON("assets/maps/OriginalMap-bounds.json"),
-        playersprite: loadImage("assets/characters/sprite_sheets/samurai.png"),
+        playersprites: {
+            katana: loadImage("assets/characters/sprite_sheets/samurai.png"),
+            pistol: loadImage("assets/characters/sprite_sheets/pistol_stance.png"),
+            shotgun: loadImage("assets/characters/sprite_sheets/shotgun_stance.png"),
+            rifle: loadImage("assets/characters/sprite_sheets/rifle_stance.png"),
+            rocket: loadImage("assets/characters/sprite_sheets/rocket_stance.png")
+        },
         weaponImages: {
             katana: loadImage("assets/weapons/katana_slot_1.png"),
             pistol: loadImage("assets/weapons/pistol_slot_2.png"),

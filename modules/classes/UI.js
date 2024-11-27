@@ -10,6 +10,8 @@ class UI {
         this.slotSize = 50;
         this.slotPadding = 10;
         this.selectedWeaponIndex = 0;
+
+        this.weaponUnlockRounds = [0, 3, 6, 9, 12];
 	}
 
 	/*
@@ -37,11 +39,25 @@ class UI {
     }
 
     checkSlotSwitch() {
+        let previousWeaponIndex = this.selectedWeaponIndex;
+
         if (keyIsDown(49)) this.selectedWeaponIndex = 0; // Key "1"
         else if (keyIsDown(50)) this.selectedWeaponIndex = 1; // Key "2"
         else if (keyIsDown(51)) this.selectedWeaponIndex = 2; // Key "3"
         else if (keyIsDown(52)) this.selectedWeaponIndex = 3; // Key "4"
         else if (keyIsDown(53)) this.selectedWeaponIndex = 4; // Key "5"
+
+        const wave = this.arena.wave;
+
+        if (this.weaponUnlockRounds[this.selectedWeaponIndex] > wave) {
+            this.selectedWeaponIndex = previousWeaponIndex; // Revert if not unlocked
+        }
+
+        if (previousWeaponIndex !== this.selectedWeaponIndex) {
+            const weaponKeys = ["katana", "pistol", "shotgun", "rifle", "rocket"];
+            const newWeapon = weaponKeys[this.selectedWeaponIndex];
+            this.arena.getPlayer().sprite = assets.playersprites[newWeapon];
+        }
     }
 
     drawWeaponHotbar() {
@@ -49,7 +65,8 @@ class UI {
         const hotbarX = (width - hotbarWidth) / 2;  // Center hotbar horizontally
         const hotbarY = height - this.slotSize - 20;
         const weaponImageKeys = ["katana", "pistol", "shotgun", "rifle", "rocket"];
-    
+        const currentWave = this.arena.wave;
+        
         for (let i = 0; i < this.weaponSlotCount; i++) {
             const slotX = hotbarX + i * (this.slotSize + this.slotPadding);
     
@@ -66,9 +83,11 @@ class UI {
             // Draw the slot
             rect(slotX, hotbarY, this.slotSize, this.slotSize);
 
-            const weaponImage = assets.weaponImages[weaponImageKeys[i]];
-            if (weaponImage) {
-                image(weaponImage, slotX, hotbarY, this.slotSize, this.slotSize);
+            if (currentWave >= this.weaponUnlockRounds[i]) {
+                const weaponImage = assets.weaponImages[weaponImageKeys[i]];
+                if (weaponImage) {
+                    image(weaponImage, slotX, hotbarY, this.slotSize, this.slotSize);
+                }
             }
         }
     }
