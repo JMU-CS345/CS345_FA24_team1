@@ -23,11 +23,7 @@ class Pathfinding {
     /* Updates pathfinding to reflect the player's new hitbox. */
     updatePlayerBox() {
         // Recalculate root
-        const plyr_center = {
-            x: this.playerBox.x + (this.playerBox.width >> 1),
-            y: this.playerBox.y + (this.playerBox.height >> 1)
-        };
-        const newroot = this.findClosestNode(plyr_center);
+        const newroot = this.findClosestNode(this.playerBox);
 
         // New best root? Rerun Dijkstra if so
         if (newroot != this.root) {
@@ -37,19 +33,21 @@ class Pathfinding {
     }
 
     /* Calculates where the character with the passed hitbox should travel
-     * towards in order to reach the player, or -1 if they should not move. 
+     * towards in order to reach the player, or -1 if they should not move.
+     * Requires speed of character as well.
      * Also takes parameter id, a number used for randomness that is unique to
      * every character. Returns a Direction. */
-    travelDirection(hitbox, id) {
+    /* TODO improve to fix behavior around corners */
+    travelDirection(hitbox, speed, id) {
         const hb_center = {
             x: hitbox.x + (hitbox.width >> 1),
             y: hitbox.y + (hitbox.height >> 1)
         };
 
-        // Travel towards player if in line of sight, else use graph
+        // Travel towards player if in beeline line of sight, else use graph
         let target = this.playerBox;
-        if (!this.hasLOS(hb_center, this.playerBox)) {
-            const closest = this.nodes[this.findClosestNode(hb_center)],
+        if (!this.hasBeeline(hitbox, this.playerBox)) {
+            const closest = this.nodes[this.findClosestNode(hitbox)],
                   cnode = closest.node, tn = closest.target;
             
             // Default to travel towards closest node
@@ -73,10 +71,16 @@ class Pathfinding {
             return ((randval >> 5) + ((frameCount >> 2) & 2)) & 3;
 
         // Preferred directions - left/right and up/down
-        let prefhorz = Direction.RIGHT,
-            prefvert = Direction.DOWN;
-        if (target.x < hb_center.x) prefhorz = Direction.LEFT;
-        if (target.y < hb_center.y) prefvert = Direction.UP;
+        let prefhorz = Direction.RIGHT, badhorz = Direction.LEFT,
+            prefvert = Direction.DOWN, badvert = Direction.UP;
+        if (target.x < hb_center.x) {
+            prefhorz = Direction.LEFT;
+            badhorz = Direction.RIGHT;
+        }
+        if (target.y < hb_center.y) {
+            prefvert = Direction.UP;
+            badvert = Direction.DOWN;
+        }
 
         // Switch often between horizontal/vertical movement, prefer to
         // travel horizontal/vertical depending on which is more extreme
@@ -85,7 +89,38 @@ class Pathfinding {
               diffy = Math.abs(target.y - hb_center.y),
               threshx = (diffx << 20) / (diffx + diffy); // -> * 0x100000
         randval = (0xbf387 * randval + 0xdf) & 0xfffff;
-        return (randval < threshx) ? prefhorz : prefvert;
+        const dohorz = (randval < threshx); // true -> move left/right first
+
+        // List of all movement choices in order of preference
+        let movechoices;
+        if (dohorz) movechoices = [prefhorz, prefvert, badhorz, badvert];
+        else movechoices = [prefvert, prefhorz, badvert, badhorz];
+
+        // New hitboxes after each of those moves
+        let newboxes = [];
+        movechoices.forEach((dir) => {
+            const movevec = new Vector2D(0, 0).fromPolar(speed, 
+                    Direction.radians(dir));
+            newboxes.push(new Box(hitbox.x+movevec.x, hitbox.y+movevec.y, 
+                    hitbox.width, hitbox.height));
+        });
+
+        // Put choices that result in loss of beeline LOS to target at end
+        for (let i=movechoices.length-1; i>=0; i--) {
+            if (!this.hasBeeline(newboxes[i], target)) {
+                movechoices.push(movechoices.splice(i, 1)[0]);
+                newboxes.push(newboxes.splice(i, 1)[0]);
+            }
+        }
+
+        // Move in the first direction listed in movechoices that the character
+        // can actually move in (not against a wall in that direction)
+        for (let i=0; i<movechoices.length; i++) {
+            if (this.inBounds(newboxes[i])) return movechoices[i];
+        }
+
+        // Can't go in any direction -> trapped
+        return -1;
     }
 
     /* Draws debugging information related to pathfinding. */
@@ -125,16 +160,16 @@ class Pathfinding {
         });
     }
 
-    /* Searches for and returns the closest node to the passed position, with
-     * the requirement that it must be in the position's line of sight. */
-    findClosestNode(pos) {
+    /* Searches for and returns the closest node to the passed hitbox, with
+     * the requirement that it must be in the hitbox's line of sight. */
+    findClosestNode(hitbox) {
         // Scan all nodes to find closest in LOS
         let best_idx = 0, best_node = this.nodes[0];
         this.nodes.forEach((cur_node, cur_idx) => {
-            cur_node.distance = this.dist2(cur_node.node, pos);
+            cur_node.distance = this.dist2(cur_node.node, hitbox);
             if (cur_node.distance < best_node.distance) {
                 // Closer - assign best if in LOS
-                if (this.hasLOS(cur_node, pos)) {
+                if (this.hasBeeline(cur_node, hitbox)) {
                     best_node = cur_node;
                     best_idx = cur_idx;
                 }
@@ -183,10 +218,28 @@ class Pathfinding {
             !(new Box(b.x, b.y, b.width, b.height)).intersectsSegment(p1, p2));
     }
 
+    /* true if all four corners of Box box have line of sight to Vector2D dest,
+     * false otherwise. */
+    hasBeeline(box, dest) {
+        let p1 = new Vector2D(box.x, box.y);
+        if (!this.hasLOS(p1, dest)) return false;
+        p1.x += box.width;
+        if (!this.hasLOS(p1, dest)) return false;
+        p1.y += box.height;
+        if (!this.hasLOS(p1, dest)) return false;
+        p1.x -= box.width;
+        return this.hasLOS(p1, dest);
+    }
+
     /* returns 2D distance between p1 and p2, squared */
     dist2(p1, p2) {
         const y2y1 = p2.y - p1.y,
               x2x1 = p2.x - p1.x;
         return (y2y1*y2y1)+(x2x1*x2x1);
+    }
+
+    /* true if Box hitbox is in map bounds, false otherwise */
+    inBounds(hitbox) {
+        return this.map.info.bounds.every((b) => !hitbox.intersects(b));
     }
 }

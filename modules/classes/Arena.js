@@ -175,9 +175,14 @@ class Arena {
   draw() {
     image(this.map.bgImage, 0, 0, this.width, this.height);
     
-    // Draw characters, ensuring the player is drawn last
-    for (let i = (this.characters.length - 1); i >= 0; i--)
-      this.characters[i].draw();
+    // Draw characters, dead zombies then live zombies then player
+    this.characters.forEach((chr) => {
+        if ((chr instanceof Enemy) && (!chr.alive)) chr.draw();
+    });
+    this.characters.forEach((chr) => {
+        if ((chr instanceof Enemy) && (chr.alive)) chr.draw();
+    });
+    this.characters[0].draw();
   }
 
   /* Scales the map and associated elements by the given factors. */
