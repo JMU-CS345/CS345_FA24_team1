@@ -80,10 +80,15 @@ class Character {
 	 *	@param damage The specified amount of damage to receive
 	 */
 	takeDamage(damage) {
-		this.health -= damage;
-		if (this.health <= 0) {
-			this.health = 0;
-			this.alive = false;
+		if (this.health > 0) {
+			this.health -= Math.floor(damage);
+			if (this.health <= 0) {
+				this.health = 0;
+				this.alive = false;
+			}
+			if (this instanceof Player) {
+				this.arena.playergrunt.play();
+			}
 		}
 	}
 

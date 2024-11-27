@@ -1,12 +1,16 @@
 class Weapon {
-  /**
-   * Constructs a Weapon object from the passed weapon type object and owning character object.
-   * @param {Object} wtype - Weapon type object defining weapon behavior.
-   * @param {Object} owner - The character owning this weapon.
-   */
-  constructor(wtype, owner) {
-    this.wtype = wtype; // Weapon type containing properties like firerate, damage, etc.
-    this.owner = owner; // Owning character instance.
+    /** 
+     * Constructs a Weapon object from the passed weapon type object and owning character object. 
+     * @param {Object} wtype - Weapon type object defining weapon behavior.
+     * @param {Object} owner - The character owning this weapon.
+     */
+    constructor(wtype, owner) {
+        this.wtype = wtype;
+        this.owner = owner;
+        if (this.wtype.fireaudio) {
+            this.fireAudio = loadSound(this.wtype.fireaudio);
+        }
+        
 
     // Track last fire time for rate limiting and store active projectiles.
     this.lastFireTime = -1;
@@ -29,6 +33,12 @@ class Weapon {
 
     // Update the last fire time to the current time.
     this.lastFireTime = currentTime;
+
+
+        // Play weapon attack sound if they have one
+        if (this.fireAudio) {
+            this.fireAudio.play();
+        }
 
     // Melee attack logic: Damage characters within the melee range.
     if (this.wtype.hasmelee) {
