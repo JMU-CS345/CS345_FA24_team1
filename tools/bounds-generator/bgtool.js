@@ -7,6 +7,9 @@ const fs = require("node:fs");
 // it may take a little bit of time to run for larger image files.
 // Also takes a while to generate the pathfinding graph.
 
+// TODO: refactor this spaghetti code hell
+// Also add CLI argument options for all of the magic numbers
+
 // Read argv and return input image file path and output JSON file path.
 // Expect "$ node bgtool.js <infile> [outfile]"
 function read_argv() {
@@ -122,6 +125,43 @@ function dist(p1, p2) {
     return Math.sqrt((y2y1*y2y1)+(x2x1*x2x1));
 }
 
+/* "Pads" passed array (1D but represents 2D with width and height), extending
+ * out true values paddist away. */
+function apply_padding(arr, width, height, paddist) {
+    // Convert true's to paddist+1 
+    arr.forEach((elem, idx) => arr[idx] = elem ? (paddist + 1) : elem);
+
+    // Do paddist rounds of spreading
+    for (let round=0; round<paddist; round++) {
+        // Number to be spread this round
+        const curspreadnum = paddist + 1 - round;
+
+        arr.forEach((elem, i) => {
+            // Ignore if not curspreadnum
+            if (elem != curspreadnum) return;
+
+            // Spread out curspreadnum to assign neighbors curspreadnum-1
+            const assignnum = curspreadnum - 1,
+                  row = Math.floor(i / width), col = i % width,
+                  startcol = Math.max(0, col-1),
+                  endcol = Math.min(col+1, width-1),
+                  startrow = Math.max(0, row-1),
+                  endrow = Math.min(row+1, height-1);
+            for (let arow = startrow; arow <= endrow; arow++) {
+                for (let acol = startcol; acol <= endcol; acol++) {
+                    const j = arow * width + acol;
+                    // Spread if cur val false or < assignnum
+                    if (!arr[j] || (arr[j] < assignnum))
+                        arr[j] = assignnum;
+                }
+            }
+        });
+    }
+
+    // Convert all numbers back into true
+    arr.forEach((elem, idx) => arr[idx] = elem ? true : elem);
+}
+
 function main() {
     // Parse arguments
     let inpath_outpath = read_argv(); 
@@ -176,9 +216,12 @@ function main() {
     if (obj.playerSpawn.x == -1)
         throw new Error("no playerSpawn pixel in image");
     
-    // Copies of pixblk for use later
+    // Copies of pixblk for use later, with padding around walls to make sure
+    // graph nodes aren't generated too close to the walls
     let pixwall = Array.from(pixblk);
     let scanned = Array.from(pixblk);
+    apply_padding(pixwall, pixels.width, pixels.height, 3);
+    apply_padding(scanned, pixels.width, pixels.height, 10);
 
     // Find boxes using pixblk
     // Scan line by line looking for next black pixel
@@ -276,6 +319,7 @@ function main() {
     // likely to do so.
     // Constant seed for consistent graph creation
     let seed = round(round(302918282226874)); // Can change for different graph
+    const TOO_CLOSE = 40;
     do {
         // Generate random coord in range ([0, width), [0, height))
         const newx = seed % pixels.width;
@@ -289,7 +333,6 @@ function main() {
         let node = {x: newx, y: newy, edges: []};
 
         // Ensure not already in graph or really close to another node
-        const TOO_CLOSE = 20;
         if (obj.graph.some((other) => dist(node, other) < TOO_CLOSE))
             continue;
 
@@ -304,7 +347,7 @@ function main() {
         // Add to obj.graph
         obj.graph.push(node);
         //console.log("Added (" + newx + ", " + newy + "), now " + obj.graph.length);
-    } while (obj.graph.some((node) => node.edges.length < 3));
+    } while (obj.graph.some((node) => node.edges.length < 4));
 
     // Remove unnecessary edges; nodes with >MAX_EDGES edges get all of their
     // furthest edges removed, if those other nodes also have >MAX_EDGES edges.
@@ -336,7 +379,6 @@ function main() {
     // dijkstra to calculate shortest path from every node to every other node.
     // Delete all edges that are not in at least 1 shortest path.
     // Or just optimize by only adding until graph is fully connected
-    // TODO ensure all works for map0-debug as well.
 
     // Write to file
     write_obj(inpath_outpath.outpath, obj);
