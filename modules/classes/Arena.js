@@ -18,7 +18,7 @@ class Arena {
     this.characters = [new Player(
       this,
       new Vector2D(0, 0).fromOther(this.map.info.playerSpawn),
-      1, assets.playersprite,
+      25, assets.playersprite,
       new Box(
         this.map.info.playerSpawn.x, this.map.info.playerSpawn.y, 24, 51
       ), 5, this.charanimations
@@ -27,6 +27,10 @@ class Arena {
       (wtype) => wtype.name == "katana"), this.getPlayer()), true);
     this.playerAlive = true;
     this.enemies = assets.enemies.enemies;
+    this.gameaudio = assets.gameaudio;
+    this.gameoveraudio = assets.gameoveraudio;
+    this.playergrunt = assets.playergrunt;
+
 
     // Initialize pathfinding
     this.pathing = new Pathfinding(this.map, this.getPlayer().box);
@@ -43,9 +47,6 @@ class Arena {
     this.timerReference = null;
     
     this.enemyCount = 3;
-
-    // Start the timer
-    this.startTime();
   }
 
   /* Starts the game timer, incrementing time every second. */
@@ -152,8 +153,11 @@ class Arena {
 
   /* Updates the arena's state and handles game logic per tick. */
   update() {
-    if (!this.getPlayer().alive && (this.timerReference != null))
+    if (!this.getPlayer().alive && (this.timerReference != null)) {
       this.stopTimer();
+      this.gameaudio.stop();
+      this.gameoveraudio.play();
+    }
   
     this.characters.forEach(character => character.update());
   
@@ -161,7 +165,7 @@ class Arena {
     const enemiesRemaining = this.characters.some(
       (c) => c instanceof Enemy && c.alive
     );
-    if (!enemiesRemaining && !this.spawnTimer) {
+    if (!enemiesRemaining && !this.spawnTimer && this.timerReference) {
       this.enemyCount = Math.ceil(this.enemyCount * 1.4);
       this.nextWave();
     }
