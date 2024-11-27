@@ -29,7 +29,7 @@ class Enemy extends Character {
         new Vector2D(0, 0).fromPolar(
           this.speed,
           Direction.radians(
-              this.arena.pathing.travelDirection(this.box, this.id))
+              this.arena.pathing.travelDirection(this.box, this.speed, this.id))
         ).add(this.location)
       );
     }
