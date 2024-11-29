@@ -16,13 +16,26 @@
             "hasranged": false,
             "fireaudio": "../assets/sound/katana.mp3"
         }, {
-            "name": "test_gun",
-            "damage": 1,
+            "name": "pistol",
+            "damage": 1000,
             "firerate": 5,
             "hasmelee": false,
             "hasranged": true,
-            "projspeed": 50,
-            "projsprite": "assets/other/projectile-debug.png"
+            "projspeed": 50
+        },{
+            "name": "rifle",
+            "damage": 1000,
+            "firerate": 5,
+            "hasmelee": false,
+            "hasranged": true,
+            "projspeed": 50
+        },{
+            "name": "shotgun",
+            "damage": 5000,
+            "firerate": 3,
+            "hasmelee": false,
+            "hasranged": true,
+            "projspeed": 50
         }
-    ]
+    ] 
 }

@@ -11,7 +11,7 @@ class UI {
         this.slotPadding = 10;
         this.selectedWeaponIndex = 0;
 
-        this.weaponUnlockRounds = [0, 3, 6, 9, 12];
+        this.weaponUnlockRounds = [0, 0, 0, 0, 0];
 	}
 
 	/*
@@ -22,7 +22,7 @@ class UI {
         this.arena.draw();
 
         textSize(24);
-        fill(255);
+        fill(255);22222
         noStroke();
 
         text(`Health: ${this.arena.getPlayer().health}`, 10, 30);
