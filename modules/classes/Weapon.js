@@ -59,27 +59,6 @@ class Weapon {
           });
         }
 
-    // Melee attack logic: Damage characters within the melee range.
-    if (this.wtype.hasmelee) {
-      // Extend the owner's hitbox in the direction of the attack.
-      let weaponbox = this.owner.box.clone();
-      weaponbox.extend(
-        new Vector2D(0, 0).fromPolar(this.wtype.meleerange,Direction.radians(this.owner.facing)
-        )
-      );
-
-      // Apply damage to all intersecting characters in the arena.
-      this.owner.arena.characters.forEach((character) => {
-        // Skip characters of the same type (e.g., Enemy on Enemy).
-        if (this.owner instanceof Enemy == character instanceof Enemy) return;
-
-        // Check if the character is hit and apply damage.
-        if (character.checkHit(weaponbox)) {
-          character.takeDamage(this.wtype.damage);
-        }
-      });
-    }
-
     // Ranged attack logic: Create and track a new projectile.
     if (this.wtype.hasranged) {
       let projvelocity;

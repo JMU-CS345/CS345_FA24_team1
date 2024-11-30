@@ -91,6 +91,20 @@ class Arena {
     const waveinfo = this.waves[waveIndex];
     this.wave++;
 
+    // Handle weapon unlocking based on wave
+    const unlockWave = 3; // Unlock every 3 waves
+    if (this.wave % unlockWave === 0) {
+        const weaponIndex = Math.floor(this.wave / unlockWave); // Determine which weapon to unlock
+        const availableWeapons = ["pistol", "shotgun", "rifle", "rocket"];
+        if (weaponIndex < availableWeapons.length) {
+            const weaponToUnlock = this.weapons.find(w => w.name === availableWeapons[weaponIndex]);
+            if (weaponToUnlock) {
+                this.getPlayer().addWeapon(new Weapon(weaponToUnlock, this.getPlayer()), false);
+            }
+        }
+    }
+    
+
     // Scale enemy health and weapon damage based on the current wave
     const healthMultiplier = 1 + this.wave * 0.2;
     const damageMultiplier = 1 + this.wave * 0.2;
