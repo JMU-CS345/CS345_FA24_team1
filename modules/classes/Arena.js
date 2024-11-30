@@ -25,7 +25,6 @@ class Arena {
     )];
     this.getPlayer().addWeapon(new Weapon(this.weapons.find(
       (wtype) => wtype.name == "katana"), this.getPlayer()), true);
-    this.playerAlive = true;
     this.enemies = assets.enemies.enemies;
     this.gameaudio = assets.gameaudio;
     this.gameoveraudio = assets.gameoveraudio;
@@ -86,6 +85,9 @@ class Arena {
 
   /* Advances the arena to the next wave and spawns enemies with scaling stats. */
   nextWave() {
+    // Scale number of enemies if not the first wave
+    if (this.wave > 0) this.enemyCount = Math.ceil(this.enemyCount * 1.4);
+
     // Loop waves if all predefined waves are complete
     const waveIndex = this.wave % this.waves.length;
     const waveinfo = this.waves[waveIndex];
@@ -161,13 +163,42 @@ class Arena {
   
     this.characters.forEach(character => character.update());
   
-    // Check if all enemies are defeated and start the next wave if true
+    // Check if all enemies are defeated and add start next wave menu if true
     const enemiesRemaining = this.characters.some(
-      (c) => c instanceof Enemy && c.alive
-    );
-    if (!enemiesRemaining && !this.spawnTimer && this.timerReference) {
-      this.enemyCount = Math.ceil(this.enemyCount * 1.4);
-      this.nextWave();
+        (c) => c instanceof Enemy && c.alive);
+    if (!enemiesRemaining && !this.spawnTimer && this.getPlayer().alive 
+        && ui.components.every((comp) => comp.id != 1)) {
+      // Whole object refers to global UI/Arena contexts as 'this' refers to
+      // the component object
+      ui.addComponent({
+        // Identifier as the next wave menu
+        id: 1,
+        draw: function() {
+          // Start next wave text
+          stroke(255, 255, 255);
+          strokeWeight(1);
+          fill(255, 255, 255);
+          textSize(25);
+          textAlign(CENTER, CENTER);
+          text("Press ENTER to start next wave",
+              arena.width>>1, arena.height>>1);
+
+          // Start next wave if enter is pressed
+          if (keyIsDown(13)) { // ENTER
+            // Start audio and game timer if first wave
+            if (arena.wave == 0) {
+              userStartAudio();
+              assets.gameaudio.setVolume(0.45);
+              assets.gameaudio.loop();
+              arena.startTime();
+            }
+
+            arena.nextWave();
+            
+            ui.removeComponent(this); // Remove from components list
+          }
+        }
+      });
     }
   }
 

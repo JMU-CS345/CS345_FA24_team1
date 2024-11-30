@@ -51,19 +51,6 @@ function setup() {
     arena.setSize(windowWidth, windowHeight);
 }
 
-// This is primarily to handle game audio, since audio will not start without user interaction first.
-function keyPressed() {
-    if (key === " ") {
-        userStartAudio();
-        if (arena.getPlayer().alive && arena.timerReference == null && !assets.gameaudio.isPlaying()) {
-            arena.startTime();
-            arena.nextWave();
-            assets.gameaudio.setVolume(0.45);
-            assets.gameaudio.loop();
-        }
-    }
-}
-
 function windowResized() {
     // Keep canvas size equal to window size
     resizeCanvas(windowWidth, windowHeight);
