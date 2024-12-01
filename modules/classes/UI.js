@@ -2,7 +2,8 @@
 
 class UI {
 
-	constructor(arena) {
+	constructor(assets, arena) {
+        this.strings = assets.strings;
 		this.arena = arena;
 		this.time = 0;
 		this.timerReference = null;
@@ -28,7 +29,7 @@ class UI {
         fill(255);
         noStroke();
 
-        text(`Wave ${this.arena.wave}`, 10, 30);
+        text(`${this.strings.waveText} ${this.arena.wave}`, 10, 30);
 
         const time = this.arena.getTime();
         const minutes = Math.floor(time / 60);

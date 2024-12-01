@@ -23,6 +23,7 @@ function preload() {
         charanimations: loadJSON("modules/configs/character_animations.json"),
         mapbg: loadImage("assets/maps/OriginalMap.jpg"),
         mapinfo: loadJSON("assets/maps/OriginalMap-bounds.json"),
+        strings: loadJSON("assets/locale/en_US.json"),
         playersprites: {
             katana: loadImage("assets/characters/sprite_sheets/samurai.png"),
             pistol: loadImage("assets/characters/sprite_sheets/pistol_stance.png"),
@@ -46,7 +47,7 @@ function preload() {
 function setup() {
     getAudioContext().suspend();
     arena = new Arena(assets);
-    ui = new UI(arena);
+    ui = new UI(assets, arena);
     createCanvas(windowWidth, windowHeight);
     arena.setSize(windowWidth, windowHeight);
 }

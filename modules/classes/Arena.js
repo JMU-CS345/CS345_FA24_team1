@@ -30,7 +30,6 @@ class Arena {
     this.gameoveraudio = assets.gameoveraudio;
     this.playergrunt = assets.playergrunt;
 
-
     // Initialize pathfinding
     this.pathing = new Pathfinding(this.map, this.getPlayer().box);
 
@@ -168,20 +167,43 @@ class Arena {
         (c) => c instanceof Enemy && c.alive);
     if (!enemiesRemaining && !this.spawnTimer && this.getPlayer().alive 
         && ui.components.every((comp) => comp.id != 1)) {
-      // Whole object refers to global UI/Arena contexts as 'this' refers to
-      // the component object
+      // Whole object refers to global assets/UI/Arena contexts as 'this'
+      // refers to the component object
       ui.addComponent({
         // Identifier as the next wave menu
         id: 1,
+        creationFrame: frameCount, // Frame created in (for animation logic)
         draw: function() {
-          // Start next wave text
           stroke(255, 255, 255);
           strokeWeight(1);
           fill(255, 255, 255);
           textSize(25);
+          textAlign(LEFT, TOP);
+
+          if (arena.wave == 0) {
+            // Start of game - starting text
+            background(0, 0, 0);
+
+            const txtstr = assets.strings.introText, /* text to display */
+                  aniDelay = 30, /* # of frames to delay start of animation */
+                  framesPerChar = 3; /* # of frames for each character load */
+            
+            const curstrlen = Math.min(
+              txtstr.length, 
+              Math.floor(Math.max(frameCount - this.creationFrame - aniDelay, 0)
+                  / framesPerChar)
+            );
+
+            const textxy = arena.width >> 3, /* 1/8th from left/top edges */
+                  textwh = (arena.width >> 2) * 3; /* 3/4ths across page w/h */
+            text(txtstr.substring(0, curstrlen), textxy, textxy, 
+                textwh, textwh);
+          }
+
+          // Start next wave text
           textAlign(CENTER, CENTER);
-          text("Press ENTER to start next wave",
-              arena.width>>1, arena.height>>1);
+          text(assets.strings.newWaveText,
+              arena.width>>1, arena.height - (arena.height>>3));
 
           // Start next wave if enter is pressed
           if (keyIsDown(13)) { // ENTER
