@@ -16,6 +16,7 @@ class Character {
 	constructor(arena, vector, health, sprite, box, speed, animations) {
 		this.arena = arena;
 		this.location = vector;
+        this.maxHealth = health;
 		this.health = health;
 		this.sprite = sprite;
 		this.box = box;
@@ -118,6 +119,7 @@ class Character {
 				this.animations[this.state][this.facing][this.currentFrame];
 		const sx = aniframe.x,
 		      sy = aniframe.y,
+              bx = aniframe.bx,
 		      sw = this.animations.cellWidth,
 		      sh = this.animations.cellHeight,
 		      cw = this.animations.charWidth,
@@ -132,10 +134,29 @@ class Character {
 		// left corner at (bx, sh-1) and width=charWidth height=charHeight.
 		// Top left at (bx, sh-charHeight-2).
 		// So shift sprite backwards by that, scaled up by dw/dh.
-		const dx = this.location.x - dw * (aniframe.bx / sw),
+		const dx = this.location.x - dw * (bx / sw),
 		      dy = this.location.y - dh * ((sh - ch - 2) / sh);
 
 		image(this.sprite, dx, dy, dw, dh, sx, sy, sw, sh);
+
+        // Health bar above the character
+        // Over only the character's body in width and 1/16th of the entire
+        // character sprite in height
+        if (this.alive) {
+            const barheight = dh >> 4, /* height of bars */
+                  bodywidth = cw * dw / sw, /* width of full max hp bar */
+                  barstartx = dx + (bx * dw / sw), /* left side of bar */
+                  barstarty = dy, /* top side of bar */
+                        /* width of bar showing current HP */
+                  fillwidth = bodywidth * this.health / this.maxHealth;
+
+            noStroke();
+            fill(0, 0, 0);
+            rect(barstartx, barstarty, bodywidth, barheight);
+
+            fill(40, 222, 40);
+            rect(barstartx, barstarty, fillwidth, barheight);
+        }
 	}
 
 	/*

@@ -1,0 +1,8 @@
+{
+    "newWaveText": "Press ENTER to start next wave",
+    "pauseKeyText": "Press ESC to pause",
+    "waveText": "Wave",
+    "introText": "Japan, 1467.\n\nYour forces are on the brink of defeat. Desperation drives you to unsheathe an ancient relic. With a swift slash, you cut it open.\n\nThe relic releases ancient spirits, possesing foe and ally alike.\n\nIt also throws you into a familiar land in a distant future, where the possesed soldiers still roam.\n\nYou failed Japan and condemned the world.\n\nAs the last shogun, your final duty is clear: grant them an honorable death.\n\nThis is your last stand.",
+    "pausedText": "PAUSED",
+    "controlsText": "Controls\nArrow keys\t Player movement\nSpace\t\t\t\t\t\tAttack\n1/2/3/4/5\t\t\tSwitch equipped weapon\nEscape\t\t\t\t\tPause/unpause\nEnter\t\t\t\t\t\t Start next wave"
+}
