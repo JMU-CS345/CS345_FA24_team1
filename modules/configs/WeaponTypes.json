@@ -20,7 +20,7 @@
             "damage": 20,
             "firerate": 10,
             "hasmelee": false,
-            "hasranged": true,
+            "hasranged": false,
             "range" : 100,
             "projspeed": 50        
             }, {
