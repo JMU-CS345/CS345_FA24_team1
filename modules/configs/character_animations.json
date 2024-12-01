@@ -1,7 +1,7 @@
 {
     "charanimations": {
         "cellWidth": 20,
-        "cellHeight": 30,
+        "cellHeight": 23,
         "charWidth": 8,
         "charHeight": 17,
         "idle": [
@@ -26,6 +26,7 @@
             [{"x":0, "y":161, "bx": 0}],
             [{"x":0, "y":161, "bx": 0}],
             [{"x":0, "y":161, "bx": 0}],
+            
             [{"x":0, "y":161, "bx": 0}]
         ]
     }

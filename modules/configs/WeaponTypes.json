@@ -9,9 +9,11 @@
             "hasranged": false
         }, {
             "name": "katana",
-            "damage": 10,
+            "damage": 10000,
             "firerate": 2,
             "hasmelee": true,
+
+            
             "meleerange": 50,
             "hasranged": false,
             "fireaudio": "../assets/sound/katana.mp3"

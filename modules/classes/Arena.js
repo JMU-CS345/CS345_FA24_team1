@@ -133,7 +133,7 @@ class Arena {
       this.nextSpawnID2 = 0;
     }
      // If it's a boss wave (every 5th wave)
-     if (this.wave % 5 === 0) {
+     if (this.wave % 2 === 0) {
       const bossInfo = this.enemies.find((eobj) => eobj.name === "boss");
       const bossSpawn = this.map.info.enemySpawn[0]; // Spawn at the first location
       const scaledHealth = bossInfo.health * healthMultiplier;
