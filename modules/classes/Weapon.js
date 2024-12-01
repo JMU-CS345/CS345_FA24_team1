@@ -133,14 +133,18 @@ class Weapon {
         const projectile = this.projectiles[i];
 
         if (projectile.projposition) {
-            // Render the projectile sprite at its current position.
-            image(
-                this.wtype.projsprite,
+            // Draw a circle to represent the projectile
+            fill(255, 0, 0); // Red color for the projectile
+            noStroke(); // No border
+            ellipse(
                 projectile.projposition.x,
-                projectile.projposition.y
+                projectile.projposition.y,
+                10, // Diameter of the circle
+                10  // Diameter of the circle
             );
         }
     }
 }
+
 
 }

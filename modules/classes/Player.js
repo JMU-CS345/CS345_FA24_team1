@@ -22,6 +22,10 @@ class Player extends Character {
       this.currentFrame = 0;
       return;
     }
+    if (this.weapon) {
+      this.weapon.update(); // Update weapon projectiles
+  }
+    
 
     // Movement
     const keydownUP = keyIsDown(UP_ARROW),

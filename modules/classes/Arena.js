@@ -331,6 +331,12 @@ class Arena {
         if ((chr instanceof Enemy) && (chr.alive)) chr.draw();
     });
     this.characters[0].draw();
+     // Draw projectiles for all weapons
+     this.characters.forEach((chr) => {
+      if (chr.weapon) {
+          chr.weapon.draw();
+      }
+  });
   }
 
   /* Scales the map and associated elements by the given factors. */
