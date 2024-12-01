@@ -55,8 +55,5 @@ class Enemy extends Character {
         this.frameTimer = 0;
       }
     }
-    if (this.weapon) {
-      this.weapon.update(); // Update weapon projectiles
-  }
   }
 }
