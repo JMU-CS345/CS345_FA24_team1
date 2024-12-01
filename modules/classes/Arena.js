@@ -25,12 +25,10 @@ class Arena {
     )];
     this.getPlayer().addWeapon(new Weapon(this.weapons.find(
       (wtype) => wtype.name == "katana"), this.getPlayer()), true);
-    this.playerAlive = true;
     this.enemies = assets.enemies.enemies;
     this.gameaudio = assets.gameaudio;
     this.gameoveraudio = assets.gameoveraudio;
     this.playergrunt = assets.playergrunt;
-
 
     // Initialize pathfinding
     this.pathing = new Pathfinding(this.map, this.getPlayer().box);
@@ -47,6 +45,34 @@ class Arena {
     this.timerReference = null;
     
     this.enemyCount = 3;
+
+    // Start out unpaused
+    this.paused = false;
+    this.lastPauseToggle = Date.now(); // time of last pause/resume
+  }
+
+  /* Pauses the game state entirely. */
+  pause() {
+    if (this.paused) return; // Do nothing if already paused
+
+    this.paused = true;
+    this.lastPauseToggle = Date.now();
+
+    this.stopTimer(); // Stop game clock
+    clearInterval(this.spawnTimer); // Stop spawn timer (if it exists currently)
+  }
+
+  /* Resumes the game from being paused. */
+  resume() {
+    if (!this.paused) return; // Do nothing if not paused
+
+    this.paused = false;
+    this.lastPauseToggle = Date.now();
+
+    if ((this.wave > 0) && this.getPlayer().alive)
+      this.startTime(); // Restart game clock if it was running
+    if (this.spawnTimer != null)
+      this.nextWave(true); // Restart spawn timer if it was running
   }
 
   /* Starts the game timer, incrementing time every second. */
@@ -84,20 +110,28 @@ class Arena {
     return this.characters.length - 1;
   }
 
-  /* Advances the arena to the next wave and spawns enemies with scaling stats. */
-  nextWave() {
+  /* Advances the arena to the next wave and spawns enemies with scaling stats. 
+   * If contTimer is true, do not advance to the next wave; instead, continue
+   * spawning enemies with the spawnTimer where this function left off. */
+  nextWave(contTimer = false) {
+    // Scale number of enemies if not the first wave
+    if (!contTimer && (this.wave > 0))
+      this.enemyCount = Math.ceil(this.enemyCount * 1.4);
+
     // Loop waves if all predefined waves are complete
     const waveIndex = this.wave % this.waves.length;
     const waveinfo = this.waves[waveIndex];
-    this.wave++;
 
     // Scale enemy health and weapon damage based on the current wave
     const healthMultiplier = 1 + this.wave * 0.2;
     const damageMultiplier = 1 + this.wave * 0.2;
 
-    // Reset spawn indices
-    this.nextSpawnID1 = 0;
-    this.nextSpawnID2 = 0;
+    // Increment wave number, reset spawn indices
+    if (!contTimer) {
+      this.wave++;
+      this.nextSpawnID1 = 0;
+      this.nextSpawnID2 = 0;
+    }
 
     // Spawn enemies at intervals
     this.spawnTimer = setInterval(() => {
@@ -153,6 +187,8 @@ class Arena {
 
   /* Updates the arena's state and handles game logic per tick. */
   update() {
+    if (this.paused) return; // Do nothing if paused
+
     if (!this.getPlayer().alive && (this.timerReference != null)) {
       this.stopTimer();
       this.gameaudio.stop();
@@ -161,13 +197,96 @@ class Arena {
   
     this.characters.forEach(character => character.update());
   
-    // Check if all enemies are defeated and start the next wave if true
+    // Check if all enemies are defeated and add start next wave menu if true
     const enemiesRemaining = this.characters.some(
-      (c) => c instanceof Enemy && c.alive
-    );
-    if (!enemiesRemaining && !this.spawnTimer && this.timerReference) {
-      this.enemyCount = Math.ceil(this.enemyCount * 1.4);
-      this.nextWave();
+        (c) => c instanceof Enemy && c.alive);
+    if (!enemiesRemaining && !this.spawnTimer && this.getPlayer().alive 
+        && ui.components.every((comp) => comp.id != 1)) {
+      // Whole object refers to global assets/UI/Arena contexts as 'this'
+      // refers to the component object
+      ui.addComponent({
+        // Identifier as the next wave menu
+        id: 1,
+        creationFrame: frameCount, // Frame created in (for animation logic)
+        draw: function() {
+          stroke(255, 255, 255);
+          strokeWeight(1);
+          fill(255, 255, 255);
+          textSize(25);
+          textAlign(LEFT, TOP);
+
+          if (arena.wave == 0) {
+            // Start of game - starting text
+            background(0, 0, 0);
+
+            const txtstr = assets.strings.introText, /* text to display */
+                  aniDelay = 30, /* # of frames to delay start of animation */
+                  framesPerChar = 3; /* # of frames for each character load */
+            
+            const curstrlen = Math.min(
+              txtstr.length, 
+              Math.floor(Math.max(frameCount - this.creationFrame - aniDelay, 0)
+                  / framesPerChar)
+            );
+
+            const textx = arena.width >> 3, /* 1/8th from left/top edges */
+                  texty = arena.height >> 3,
+                  textw = (arena.width >> 2) * 3, /* 3/4ths across page w/h */
+                  texth = (arena.height >> 2) * 3;
+            text(txtstr.substring(0, curstrlen), textx, texty, 
+                textw, texth);
+          }
+
+          // Start next wave text
+          textAlign(CENTER, CENTER);
+          text(assets.strings.newWaveText,
+              arena.width>>1, arena.height - (arena.height>>3));
+
+          // Start next wave if enter is pressed
+          if (keyIsDown(13)) { // ENTER
+            // Start audio and game timer if first wave
+            if (arena.wave == 0) {
+              userStartAudio();
+              assets.gameaudio.setVolume(0.45);
+              assets.gameaudio.loop();
+              arena.startTime();
+            }
+
+            arena.nextWave();
+            
+            ui.removeComponent(this); // Remove from components list
+          }
+        }
+      });
+    }
+
+    // Pause game if ESC pressed
+    // Check lastPauseToggle to not immediately pause/resume with holding ESC
+    if (keyIsDown(27) && ((Date.now() - this.lastPauseToggle) > 500)) {
+      this.pause();
+      ui.addComponent({
+        draw: function() {
+          // Unpause and delete self if ESC pressed again
+          if (keyIsDown(27) && ((Date.now() - arena.lastPauseToggle) > 500)) {
+            arena.resume();
+            ui.removeComponent(this);
+          }
+
+          // Dim game in background
+          background(0, 200);
+
+          // Pause screen text
+          stroke(255, 255, 255);
+          strokeWeight(1);
+          fill(255, 255, 255);
+          textSize(40);
+          textAlign(CENTER, CENTER);
+          text(assets.strings.pausedText, arena.width>>1, arena.height>>3);
+          textSize(25);
+          textAlign(LEFT, TOP);
+          text(assets.strings.controlsText, arena.width>>2, arena.height>>2);
+        }
+      });
     }
   }
 

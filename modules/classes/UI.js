@@ -2,7 +2,8 @@
 
 class UI {
 
-	constructor(arena) {
+	constructor(assets, arena) {
+        this.strings = assets.strings;
 		this.arena = arena;
 		this.time = 0;
 		this.timerReference = null;
@@ -12,6 +13,8 @@ class UI {
         this.selectedWeaponIndex = 0;
 
         this.weaponUnlockRounds = [0, 3, 6, 9, 12];
+
+        this.components = []; /* Currently active components */
 	}
 
 	/*
@@ -21,21 +24,25 @@ class UI {
         noSmooth(); // Disable antialiasing
         this.arena.draw();
 
+        textAlign(LEFT, BOTTOM);
         textSize(24);
         fill(255);
         noStroke();
 
-        text(`Health: ${this.arena.getPlayer().health}`, 10, 30);
+        text(this.strings.pauseKeyText, 10, 30);
+        text(`${this.strings.waveText} ${this.arena.wave}`, 10, 60);
 
         const time = this.arena.getTime();
         const minutes = Math.floor(time / 60);
         const seconds = time % 60;
         const formattedTime = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-        text(`Time: ${formattedTime}`, 10, 60);
+        text(`${formattedTime}`, 10, 90);
 
-        text(`Level: ${this.arena.wave}`, 10, 90);
         this.checkSlotSwitch();
         this.drawWeaponHotbar();
+
+        // Draw all components
+        this.components.forEach((comp) => comp.draw());
     }
 
     checkSlotSwitch() {
@@ -94,6 +101,17 @@ class UI {
                 }
             }
         }
+    }
+    
+    /* Adds a new component object to the UI. Each component must implement its
+     * own draw() method, called at the end of UI's draw(). */
+    addComponent(component) {
+        this.components.push(component);
+    }
+
+    /* Removes the specified component from the UI. */
+    removeComponent(component) {
+        this.components.splice(this.components.indexOf(component), 1);
     }
 }
 
