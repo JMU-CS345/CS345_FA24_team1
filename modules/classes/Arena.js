@@ -45,6 +45,34 @@ class Arena {
     this.timerReference = null;
     
     this.enemyCount = 3;
+
+    // Start out unpaused
+    this.paused = false;
+    this.lastPauseToggle = Date.now(); // time of last pause/resume
+  }
+
+  /* Pauses the game state entirely. */
+  pause() {
+    if (this.paused) return; // Do nothing if already paused
+
+    this.paused = true;
+    this.lastPauseToggle = Date.now();
+
+    this.stopTimer(); // Stop game clock
+    clearInterval(this.spawnTimer); // Stop spawn timer (if it exists currently)
+  }
+
+  /* Resumes the game from being paused. */
+  resume() {
+    if (!this.paused) return; // Do nothing if not paused
+
+    this.paused = false;
+    this.lastPauseToggle = Date.now();
+
+    if ((this.wave > 0) && this.getPlayer().alive)
+      this.startTime(); // Restart game clock if it was running
+    if (this.spawnTimer != null)
+      this.nextWave(true); // Restart spawn timer if it was running
   }
 
   /* Starts the game timer, incrementing time every second. */
@@ -82,23 +110,28 @@ class Arena {
     return this.characters.length - 1;
   }
 
-  /* Advances the arena to the next wave and spawns enemies with scaling stats. */
-  nextWave() {
+  /* Advances the arena to the next wave and spawns enemies with scaling stats. 
+   * If contTimer is true, do not advance to the next wave; instead, continue
+   * spawning enemies with the spawnTimer where this function left off. */
+  nextWave(contTimer = false) {
     // Scale number of enemies if not the first wave
-    if (this.wave > 0) this.enemyCount = Math.ceil(this.enemyCount * 1.4);
+    if (!contTimer && (this.wave > 0))
+      this.enemyCount = Math.ceil(this.enemyCount * 1.4);
 
     // Loop waves if all predefined waves are complete
     const waveIndex = this.wave % this.waves.length;
     const waveinfo = this.waves[waveIndex];
-    this.wave++;
 
     // Scale enemy health and weapon damage based on the current wave
     const healthMultiplier = 1 + this.wave * 0.2;
     const damageMultiplier = 1 + this.wave * 0.2;
 
-    // Reset spawn indices
-    this.nextSpawnID1 = 0;
-    this.nextSpawnID2 = 0;
+    // Increment wave number, reset spawn indices
+    if (!contTimer) {
+      this.wave++;
+      this.nextSpawnID1 = 0;
+      this.nextSpawnID2 = 0;
+    }
 
     // Spawn enemies at intervals
     this.spawnTimer = setInterval(() => {
@@ -154,6 +187,8 @@ class Arena {
 
   /* Updates the arena's state and handles game logic per tick. */
   update() {
+    if (this.paused) return; // Do nothing if paused
+
     if (!this.getPlayer().alive && (this.timerReference != null)) {
       this.stopTimer();
       this.gameaudio.stop();
@@ -194,10 +229,12 @@ class Arena {
                   / framesPerChar)
             );
 
-            const textxy = arena.width >> 3, /* 1/8th from left/top edges */
-                  textwh = (arena.width >> 2) * 3; /* 3/4ths across page w/h */
-            text(txtstr.substring(0, curstrlen), textxy, textxy, 
-                textwh, textwh);
+            const textx = arena.width >> 3, /* 1/8th from left/top edges */
+                  texty = arena.height >> 3,
+                  textw = (arena.width >> 2) * 3, /* 3/4ths across page w/h */
+                  texth = (arena.height >> 2) * 3;
+            text(txtstr.substring(0, curstrlen), textx, texty, 
+                textw, texth);
           }
 
           // Start next wave text
@@ -219,6 +256,35 @@ class Arena {
             
             ui.removeComponent(this); // Remove from components list
           }
+        }
+      });
+    }
+
+    // Pause game if ESC pressed
+    // Check lastPauseToggle to not immediately pause/resume with holding ESC
+    if (keyIsDown(27) && ((Date.now() - this.lastPauseToggle) > 500)) {
+      this.pause();
+      ui.addComponent({
+        draw: function() {
+          // Unpause and delete self if ESC pressed again
+          if (keyIsDown(27) && ((Date.now() - arena.lastPauseToggle) > 500)) {
+            arena.resume();
+            ui.removeComponent(this);
+          }
+
+          // Dim game in background
+          background(0, 200);
+
+          // Pause screen text
+          stroke(255, 255, 255);
+          strokeWeight(1);
+          fill(255, 255, 255);
+          textSize(40);
+          textAlign(CENTER, CENTER);
+          text(assets.strings.pausedText, arena.width>>1, arena.height>>3);
+          textSize(25);
+          textAlign(LEFT, TOP);
+          text(assets.strings.controlsText, arena.width>>2, arena.height>>2);
         }
       });
     }

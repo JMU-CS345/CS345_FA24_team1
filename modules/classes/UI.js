@@ -29,13 +29,14 @@ class UI {
         fill(255);
         noStroke();
 
-        text(`${this.strings.waveText} ${this.arena.wave}`, 10, 30);
+        text(this.strings.pauseKeyText, 10, 30);
+        text(`${this.strings.waveText} ${this.arena.wave}`, 10, 60);
 
         const time = this.arena.getTime();
         const minutes = Math.floor(time / 60);
         const seconds = time % 60;
         const formattedTime = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-        text(`${formattedTime}`, 10, 60);
+        text(`${formattedTime}`, 10, 90);
 
         this.checkSlotSwitch();
         this.drawWeaponHotbar();
