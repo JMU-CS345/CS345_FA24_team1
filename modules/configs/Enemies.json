@@ -6,6 +6,13 @@
             "sprite": "assets/characters/sprite_sheets/zombie_normal.png", 
             "speed": 3,
             "weapon": "fists"
+        },{
+            "name": "boss",
+            "health": 100, 
+            "sprite": "assets/characters/sprite_sheets/zombie_boss.png", 
+            "speed": 2,
+            "weapon": "katana"
         }
+        
     ]
 }

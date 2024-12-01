@@ -132,6 +132,35 @@ class Arena {
       this.nextSpawnID1 = 0;
       this.nextSpawnID2 = 0;
     }
+     // If it's a boss wave (every 5th wave)
+     if (this.wave % 5 === 0) {
+      const bossInfo = this.enemies.find((eobj) => eobj.name === "boss");
+      const bossSpawn = this.map.info.enemySpawn[0]; // Spawn at the first location
+      const scaledHealth = bossInfo.health * healthMultiplier;
+
+      const boss = new Enemy(
+          this,
+          new Vector2D(0, 0).fromOther(bossSpawn),
+          scaledHealth,
+          bossInfo.sprite,
+          new Box(bossSpawn.x, bossSpawn.y, 50, 100), // Adjust box for boss size
+          bossInfo.speed,
+          this.charanimations
+      );
+
+      const bossWeaponInfo = this.weapons.find((wtype) => wtype.name === bossInfo.weapon);
+      if (bossWeaponInfo) {
+          const scaledDamage = bossWeaponInfo.damage * damageMultiplier;
+          const bossWeapon = new Weapon(
+              { ...bossWeaponInfo, damage: scaledDamage },
+              boss
+          );
+          boss.addWeapon(bossWeapon, true);
+      }
+
+      this.characters.push(boss);
+      return; // Boss wave only spawns the boss
+  }
 
     // Spawn enemies at intervals
     this.spawnTimer = setInterval(() => {
