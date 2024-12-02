@@ -10,7 +10,6 @@ class Weapon {
         if (this.wtype.fireaudio) {
             this.fireAudio = loadSound(this.wtype.fireaudio);
         }
-        
 
     // Track last fire time for rate limiting and store active projectiles.
     this.lastFireTime = -1;
@@ -23,22 +22,24 @@ class Weapon {
    */
   fire() {
     // Prevent firing if the owner is dead.
-    if (!this.owner.alive) return;
+    if (!this.owner.alive) return false;
 
     const currentTime = Date.now(); // Current time in ms.
     const timeSinceLastFire = currentTime - this.lastFireTime;
 
     // Ensure enough time has passed since the last fire.
-    if (timeSinceLastFire < 1000 / this.wtype.firerate) return;
+    if (timeSinceLastFire < (1000 / this.wtype.firerate)) {
+      return false;
+    };
 
     // Update the last fire time to the current time.
     this.lastFireTime = currentTime;
 
 
-        // Play weapon attack sound if they have one
-        if (this.fireAudio) {
-            this.fireAudio.play();
-        }
+    // Play weapon attack sound if they have one
+    if (this.fireAudio) {
+        this.fireAudio.play();
+    }
 
     // Melee attack logic: Damage characters within the melee range.
     if (this.wtype.hasmelee) {
@@ -59,6 +60,7 @@ class Weapon {
           character.takeDamage(this.wtype.damage);
         }
       });
+      return true;
     }
 
     // Ranged attack logic: Create and track a new projectile.
@@ -88,6 +90,7 @@ class Weapon {
         let projposition = this.owner.box.clone(); // Clone the owner's position.
         this.projectiles.push({ projvelocity, projposition }); // Add new projectile.
       }
+      return true;
     }
   }
 

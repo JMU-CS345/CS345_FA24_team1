@@ -4,6 +4,9 @@ class Player extends Character {
 
     // default facing down from spawn
     this.facing = Direction.DOWN;
+    
+    this.attackAnimationTimer = 0;
+    this.isAttacking = false;
   }
 
   /**
@@ -45,13 +48,15 @@ class Player extends Character {
       this.arena.pathing.updatePlayerBox(); // Recalculate pathfinding
     }
 
+    // attack animation
     if (keyIsDown(32)) {
-      this.state = "attacking";
       this.attack();
+      this.state = "attacking";
     }
 
+
     // Sprite movement animation frames
-    if (this.state === "moving" || this.state === "attacking") {
+    if (!this.isAttacking && (this.state === "moving" || this.state === "attacking")) {
       this.frameTimer++;
       if (this.frameTimer >= this.frameDelay) {
         this.currentFrame++;
@@ -67,6 +72,6 @@ class Player extends Character {
    *  Attacks enemies if player is facing their direction & in their box
    */
   attack() {
-    super.currentWeapon().fire(); 
+    return (super.currentWeapon().fire()); 
   }
 }
