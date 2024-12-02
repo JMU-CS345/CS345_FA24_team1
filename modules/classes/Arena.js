@@ -11,8 +11,8 @@ class Arena {
 
     // Weapons and character sprite animations
     this.weapons = assets.weapons.weapons;
-    this.charanimations = assets.charanimations.charanimations;
-
+    this.charanimations = assets.charanimations;
+    this.bossanimations = assets.bossanimations;
     // Characters (player + enemies)
     // Create player, equip with a weapon, and mark player as alive
     this.characters = [new Player(
@@ -132,10 +132,40 @@ class Arena {
       this.nextSpawnID1 = 0;
       this.nextSpawnID2 = 0;
     }
+     // If it's a boss wave (every 5th wave)
+     if (this.wave % 5=== 0) { // for testing purposes , change to 5 when the boss animation is done 
+      const bossInfo = this.enemies.find((eobj) => eobj.name === "boss");
+      const bossSpawn = this.map.info.enemySpawn[0]; // Spawn at the first location
+      const scaledHealth = bossInfo.health * healthMultiplier;
+
+      const boss = new Enemy(
+          this,
+          new Vector2D(0, 0).fromOther(bossSpawn),
+          scaledHealth,
+          bossInfo.sprite,
+          new Box(bossSpawn.x, bossSpawn.y, 30, 60), // Adjust box for boss size
+          bossInfo.speed,
+          this.bossanimations
+      );
+
+      const bossWeaponInfo = this.weapons.find((wtype) => wtype.name === bossInfo.weapon);
+      if (bossWeaponInfo) {
+          const scaledDamage = bossWeaponInfo.damage * damageMultiplier;
+          const bossWeapon = new Weapon(
+              { ...bossWeaponInfo, damage: scaledDamage },
+              boss
+          );
+          boss.addWeapon(bossWeapon, true);
+      }
+
+      this.characters.push(boss);
+      return; // Boss wave only spawns the boss
+  }
 
     // Spawn enemies at intervals
     this.spawnTimer = setInterval(() => {
       const enemy = waveinfo.enemies[this.nextSpawnID1];
+
 
       // Find all matching enemies with the same name and pick one randomly
       const matchingEnemies = this.enemies.filter((eobj) => eobj.name == enemy.name);
@@ -146,6 +176,10 @@ class Arena {
         enemyinfo = matchingEnemies[randomIndex];
       }
 
+      if (matchingEnemies.length > 0) {
+        const randomIndex = Math.floor(Math.random() * matchingEnemies.length);
+        enemyinfo = matchingEnemies[randomIndex];
+      }
       // Randomize spawn location for enemy
       const randidx = Math.floor(Math.random() * this.map.info.enemySpawn.length);
       const enemySpawn = this.map.info.enemySpawn[randidx];

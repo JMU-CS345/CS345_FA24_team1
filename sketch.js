@@ -16,11 +16,16 @@ function preload() {
         weapons: loadJSON("modules/configs/WeaponTypes.json", (obj) => {
             // Load projectile sprites
             obj.weapons.forEach((wtype) => {
-                if (wtype.hasranged)
-                    wtype.projsprite = loadImage(wtype.projsprite);
+                if (wtype.hasranged) {
+                    wtype.projectilesize = wtype.projectilesize || 10; 
+                }
             });
         }),
-        charanimations: loadJSON("modules/configs/character_animations.json"),
+        haranimations: loadJSON("modules/configs/character_animations.json", (obj) => {
+            // Extract both charanimations and bossanimations
+            assets.charanimations = obj.charanimations;
+            assets.bossanimations = obj.bossanimations;
+        }),
         mapbg: loadImage("assets/maps/OriginalMap.jpg"),
         mapinfo: loadJSON("assets/maps/OriginalMap-bounds.json"),
         strings: loadJSON("assets/locale/en_US.json"),
