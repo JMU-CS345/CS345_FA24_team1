@@ -11,8 +11,8 @@ class Arena {
 
     // Weapons and character sprite animations
     this.weapons = assets.weapons.weapons;
-    this.charanimations = assets.charanimations.charanimations;
-
+    this.charanimations = assets.charanimations;
+    this.bossanimations = assets.bossanimations;
     // Characters (player + enemies)
     // Create player, equip with a weapon, and mark player as alive
     this.characters = [new Player(
@@ -143,9 +143,9 @@ class Arena {
           new Vector2D(0, 0).fromOther(bossSpawn),
           scaledHealth,
           bossInfo.sprite,
-          new Box(bossSpawn.x, bossSpawn.y, 50, 100), // Adjust box for boss size
+          new Box(bossSpawn.x, bossSpawn.y, 30, 60), // Adjust box for boss size
           bossInfo.speed,
-          this.charanimations
+          this.bossanimations
       );
 
       const bossWeaponInfo = this.weapons.find((wtype) => wtype.name === bossInfo.weapon);

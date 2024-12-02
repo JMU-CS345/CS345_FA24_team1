@@ -27,10 +27,11 @@
             "name": "shotgun",
             "damage": 70,
             "firerate": 7,
-            "hasmelee": true,
-            "meleerange": 50,
+            "hasmelee":true,
             "hasranged": false,
-            "projspeed": 50        
+            "meleerange": 100,
+            "projspeed": 50
+            
             }, {
             "name": "rifle",
             "damage": 50,
