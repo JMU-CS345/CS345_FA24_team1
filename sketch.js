@@ -21,11 +21,8 @@ function preload() {
                 }
             });
         }),
-        haranimations: loadJSON("modules/configs/character_animations.json", (obj) => {
-            // Extract both charanimations and bossanimations
-            assets.charanimations = obj.charanimations;
-            assets.bossanimations = obj.bossanimations;
-        }),
+        charanimations: loadJSON("modules/configs/character_animations.json"),
+        bossanimations: loadJSON("modules/configs/boss_animation.json"),
         mapbg: loadImage("assets/maps/OriginalMap.jpg"),
         mapinfo: loadJSON("assets/maps/OriginalMap-bounds.json"),
         strings: loadJSON("assets/locale/en_US.json"),
