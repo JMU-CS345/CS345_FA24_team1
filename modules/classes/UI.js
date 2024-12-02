@@ -12,7 +12,7 @@ class UI {
         this.slotPadding = 10;
         this.selectedWeaponIndex = 0;
 
-        this.weaponUnlockRounds = [0, 0, 0, 9, 12];
+        this.weaponUnlockRounds = [0, 3, 6, 9, 12];
 
         this.components = []; /* Currently active components */
 	}
