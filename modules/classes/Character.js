@@ -92,7 +92,6 @@ class Character {
 						this.arena.highscore = this.arena.score
 						storeItem("highScore", this.arena.highscore);
 					}
-					console.log(this.arena.score);
 				}
 			}
 			if (this instanceof Player) {
