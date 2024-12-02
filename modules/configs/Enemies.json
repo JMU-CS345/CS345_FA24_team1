@@ -12,6 +12,12 @@
             "sprite": "assets/characters/sprite_sheets/zombie_boss.png", 
             "speed": 2,
             "weapon": "katana"
+        },{
+            "name": "development",
+            "health": 10, 
+            "sprite": "assets/characters/sprite_sheets/zombie_female.png", 
+            "speed": 3,
+            "weapon": "fists"
         }
         
     ]
