@@ -49,6 +49,9 @@ class Arena {
     // Start out unpaused
     this.paused = false;
     this.lastPauseToggle = Date.now(); // time of last pause/resume
+
+    this.score = 0; // score-tracking
+    this.highscore = (getItem("highScore") == null ? 0 : getItem("highScore"));
   }
 
   /* Pauses the game state entirely. */

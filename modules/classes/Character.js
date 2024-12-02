@@ -86,6 +86,14 @@ class Character {
 			if (this.health <= 0) {
 				this.health = 0;
 				this.alive = false;
+				if (this instanceof Enemy) {
+					this.arena.score += 1;
+					if (this.arena.score > this.arena.highscore) {
+						this.arena.highscore = this.arena.score
+						storeItem("highScore", this.arena.highscore);
+					}
+					console.log(this.arena.score);
+				}
 			}
 			if (this instanceof Player) {
 				this.arena.playergrunt.play();
