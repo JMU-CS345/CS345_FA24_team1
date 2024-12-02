@@ -19,10 +19,10 @@
             "name": "pistol",
             "damage": 20,
             "firerate": 10,
-            "hasmelee": false,
+           "hasmelee":true,
             "hasranged": false,
-            "range" : 100,
-            "projspeed": 50        
+            "meleerange": 100,
+            "projspeed": 50       
             }, {
             "name": "shotgun",
             "damage": 70,
@@ -31,23 +31,23 @@
             "hasranged": false,
             "meleerange": 100,
             "projspeed": 50
-            
+
             }, {
             "name": "rifle",
             "damage": 50,
             "firerate": 20,
-            "hasmelee": true,
-            "meleerange": 150,
+           "hasmelee":true,
             "hasranged": false,
-            "projspeed": 50        
+            "meleerange": 100,
+            "projspeed": 50      
             }, {
             "name": "rocket",
             "damage": 200,
             "firerate": 2,
-            "hasmelee": true,
-            "meleerange": 150,
+            "hasmelee":true,
             "hasranged": false,
-            "projspeed": 100        
+            "meleerange": 100,
+            "projspeed": 50      
         }
     ]
 }
