@@ -12,7 +12,7 @@ class UI {
         this.slotPadding = 10;
         this.selectedWeaponIndex = 0;
 
-        this.weaponUnlockRounds = [0, 0, 0, 9, 12];
+        this.weaponUnlockRounds = [0, 3, 6, 9, 12];
 
         this.components = []; /* Currently active components */
 	}
@@ -62,17 +62,12 @@ class UI {
     
         if (previousWeaponIndex !== this.selectedWeaponIndex) {
             const weaponKeys = ["katana", "pistol", "shotgun", "rifle", "rocket"];
-            const newWeaponName = weaponKeys[this.selectedWeaponIndex];
-            
-            // Update the player's sprite
-            this.arena.getPlayer().sprite = assets.playersprites[newWeaponName];
-            
-            // Find the new weapon data
-            const newWeaponData = this.arena.weapons.find(wtype => wtype.name === newWeaponName);
-            if (newWeaponData) {
-                const newWeapon = new Weapon(newWeaponData, this.arena.getPlayer());
-                this.arena.getPlayer().addWeapon(newWeapon, true); // Replace the player's current weapon
-            }
+            const newWeapon = weaponKeys[this.selectedWeaponIndex];
+            this.arena.getPlayer().sprite = assets.playersprites[newWeapon];
+            let hasWeapon = this.arena.getPlayer().switchWeapon(this.selectedWeaponIndex); // check if player has weapon
+            if (hasWeapon) return;
+            this.arena.getPlayer().addWeapon(new Weapon(this.arena.weapons.find(
+                (wtype) => wtype.name == `${newWeapon}`), this.arena.getPlayer()), true);
         }
     }
     
