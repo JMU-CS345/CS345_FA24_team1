@@ -165,8 +165,16 @@ class Arena {
     // Spawn enemies at intervals
     this.spawnTimer = setInterval(() => {
       const enemy = waveinfo.enemies[this.nextSpawnID1];
+
+
+      // Find all matching enemies with the same name and pick one randomly
       const matchingEnemies = this.enemies.filter((eobj) => eobj.name == enemy.name);
       let enemyinfo = null;
+
+      if (matchingEnemies.length > 0) {
+        const randomIndex = Math.floor(Math.random() * matchingEnemies.length);
+        enemyinfo = matchingEnemies[randomIndex];
+      }
 
       if (matchingEnemies.length > 0) {
         const randomIndex = Math.floor(Math.random() * matchingEnemies.length);

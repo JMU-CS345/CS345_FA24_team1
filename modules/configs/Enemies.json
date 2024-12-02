@@ -6,6 +6,7 @@
             "sprite": "assets/characters/sprite_sheets/zombie_normal.png", 
             "speed": 3,
             "weapon": "fists"
+
         },{
             "name": "boss",
             "health": 100, 
