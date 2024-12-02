@@ -25,6 +25,7 @@ class Player extends Character {
       this.currentFrame = 0;
       return;
     }
+    
 
     // Movement
     const keydownUP = keyIsDown(UP_ARROW),

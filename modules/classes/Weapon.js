@@ -100,45 +100,54 @@ class Weapon {
    */
   update() {
     for (let i = 0; i < this.projectiles.length; i++) {
-      // Update the position of the projectile based on its velocity.
-      this.projectiles[i].projposition.x += this.projectiles[i].projvelocity.x;
-      this.projectiles[i].projposition.y += this.projectiles[i].projvelocity.y;
+        const projectile = this.projectiles[i];
 
-      // Remove projectile if it leaves the valid arena boundaries.
-      if (!isValidLocation(this.projectiles[i].projposition)) {
-        this.projectiles.splice(i, 1);
-        i--;
-        continue;
-      }
+        // Update the position of the projectile based on its velocity
+        projectile.projposition.x += projectile.projvelocity.x;
+        projectile.projposition.y += projectile.projvelocity.y;
 
-      // Check for collisions with characters in the arena.
-      this.owner.arena.characters.forEach((character) => {
-        // Only target enemies.
-        if (
-          character instanceof Enemy &&
-          character.checkHit(this.projectiles[i].projposition)
-        ) {
-          character.takeDamage(this.wtype.damage); // Apply damage.
-          this.projectiles.splice(i, 1); // Remove projectile on impact.
-          i--;
+        // Check if the projectile goes out of bounds
+        if (!this.owner.arena.isValidBoxLocation(projectile.projposition)) {
+            this.projectiles.splice(i, 1); // Remove projectile if out of bounds
+            i--; // Adjust index
+            continue;
         }
-      });
+
+        // Collision check (optional for now)
+        this.owner.arena.characters.forEach((character) => {
+            if (
+                character instanceof Enemy &&
+                character.checkHit(projectile.projposition)
+            ) {
+                character.takeDamage(this.wtype.damage);
+                this.projectiles.splice(i, 1); // Remove projectile on impact
+                i--;
+            }
+        });
     }
-  }
+}
+
 
   /**
    * Draws all active projectiles using the specified sprite.
    */
   draw() {
     for (let i = 0; i < this.projectiles.length; i++) {
-      // Render the projectile sprite at its current position.
-      if (this.projectiles[i].projposition) {
-        image(
-          this.wtype.projsprite,
-          this.projectiles[i].projposition.x,
-          this.projectiles[i].projposition.y
-        );
-      }
+        const projectile = this.projectiles[i];
+
+        if (projectile.projposition) {
+            // Draw a circle to represent the projectile
+            fill(255, 0, 0); // Red color for the projectile
+            noStroke(); // No border
+            ellipse(
+                projectile.projposition.x,
+                projectile.projposition.y,
+                10, // Diameter of the circle
+                10  // Diameter of the circle
+            );
+        }
     }
-  }
+}
+
+
 }
