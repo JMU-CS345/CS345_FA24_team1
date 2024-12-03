@@ -37,8 +37,8 @@ class UI {
         const seconds = time % 60;
         const formattedTime = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
         text(`${formattedTime}`, 10, 90);
-        text(`Score: ${arena.score}`, 10, 120);
-        text(`High score: ${this.arena.highscore}`, 10, 150);
+        text(`${this.strings.scoreText}: ${this.arena.score}`, 10, 120);
+        text(`${this.strings.highScoreText}: ${this.arena.highscore}`, 10, 150);
 
         this.checkSlotSwitch();
         this.drawWeaponHotbar();
