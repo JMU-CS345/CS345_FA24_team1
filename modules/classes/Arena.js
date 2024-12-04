@@ -239,6 +239,23 @@ class Arena {
       this.stopTimer();
       this.gameaudio.stop();
       this.gameoveraudio.play();
+      ui.addComponent({
+        draw: function() {
+          background(0, 235);
+
+          stroke(255, 255, 255);
+          strokeWeight(1);
+          fill(255, 0, 0);
+          textSize(75);
+          textAlign(CENTER, CENTER);
+          text("GAME OVER", arena.width>>1, arena.height>>1);
+
+          textSize(40);
+          textAlign(CENTER, CENTER);
+          text(`${ui.strings.waveText} ${ui.arena.wave}`, arena.width>>1, arena.height - (Math.round(arena.width / Math.pow(2, 2.5))));
+          text(`${ui.strings.scoreText}: ${ui.arena.score}`, arena.width>>1, arena.height - (Math.round(arena.width / Math.pow(2, 2.25))));
+        } 
+      })
     }
   
     this.characters.forEach(character => character.update());
