@@ -54,8 +54,11 @@ class Player extends Character {
 
     // attack animation
     if (keyIsDown(32)) {
-      this.attack();
-      this.state = "attacking";
+      // Only set attacking state if fire was successful
+      if (this.attack()) {
+          this.state = "attacking";
+          this.currentFrame = 1;
+      }
     }
 
 
@@ -66,6 +69,7 @@ class Player extends Character {
         this.currentFrame++;
         if (this.currentFrame >= 2) {
           this.currentFrame = 0;
+          if (this.state == "attacking") this.state = "idle";
         }
         this.frameTimer = 0;
       }

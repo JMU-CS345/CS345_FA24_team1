@@ -8,8 +8,6 @@ class Weapon {
         this.wtype = wtype;
         this.owner = owner;
 
-        // TODO fix animation weapon ani playing even when not firing
-
         // Instance-specific weapon info - last fire time + projectiles
         // + projwidth/projheight. Each element in projectiles is of form
         // {vel: <Vector2D>, pos: <Vector2D>}
@@ -45,11 +43,16 @@ class Weapon {
 
         // Register damage to nearby enemies if melee
         if (this.wtype.hasmelee) {
-            // TODO FIX MELEE LOGIC - extend -> shift() write in Box
-            // Extend the owner's hitbox in the direction of the attack.
+            // Owner's box -> clone -> take half only in the direction facing
+            // -> extend in direction by melee range
             let weaponbox = this.owner.box.clone();
+            const faceangle = Direction.radians(this.owner.facing);
+            const shrinkvec = new Vector2D(0, 0).fromPolar(1, faceangle);
+            shrinkvec.x *= (weaponbox.width >> 1);
+            shrinkvec.y *= (weaponbox.height >> 1);
+            weaponbox.shrink(shrinkvec);
             weaponbox.extend(new Vector2D(0, 0).fromPolar(
-                this.wtype.meleerange,Direction.radians(this.owner.facing)
+                this.wtype.meleerange, faceangle
             ));
 
             // Hit all characters that intersect weaponbox
@@ -113,7 +116,8 @@ class Weapon {
                 // Update position from velocity
                 projectile.pos.add(accuvel);
 
-                // Check impacts with characters and deal damage + remove if so
+                // Check impacts with characters and deal damage
+                // Remove projectile afterwards if any characters were hit
                 let hitany = false;
                 const projbox = new Box(projectile.pos.x, projectile.pos.y,
                         this.projwidth, this.projheight);
@@ -127,10 +131,14 @@ class Weapon {
                         hitany = true;
                     }
 
-                    // TODO need hitType in weaponTypes for nuke, then here
-                    // switch type to direct vs. blast / write method for that,
-                    // as well as spawning impact blast fragments and AoE dmg
-                    // and impact audio
+                    // TODO need to add support for rocket
+                    //  - hitType for ranged weapons in WeaponTypes.json
+                    //      - single - what is written above
+                    //      - blast - for rockets - does aoe damage to ALL 
+                    //      characters in range, even player
+                    //  - parse that upon hit and do single damage (above) or
+                    //  spawn at most ONE blast and deal damage to all in radius
+                    //  - for blast also show impact audio and impact sprites
                 });
             
                 // Check collision with map bounds and remove if so
