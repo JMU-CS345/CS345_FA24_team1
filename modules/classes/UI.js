@@ -66,10 +66,7 @@ class UI {
             const weaponKeys = ["katana", "pistol", "shotgun", "rifle", "rocket"];
             const newWeapon = weaponKeys[this.selectedWeaponIndex];
             this.arena.getPlayer().sprite = assets.playersprites[newWeapon];
-            let hasWeapon = this.arena.getPlayer().switchWeapon(this.selectedWeaponIndex); // check if player has weapon
-            if (hasWeapon) return;
-            this.arena.getPlayer().addWeapon(new Weapon(this.arena.weapons.find(
-                (wtype) => wtype.name == `${newWeapon}`), this.arena.getPlayer()), true);
+            this.arena.getPlayer().switchWeapon(this.selectedWeaponIndex);
         }
     }
     

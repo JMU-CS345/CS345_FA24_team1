@@ -23,6 +23,24 @@ class Player extends Character {
       return;
     }
 
+    // Weapon unlocks: able to skip waves without breaking weapon switching
+    if (this.arena.wave >= 3 && this.weapons[1] == undefined) {
+      this.weapons[1] = new Weapon(this.arena.weapons.find(
+                (wtype) => wtype.name == `pistol`), this);
+    } 
+    if (this.arena.wave >= 6 && this.weapons[2] == undefined) {
+      this.weapons[2] = new Weapon(this.arena.weapons.find(
+                (wtype) => wtype.name == `shotgun`), this);
+    } 
+    if (this.arena.wave >= 9 && this.weapons[3] == undefined) {
+      this.weapons[3] = new Weapon(this.arena.weapons.find(
+                (wtype) => wtype.name == `rifle`), this);
+    } 
+    if (this.arena.wave >= 12 && this.weapons[4] == undefined) {
+      this.weapons[4] = new Weapon(this.arena.weapons.find(
+                (wtype) => wtype.name == `rocket`), this);
+    } 
+
     if (!keyIsPressed) {
       this.state = "idle";
       this.currentFrame = 0;
