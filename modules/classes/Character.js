@@ -121,6 +121,9 @@ class Character {
 	*	Draw method for drawing the Character onto canvas every frame,
 	*/
 	draw() {
+        // Weapon drawing
+        this.weapons.forEach((weapon) => weapon.draw());
+
 		// All animations -> for current state -> for facing -> for frame
 		const aniframe =
 				this.animations[this.state][this.facing][this.currentFrame];
