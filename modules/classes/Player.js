@@ -31,10 +31,10 @@ class Player extends Character {
     
 
     // Movement
-    const keydownUP = keyIsDown(UP_ARROW),
-          keydownDOWN = keyIsDown(DOWN_ARROW),
-          keydownLEFT = keyIsDown(LEFT_ARROW),
-          keydownRIGHT = keyIsDown(RIGHT_ARROW),
+    const keydownUP = keyIsDown(UP_ARROW) || keyIsDown(87),
+          keydownDOWN = keyIsDown(DOWN_ARROW) || keyIsDown(83),
+          keydownLEFT = keyIsDown(LEFT_ARROW) || keyIsDown(65),
+          keydownRIGHT = keyIsDown(RIGHT_ARROW) || keyIsDown(68),
           moving = keydownUP || keydownDOWN || keydownLEFT || keydownRIGHT;
 
     if (keydownUP) {

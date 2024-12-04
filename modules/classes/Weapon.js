@@ -8,8 +8,6 @@ class Weapon {
         this.wtype = wtype;
         this.owner = owner;
 
-        /* TODO rewrite this file + sketch.js + WeaponTypes.json */
-        // TODO also support for nuke weapon ????
         // TODO fix animation weapon ani playing even when not firing
 
         // Instance-specific weapon info - last fire time + projectiles
@@ -18,11 +16,10 @@ class Weapon {
         this.lastFireTime = -1;
         this.projectiles = []; // Array of active projectiles.
         if (this.wtype.hasranged) {
-            // 1/4th of owner in height and proportional width
-            // TODO fix how make better?
-            this.projheight = this.owner.box.height >> 2;
-            this.projwidth = this.wtype.projsprite.width * this.projheight
-                    / this.wtype.projsprite.height;
+            // Square root of damage in height, proportional width
+            this.projheight = Math.sqrt(this.wtype.damage) | 0
+            this.projwidth = (this.wtype.projsprite.width * this.projheight
+                    / this.wtype.projsprite.height) | 0;
         }
     }
 
@@ -89,8 +86,6 @@ class Weapon {
                 target.x - spawn.x
             );
 
-            // TODO test mouse firing works, test enemies still kill player
-
             this.projectiles.push({
                 pos: spawn,
                 vel: new Vector2D(0, 0).fromPolar(this.wtype.projspeed,
@@ -127,12 +122,15 @@ class Weapon {
                     if ((this.owner instanceof Enemy)
                             == (character instanceof Enemy)) return;
 
-                    if (character.checkHit(projbox)) {
+                    if (character.alive && character.checkHit(projbox)) {
                         character.takeDamage(this.wtype.damage);
                         hitany = true;
                     }
 
-                    // TODO need blastType in weaponTypes for nuke
+                    // TODO need hitType in weaponTypes for nuke, then here
+                    // switch type to direct vs. blast / write method for that,
+                    // as well as spawning impact blast fragments and AoE dmg
+                    // and impact audio
                 });
             
                 // Check collision with map bounds and remove if so
