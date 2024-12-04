@@ -13,6 +13,9 @@ class Player extends Character {
    * Update this Player each tick. Handle movement from user input.
    */
   update() {
+    // Update weapons
+    this.weapons.forEach((weapon) => weapon.update());
+
     // Player doesn't update when dead
     if (!this.alive) {
       this.state = "dead";
@@ -70,9 +73,9 @@ class Player extends Character {
   }
 
   /**
-   *  Attacks enemies if player is facing their direction & in their box
+   *  Attacks using the current weapon.
    */
   attack() {
-    return (super.currentWeapon().fire()); 
+    return (super.currentWeapon().fire(new Vector2D(mouseX, mouseY))); 
   }
 }
