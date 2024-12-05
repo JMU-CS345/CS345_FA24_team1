@@ -275,6 +275,7 @@ class Arena {
 
     if (!this.getPlayer().alive && (this.timerReference != null)) {
       this.stopTimer();
+      clearInterval(this.spawnTimer);
       this.gameaudio.stop();
       this.gameoveraudio.play();
       ui.addComponent({
