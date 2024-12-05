@@ -14,11 +14,12 @@ function preload() {
         }),
         waves: loadJSON("modules/configs/waves.json"),
         weapons: loadJSON("modules/configs/WeaponTypes.json", (obj) => {
-            // Load projectile sprites
+            // Load projectile sprites and audio files
             obj.weapons.forEach((wtype) => {
-                if (wtype.hasranged) {
-                    wtype.projectilesize = wtype.projectilesize || 10; 
-                }
+                if (wtype.hasranged)
+                    wtype.projsprite = loadImage(wtype.projsprite);
+                if (wtype.fireaudio)
+                    wtype.fireaudio = loadSound(wtype.fireaudio);
             });
         }),
         charanimations: loadJSON("modules/configs/character_animations.json"),

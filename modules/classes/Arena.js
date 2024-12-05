@@ -235,6 +235,44 @@ class Arena {
   update() {
     if (this.paused) return; // Do nothing if paused
 
+    if (!this.getPlayer().alive && (this.timerReference === null)) {
+      if (keyIsDown(13)) {
+        ui.components = [];
+        this.characters = [new Player(
+          this,
+          new Vector2D(0, 0).fromOther(this.map.info.playerSpawn),
+          25, assets.playersprites.katana,
+          new Box(
+            this.map.info.playerSpawn.x, this.map.info.playerSpawn.y, 24, 51
+          ), 5, this.charanimations
+        )];
+        this.getPlayer().addWeapon(new Weapon(this.weapons.find(
+          (wtype) => wtype.name == "katana"), this.getPlayer()), true);
+
+        // Initialize pathfinding
+        this.pathing = new Pathfinding(this.map, this.getPlayer().box);
+
+        this.wave = 0; // Current wave index
+        this.spawnTimer = null; // Timer for spawning enemies
+        this.nextSpawnID1 = 0; // Current wave enemy type index
+        this.nextSpawnID2 = 0; // Current enemy spawn count
+
+        // Timer for tracking game duration
+        this.time = 0;
+        this.timerReference = null;
+    
+        this.enemyCount = 3;
+
+        // Start out unpaused
+        this.paused = false;
+        this.lastPauseToggle = Date.now(); // time of last pause/resume
+
+        this.score = 0; // score-tracking
+        this.highscore = (getItem("highScore") == null ? 0 : getItem("highScore"));
+      }
+      return;
+    }
+
     if (!this.getPlayer().alive && (this.timerReference != null)) {
       this.stopTimer();
       this.gameaudio.stop();

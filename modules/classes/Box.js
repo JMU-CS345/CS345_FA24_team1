@@ -70,6 +70,19 @@ class Box {
         this.y += Math.min(vector.y, 0);
     }
 
+    /* Shrinks this Box in the direction of the passed Vector2D vector. */
+    /* TODO write tests for shrink() */
+    shrink(vector) {
+        // Subtract absolute value of x,y from box width,height
+        this.width -= Math.abs(vector.x);
+        this.height -= Math.abs(vector.y);
+
+        // Shift box x,y forwards if vector x,y positive
+        // No shift if vector x,y <= zero
+        this.x += Math.max(vector.x, 0);
+        this.y += Math.max(vector.y, 0);
+    }
+
     /* true if this Box has identical values as other, false otherwise */
     equals(other) {
         return (this.x == other.x) && (this.y == other.y)

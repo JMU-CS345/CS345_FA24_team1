@@ -13,12 +13,33 @@ class Player extends Character {
    * Update this Player each tick. Handle movement from user input.
    */
   update() {
+    // Update weapons
+    this.weapons.forEach((weapon) => weapon.update());
+
     // Player doesn't update when dead
     if (!this.alive) {
       this.state = "dead";
       this.currentFrame = 0;
       return;
     }
+
+    // Weapon unlocks: able to skip waves without breaking weapon switching
+    if (this.arena.wave >= 3 && this.weapons[1] == undefined) {
+      this.weapons[1] = new Weapon(this.arena.weapons.find(
+                (wtype) => wtype.name == `pistol`), this);
+    } 
+    if (this.arena.wave >= 6 && this.weapons[2] == undefined) {
+      this.weapons[2] = new Weapon(this.arena.weapons.find(
+                (wtype) => wtype.name == `shotgun`), this);
+    } 
+    if (this.arena.wave >= 9 && this.weapons[3] == undefined) {
+      this.weapons[3] = new Weapon(this.arena.weapons.find(
+                (wtype) => wtype.name == `rifle`), this);
+    } 
+    if (this.arena.wave >= 12 && this.weapons[4] == undefined) {
+      this.weapons[4] = new Weapon(this.arena.weapons.find(
+                (wtype) => wtype.name == `rocket`), this);
+    } 
 
     if (!keyIsPressed) {
       this.state = "idle";
@@ -28,10 +49,10 @@ class Player extends Character {
     
 
     // Movement
-    const keydownUP = keyIsDown(UP_ARROW),
-          keydownDOWN = keyIsDown(DOWN_ARROW),
-          keydownLEFT = keyIsDown(LEFT_ARROW),
-          keydownRIGHT = keyIsDown(RIGHT_ARROW),
+    const keydownUP = keyIsDown(UP_ARROW) || keyIsDown(87),
+          keydownDOWN = keyIsDown(DOWN_ARROW) || keyIsDown(83),
+          keydownLEFT = keyIsDown(LEFT_ARROW) || keyIsDown(65),
+          keydownRIGHT = keyIsDown(RIGHT_ARROW) || keyIsDown(68),
           moving = keydownUP || keydownDOWN || keydownLEFT || keydownRIGHT;
 
     if (keydownUP) {
@@ -51,8 +72,11 @@ class Player extends Character {
 
     // attack animation
     if (keyIsDown(32)) {
-      this.attack();
-      this.state = "attacking";
+      // Only set attacking state if fire was successful
+      if (this.attack()) {
+          this.state = "attacking";
+          this.currentFrame = 1;
+      }
     }
 
 
@@ -63,6 +87,7 @@ class Player extends Character {
         this.currentFrame++;
         if (this.currentFrame >= 2) {
           this.currentFrame = 0;
+          if (this.state == "attacking") this.state = "idle";
         }
         this.frameTimer = 0;
       }
@@ -70,9 +95,9 @@ class Player extends Character {
   }
 
   /**
-   *  Attacks enemies if player is facing their direction & in their box
+   *  Attacks using the current weapon.
    */
   attack() {
-    return (super.currentWeapon().fire()); 
+    return (super.currentWeapon().fire(new Vector2D(mouseX, mouseY))); 
   }
 }
