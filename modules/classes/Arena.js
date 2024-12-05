@@ -235,10 +235,69 @@ class Arena {
   update() {
     if (this.paused) return; // Do nothing if paused
 
+    if (!this.getPlayer().alive && (this.timerReference === null)) {
+      if (keyIsDown(13)) {
+        ui.components = [];
+        this.characters = [new Player(
+          this,
+          new Vector2D(0, 0).fromOther(this.map.info.playerSpawn),
+          25, assets.playersprites.katana,
+          new Box(
+            this.map.info.playerSpawn.x, this.map.info.playerSpawn.y, 24, 51
+          ), 5, this.charanimations
+        )];
+        this.getPlayer().addWeapon(new Weapon(this.weapons.find(
+          (wtype) => wtype.name == "katana"), this.getPlayer()), true);
+
+        // Initialize pathfinding
+        this.pathing = new Pathfinding(this.map, this.getPlayer().box);
+
+        this.wave = 0; // Current wave index
+        this.spawnTimer = null; // Timer for spawning enemies
+        this.nextSpawnID1 = 0; // Current wave enemy type index
+        this.nextSpawnID2 = 0; // Current enemy spawn count
+
+        // Timer for tracking game duration
+        this.time = 0;
+        this.timerReference = null;
+    
+        this.enemyCount = 3;
+
+        // Start out unpaused
+        this.paused = false;
+        this.lastPauseToggle = Date.now(); // time of last pause/resume
+
+        this.score = 0; // score-tracking
+        ui.selectedWeaponIndex = 0;
+      }
+      return;
+    }
+
     if (!this.getPlayer().alive && (this.timerReference != null)) {
       this.stopTimer();
       this.gameaudio.stop();
       this.gameoveraudio.play();
+      ui.addComponent({
+        draw: function() {
+          background(0, 235);
+
+          stroke(255, 255, 255);
+          strokeWeight(1);
+          fill(255, 0, 0);
+          textSize(150);
+          textAlign(CENTER, CENTER);
+          text("GAME OVER", arena.width>>1, arena.height - (Math.round(arena.width / Math.pow(2, 1.5))));
+
+          textSize(40);
+          textAlign(CENTER, CENTER);
+          text(`${ui.strings.waveText} ${ui.arena.wave}`, arena.width>>1, arena.height - (Math.round(arena.width / Math.pow(2, 2.0))));
+          text(`${ui.strings.scoreText}: ${ui.arena.score}`, arena.width>>1, arena.height - (Math.round(arena.width / Math.pow(2, 2.25))));
+          text(`${ui.strings.highScoreText}: ${ui.arena.highscore}`, arena.width>>1, arena.height - (Math.round(arena.width / Math.pow(2, 2.50))));
+
+          fill(255, 255, 255);
+          text("Press Enter to play again", arena.width>>1, arena.height - (Math.round(arena.width / Math.pow(2, 3.5))));
+        } 
+      })
     }
   
     this.characters.forEach(character => character.update());
