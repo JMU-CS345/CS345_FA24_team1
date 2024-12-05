@@ -268,7 +268,7 @@ class Arena {
         this.lastPauseToggle = Date.now(); // time of last pause/resume
 
         this.score = 0; // score-tracking
-        this.highscore = (getItem("highScore") == null ? 0 : getItem("highScore"));
+        ui.selectedWeaponIndex = 0;
       }
       return;
     }
