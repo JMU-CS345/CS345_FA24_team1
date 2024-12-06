@@ -41,7 +41,7 @@ class Player extends Character {
                 (wtype) => wtype.name == `rocket`), this);
     } 
 
-    if (!keyIsPressed) {
+    if (!keyIsPressed && !mouseIsPressed) {
       this.state = "idle";
       this.currentFrame = 0;
       return;
@@ -70,15 +70,14 @@ class Player extends Character {
       this.arena.pathing.updatePlayerBox(); // Recalculate pathfinding
     }
 
-    // attack animation
-    if (keyIsDown(32)) {
+    // Player attack animation
+    if (keyIsDown(32) || mouseIsPressed && mouseButton === LEFT) {
       // Only set attacking state if fire was successful
       if (this.attack()) {
           this.state = "attacking";
           this.currentFrame = 1;
       }
     }
-
 
     // Sprite movement animation frames
     if (!this.isAttacking && (this.state === "moving" || this.state === "attacking")) {

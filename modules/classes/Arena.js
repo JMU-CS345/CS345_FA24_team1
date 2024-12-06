@@ -239,7 +239,7 @@ class Arena {
           this.spawnTimer = null;
         }
       }
-    }, 1000);
+    }, 800);
   }
 
   /* Checks if the passed Box is entirely within the map bounds. */
@@ -326,6 +326,7 @@ class Arena {
         && ui.components.every((comp) => comp.id != 1)) {
       // Whole object refers to global assets/UI/Arena contexts as 'this'
       // refers to the component object
+      arena.stopTimer();
       ui.addComponent({
         // Identifier as the next wave menu
         id: 1,
@@ -367,12 +368,13 @@ class Arena {
           // Start next wave if enter is pressed
           if (keyIsDown(13)) { // ENTER
             // Start audio and game timer if first wave
+            
             if (arena.wave == 0) {
               userStartAudio();
               assets.gameaudio.setVolume(0.45);
               assets.gameaudio.loop();
-              arena.startTime();
             }
+            arena.startTime();
 
             arena.nextWave();
             
