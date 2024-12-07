@@ -53,6 +53,22 @@ class Arena {
 
     this.score = 0; // score-tracking
     this.highscore = (getItem("highScore") == null ? 0 : getItem("highScore"));
+
+    // Cheat code character buffer and cheat code table
+    this.cheatcodes = [
+        /* skip - kill all living zombies and end spawnTimer, ending wave */
+        {code: "skip", func: () => this.characters.forEach((chr) => {
+          clearInterval(this.spawnTimer);
+          this.spawnTimer = null;
+          if (chr.alive && (chr instanceof Enemy)) chr.takeDamage(Infinity);
+        })},
+        /* nuke - remove all zombies, alive and dead */
+        {code: "nuke", func: () => this.characters = [this.getPlayer()]},
+        /* god - give infinite health to the player */
+        {code: "god", func: () => this.getPlayer().health = Infinity}
+    ];
+    // Fill buffer with space characters to start
+    this.charbuf = new Array(4).fill(' ');
   }
 
   /* Pauses the game state entirely. */
@@ -223,7 +239,7 @@ class Arena {
           this.spawnTimer = null;
         }
       }
-    }, 1000);
+    }, 800);
   }
 
   /* Checks if the passed Box is entirely within the map bounds. */
@@ -310,6 +326,7 @@ class Arena {
         && ui.components.every((comp) => comp.id != 1)) {
       // Whole object refers to global assets/UI/Arena contexts as 'this'
       // refers to the component object
+      arena.stopTimer();
       ui.addComponent({
         // Identifier as the next wave menu
         id: 1,
@@ -351,12 +368,13 @@ class Arena {
           // Start next wave if enter is pressed
           if (keyIsDown(13)) { // ENTER
             // Start audio and game timer if first wave
+            
             if (arena.wave == 0) {
               userStartAudio();
               assets.gameaudio.setVolume(0.45);
               assets.gameaudio.loop();
-              arena.startTime();
             }
+            arena.startTime();
 
             arena.nextWave();
             
@@ -408,6 +426,20 @@ class Arena {
         if ((chr instanceof Enemy) && (chr.alive)) chr.draw();
     });
     this.characters[0].draw();
+  }
+
+  /* keyTyped event handler. Handles cheat codes. */
+  keyTyped() {
+    // Add to end of charbuf, remove from start
+    this.charbuf.shift();
+    this.charbuf.push(key);
+
+    // Scan each cheat code and apply matches
+    this.cheatcodes.forEach((ccobj) => {
+      const offset = this.charbuf.length - ccobj.code.length;
+      if (ccobj.code.split('').every((ch, i) => (ch == this.charbuf[i+offset])))
+        ccobj.func();
+    });
   }
 
   /* Scales the map and associated elements by the given factors. */
