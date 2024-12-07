@@ -65,6 +65,10 @@ function windowResized() {
     arena.setSize(windowWidth, windowHeight);
 }
 
+function keyTyped() {
+    arena.keyTyped();
+}
+
 function draw() {
     arena.update();
     ui.draw();
