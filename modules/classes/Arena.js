@@ -53,7 +53,27 @@ class Arena {
 
     this.score = 0; // score-tracking
     this.highscore = (getItem("highScore") == null ? 0 : getItem("highScore"));
+
+    // Portal animation variables
+    this.portalFrames = assets.portalanimation.portalframes.map((frame) =>
+      loadImage(frame)
+    );
+    this.portalFrameIndex = 0;
+    this.isPortalAnimationPlaying = true;
+    this.portalAnimationPlayed = false;
+    this.portalAnimationTimer = 0;
+    this.portalAnimationDuration = this.portalFrames.length * 100;
+    this.portalFrameWidth = 134;
+    this.portalFrameHeight = 101; 
+    this.portalFrameDuration = 250;
   }
+
+  startPortalAnimation() {
+    if (this.portalAnimationPlayed) return;
+    this.portalFrameIndex = 0;
+    this.isPortalAnimationPlaying = true;
+    this.portalAnimationTimer = millis();
+}
 
   /* Pauses the game state entirely. */
   pause() {
@@ -233,8 +253,11 @@ class Arena {
 
   /* Updates the arena's state and handles game logic per tick. */
   update() {
+    if (this.wave === 0 && !this.isPortalAnimationPlayed) {
+      this.startPortalAnimation();
+    }
     if (this.paused) return; // Do nothing if paused
-
+    
     if (!this.getPlayer().alive && (this.timerReference === null)) {
       if (keyIsDown(13)) {
         ui.components = [];
@@ -300,7 +323,20 @@ class Arena {
         } 
       })
     }
+    
+    if (this.isPortalAnimationPlaying) {
+      if (millis() - this.portalAnimationTimer > this.portalFrameDuration) {
+          this.portalAnimationTimer = millis(); 
+          this.portalFrameIndex++; 
   
+          if (this.portalFrameIndex >= this.portalFrames.length) {
+              this.isPortalAnimationPlaying = false; // End animation
+              this.portalAnimationPlayed = true; // Mark as played
+          }
+      }
+  }
+  
+
     this.characters.forEach(character => character.update());
   
     // Check if all enemies are defeated and add start next wave menu if true
@@ -400,6 +436,15 @@ class Arena {
   draw() {
     image(this.map.bgImage, 0, 0, this.width, this.height);
     
+    // Draw portal animation if playing
+    if (this.isPortalAnimationPlaying) {
+        const frame = this.portalFrames[this.portalFrameIndex];
+        const x = 819;
+        const y = 74;
+        image(frame, x, y, this.portalFrameWidth, this.portalFrameHeight);
+        return; // Stop drawing other elements during animation
+    }
+
     // Draw characters, dead zombies then live zombies then player
     this.characters.forEach((chr) => {
         if ((chr instanceof Enemy) && (!chr.alive)) chr.draw();

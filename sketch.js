@@ -3,6 +3,7 @@
  */
 
 let arena, ui, assets, gameAudio;
+let portalFrames = [];
 
 function preload() {
     // Preload all assets
@@ -21,6 +22,9 @@ function preload() {
                 if (wtype.fireaudio)
                     wtype.fireaudio = loadSound(wtype.fireaudio);
             });
+        }),
+        portalanimation: loadJSON("modules/configs/portal_animation.json", (data) => {
+            portalFrames = data.portalframes.map(frame => loadImage(frame));
         }),
         charanimations: loadJSON("modules/configs/character_animations.json"),
         bossanimations: loadJSON("modules/configs/boss_animation.json"),
