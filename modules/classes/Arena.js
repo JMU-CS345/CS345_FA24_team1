@@ -55,11 +55,9 @@ class Arena {
     this.highscore = (getItem("highScore") == null ? 0 : getItem("highScore"));
 
     // Portal animation variables
-    this.portalFrames = assets.portalanimation.portalframes.map((frame) =>
-      loadImage(frame)
-    );
+    this.portalFrames = assets.portalanimation.portalframes;
     this.portalFrameIndex = 0;
-    this.isPortalAnimationPlaying = true;
+    this.isPortalAnimationPlaying = false;
     this.portalAnimationPlayed = false;
     this.portalAnimationTimer = 0;
     this.portalAnimationDuration = this.portalFrames.length * 100;
@@ -89,7 +87,7 @@ class Arena {
     this.portalFrameIndex = 0;
     this.isPortalAnimationPlaying = true;
     this.portalAnimationTimer = millis();
-}
+  }
 
   /* Pauses the game state entirely. */
   pause() {
@@ -172,8 +170,9 @@ class Arena {
       this.nextSpawnID1 = 0;
       this.nextSpawnID2 = 0;
     }
-     // If it's a boss wave (every 5th wave)
-     if (this.wave % 5=== 0) { // for testing purposes , change to 5 when the boss animation is done 
+      
+    // If it's a boss wave (every 5th wave)
+    if (this.wave % 5 === 0) { // for testing purposes , change to 5 when the boss animation is done 
       const bossInfo = this.enemies.find((eobj) => eobj.name === "boss");
       const bossSpawn = this.map.info.enemySpawn[0]; // Spawn at the first location
       const scaledHealth = bossInfo.health * healthMultiplier;
@@ -200,7 +199,7 @@ class Arena {
 
       this.characters.push(boss);
       return; // Boss wave only spawns the boss
-  }
+    }
 
     // Spawn enemies at intervals
     this.spawnTimer = setInterval(() => {
@@ -260,6 +259,9 @@ class Arena {
         }
       }
     }, 800);
+
+    // Immediately pause timer if game is paused
+    if (this.paused) clearInterval(this.spawnTimer);
   }
 
   /* Checks if the passed Box is entirely within the map bounds. */
@@ -269,9 +271,19 @@ class Arena {
 
   /* Updates the arena's state and handles game logic per tick. */
   update() {
-    if (this.wave === 0 && !this.isPortalAnimationPlayed) {
-      this.startPortalAnimation();
+    if (this.isPortalAnimationPlaying) {
+      if (millis() - this.portalAnimationTimer > this.portalFrameDuration) {
+         this.portalAnimationTimer = millis(); 
+         this.portalFrameIndex++; 
+  
+         if (this.portalFrameIndex >= this.portalFrames.length) {
+            this.isPortalAnimationPlaying = false; // End animation
+            this.portalAnimationPlayed = true; // Mark as played
+            arena.resume();
+         }
+      }
     }
+
     if (this.paused) return; // Do nothing if paused
     
     if (!this.getPlayer().alive && (this.timerReference === null)) {
@@ -340,19 +352,6 @@ class Arena {
       })
     }
     
-    if (this.isPortalAnimationPlaying) {
-      if (millis() - this.portalAnimationTimer > this.portalFrameDuration) {
-          this.portalAnimationTimer = millis(); 
-          this.portalFrameIndex++; 
-  
-          if (this.portalFrameIndex >= this.portalFrames.length) {
-              this.isPortalAnimationPlaying = false; // End animation
-              this.portalAnimationPlayed = true; // Mark as played
-          }
-      }
-  }
-  
-
     this.characters.forEach(character => character.update());
   
     // Check if all enemies are defeated and add start next wave menu if true
@@ -376,6 +375,7 @@ class Arena {
 
           if (arena.wave == 0) {
             // Start of game - starting text
+            arena.pause();
             background(0, 0, 0);
 
             const txtstr = assets.strings.introText, /* text to display */
@@ -403,15 +403,14 @@ class Arena {
 
           // Start next wave if enter is pressed
           if (keyIsDown(13)) { // ENTER
-            // Start audio and game timer if first wave
-            
+            // Start audio and game timer and portal animation if first wave
             if (arena.wave == 0) {
               userStartAudio();
               assets.gameaudio.setVolume(0.45);
               assets.gameaudio.loop();
+              if (!arena.portalAnimationPlayed) arena.startPortalAnimation();
             }
             arena.startTime();
-
             arena.nextWave();
             
             ui.removeComponent(this); // Remove from components list
