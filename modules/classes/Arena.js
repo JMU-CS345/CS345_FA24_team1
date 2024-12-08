@@ -61,8 +61,6 @@ class Arena {
     this.portalAnimationPlayed = false;
     this.portalAnimationTimer = 0;
     this.portalAnimationDuration = this.portalFrames.length * 100;
-    this.portalFrameWidth = 134;
-    this.portalFrameHeight = 101; 
     this.portalFrameDuration = 250;
 
     // Cheat code character buffer and cheat code table
@@ -409,6 +407,7 @@ class Arena {
               assets.gameaudio.setVolume(0.45);
               assets.gameaudio.loop();
               if (!arena.portalAnimationPlayed) arena.startPortalAnimation();
+              else arena.resume();
             }
             arena.startTime();
             arena.nextWave();
@@ -455,10 +454,12 @@ class Arena {
     
     // Draw portal animation if playing
     if (this.isPortalAnimationPlaying) {
-        const frame = this.portalFrames[this.portalFrameIndex];
-        const x = 819;
-        const y = 74;
-        image(frame, x, y, this.portalFrameWidth, this.portalFrameHeight);
+        const frame = this.portalFrames[this.portalFrameIndex],
+              framewidth = this.getPlayer().box.width * 4,
+              frameheight = this.getPlayer().box.height * 1.9,
+              x = this.getPlayer().box.x - (framewidth / 2.7),
+              y = this.getPlayer().box.y - (frameheight / 5);
+        image(frame, x, y, framewidth, frameheight);
         return; // Stop drawing other elements during animation
     }
 
