@@ -331,8 +331,7 @@ class Arena {
         draw: function() {
           background(0, 235);
 
-          stroke(255, 255, 255);
-          strokeWeight(1);
+          noStroke();
           fill(255, 0, 0);
           textSize(150);
           textAlign(CENTER, CENTER);
@@ -344,6 +343,8 @@ class Arena {
           text(`${ui.strings.scoreText}: ${ui.arena.score}`, arena.width>>1, arena.height - (Math.round(arena.width / Math.pow(2, 2.25))));
           text(`${ui.strings.highScoreText}: ${ui.arena.highscore}`, arena.width>>1, arena.height - (Math.round(arena.width / Math.pow(2, 2.50))));
 
+          stroke(255, 255, 255);
+          strokeWeight(1);
           fill(255, 255, 255);
           text("Press Enter to play again", arena.width>>1, arena.height - (Math.round(arena.width / Math.pow(2, 3.5))));
         } 
@@ -442,7 +443,10 @@ class Arena {
           text(assets.strings.pausedText, arena.width>>1, arena.height>>3);
           textSize(25);
           textAlign(LEFT, TOP);
-          text(assets.strings.controlsText, arena.width>>2, arena.height>>2);
+          text(assets.strings.controlsText, arena.width*0.35, arena.height>>2);
+          textAlign(LEFT, BOTTOM);
+          textSize(18);
+          text(assets.strings.creditsText, 0, arena.height);
         }
       });
     }
