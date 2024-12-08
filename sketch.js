@@ -2,7 +2,7 @@
  * Main sketch file. Delegates everything to Arena and UI.
  */
 
-let arena, ui, assets, gameAudio;
+let arena, ui, assets;
 
 function preload() {
     // Preload all assets
@@ -21,6 +21,13 @@ function preload() {
                 if (wtype.fireaudio)
                     wtype.fireaudio = loadSound(wtype.fireaudio);
             });
+        }),
+        portalanimation: loadJSON("modules/configs/portal_animation.json", (obj) => {
+            // Load each individual portal frame image
+            // map() here seems to fail; obj must be a shallow copy of the real
+            // object that gets inserted into assets
+            obj.portalframes.forEach((path, i) => 
+                    obj.portalframes[i] = loadImage(path));
         }),
         charanimations: loadJSON("modules/configs/character_animations.json"),
         bossanimations: loadJSON("modules/configs/boss_animation.json"),
