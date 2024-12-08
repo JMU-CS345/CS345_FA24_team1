@@ -7,5 +7,6 @@
     "introText": "Japan, 1467.\n\nYour forces are on the brink of defeat. Desperation drives you to unsheathe an ancient relic. With a swift slash, you cut it open.\n\nThe relic releases ancient spirits, possesing foe and ally alike.\n\nIt also throws you into a familiar land in a distant future, where the possesed soldiers still roam.\n\nYou failed Japan and condemned the world.\n\nAs the last shogun, your final duty is clear: grant them an honorable death.\n\nThis is your last stand.",
     "pausedText": "PAUSED",
     "controlsText": "Controls\nArrow keys or WASD     Player movement\nSpace or left click          Attack\n1/2/3/4/5\t\t\t                   Switch equipped weapon\nEscape\t\t\t\t\t                   Pause/unpause\nEnter\t\t\t\t\t\t                    Start next wave",
+    "creditsText": "CS345 Fall 2024 project  |  Shogun's Last Stand  |  by Jared Gonzalez, Joey Pabalan, Johnny Urias, Joseph Kabesha, and Tyler Avery",
     "GameOverText": "GAME OVER"
 }
