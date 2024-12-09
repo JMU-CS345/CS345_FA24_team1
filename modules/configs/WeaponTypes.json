@@ -23,7 +23,7 @@
             "hasranged": true,
             "fireaudio": "assets/sound/pistol.wav",
             "projspeed": 50,
-            "projsprite": "assets/other/projectile-debug.png"
+            "projsprite": "assets/weapons/bullet.png"
         }, {
             "name": "shotgun",
             "damage": 200,
@@ -32,7 +32,7 @@
             "hasranged": true,
             "fireaudio": "assets/sound/shotgun.wav",
             "projspeed": 50,
-            "projsprite": "assets/other/projectile-debug.png"
+            "projsprite": "assets/weapons/bullet.png"
         }, {
             "name": "rifle",
             "damage": 100,
@@ -41,7 +41,7 @@
             "hasranged": true,
             "fireaudio": "assets/sound/rifle.wav",
             "projspeed": 50,
-            "projsprite": "assets/other/projectile-debug.png"
+            "projsprite": "assets/weapons/bullet.png"
         },  {
             "name": "rocket",
             "damage": 1000,
