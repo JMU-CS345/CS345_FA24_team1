@@ -50,7 +50,7 @@ function preload() {
         },
         gameaudio: loadSound("assets/sound/game_loop.mp3"),
         gameoveraudio: loadSound("assets/sound/game_over.wav"),
-        playergrunt: loadSound("assets/sound/player_grunt.wav") // https://opengameart.org/content/grunt
+        playergrunt: loadSound("assets/sound/punch2.mp3") // https://opengameart.org/content/grunt
     };
 }
 
