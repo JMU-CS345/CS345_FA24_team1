@@ -23,7 +23,7 @@
             "hasranged": true,
             "fireaudio": "assets/sound/pistol.wav",
             "projspeed": 50,
-            "projsprite": "assets/weapons/bullet.png"
+            "projsprites": ["assets/weapons/bullet.png"]
         }, {
             "name": "shotgun",
             "damage": 200,
@@ -32,7 +32,7 @@
             "hasranged": true,
             "fireaudio": "assets/sound/shotgun.wav",
             "projspeed": 50,
-            "projsprite": "assets/weapons/bullet.png"
+            "projsprites": ["assets/weapons/bullet.png"]
         }, {
             "name": "rifle",
             "damage": 100,
@@ -41,7 +41,7 @@
             "hasranged": true,
             "fireaudio": "assets/sound/rifle.wav",
             "projspeed": 50,
-            "projsprite": "assets/weapons/bullet.png"
+            "projsprites": ["assets/weapons/bullet.png"]
         },  {
             "name": "rocket",
             "damage": 1000,
@@ -51,7 +51,9 @@
             "fireaudio": "assets/sound/rocket.mp3",
             "impactaudio": "assets/sound/explode.wav",
             "projspeed": 10,
-            "projsprite": "assets/other/projectile-debug.png"
+            "projsprites": ["assets/weapons/rocket_animation_right-1.png", "assets/weapons/rocket_animation_right-2.png"],
+            "blastradius": 75,
+            "blastsprites": ["assets/weapons/explosion-1.png", "assets/weapons/explosion-2.png", "assets/weapons/explosion-3.png", "assets/weapons/explosion-4.png"]
         }, {
             "name": "test_gun",
             "damage": 1,
@@ -59,7 +61,7 @@
             "hasmelee": false,
             "hasranged": true,
             "projspeed": 50,
-            "projsprite": "assets/other/projectile-debug.png"
+            "projsprites": ["assets/other/projectile-debug.png"]
         }
     ]
 }

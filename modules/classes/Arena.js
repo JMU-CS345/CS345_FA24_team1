@@ -310,9 +310,7 @@ class Arena {
       }
     }
 
-    if (this.paused) return; // Do nothing if paused
-
-    if (!this.getPlayer().alive && this.timerReference === null) {
+    if (!this.getPlayer().alive && this.paused) {
       if (keyIsDown(13)) {
         ui.components = [];
         this.characters = [
@@ -363,11 +361,14 @@ class Arena {
       return;
     }
 
-    if (!this.getPlayer().alive && this.timerReference != null) {
+    if (this.paused) return; // Do nothing if paused
+
+    if (!this.getPlayer().alive && !this.paused) {
       this.stopTimer();
       clearInterval(this.spawnTimer);
       this.gameaudio.stop();
       this.gameoveraudio.play();
+      this.pause();
       ui.addComponent({
         draw: function () {
           background(0, 235);
