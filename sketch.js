@@ -14,12 +14,18 @@ function preload() {
         }),
         waves: loadJSON("modules/configs/waves.json"),
         weapons: loadJSON("modules/configs/WeaponTypes.json", (obj) => {
-            // Load projectile sprites and audio files
+            // Load projectile + blast sprites and audio files
             obj.weapons.forEach((wtype) => {
                 if (wtype.hasranged)
-                    wtype.projsprite = loadImage(wtype.projsprite);
+                    wtype.projsprites.forEach((path, i) =>
+                            wtype.projsprites[i] = loadImage(path));
+                if (wtype.blastsprites)
+                    wtype.blastsprites.forEach((path, i) =>
+                            wtype.blastsprites[i] = loadImage(path));
                 if (wtype.fireaudio)
                     wtype.fireaudio = loadSound(wtype.fireaudio);
+                if (wtype.impactaudio)
+                    wtype.impactaudio = loadSound(wtype.impactaudio);
             });
         }),
         portalanimation: loadJSON("modules/configs/portal_animation.json", (obj) => {

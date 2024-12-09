@@ -8,16 +8,21 @@ class Weapon {
         this.wtype = wtype;
         this.owner = owner;
 
+        // Frames spent on each animation image (default for all weapons)
+        this.ANIMATION_DELAY = 12;
+
         // Instance-specific weapon info - last fire time + projectiles
-        // + projwidth/projheight. Each element in projectiles is of form
-        // {vel: <Vector2D>, pos: <Vector2D>}
+        // + blasts + projwidth/projheight. Each element in projectiles is of
+        // form {vel: <Vector2D>, pos: <Vector2D>, creationFrame: <integer>}
+        // blasts elements are {pos: <Vector2D>, creationFrame: <integer>}
         this.lastFireTime = -1;
         this.projectiles = []; // Array of active projectiles.
+        this.blasts = [];
         if (this.wtype.hasranged) {
             // Square root of damage in height, proportional width
             this.projheight = Math.sqrt(this.wtype.damage) | 0
-            this.projwidth = (this.wtype.projsprite.width * this.projheight
-                    / this.wtype.projsprite.height) | 0;
+            this.projwidth = (this.wtype.projsprites[0].width * this.projheight
+                    / this.wtype.projsprites[0].height) | 0;
         }
     }
 
@@ -92,7 +97,8 @@ class Weapon {
             this.projectiles.push({
                 pos: spawn,
                 vel: new Vector2D(0, 0).fromPolar(this.wtype.projspeed,
-                        targetAngle)
+                        targetAngle),
+                creationFrame: frameCount
             });
         }
 
@@ -127,23 +133,41 @@ class Weapon {
                             == (character instanceof Enemy)) return;
 
                     if (character.alive && character.checkHit(projbox)) {
-                        character.takeDamage(this.wtype.damage);
+                        // Deal damage if not an AoE weapon
+                        if (this.wtype.blastradius === undefined)
+                            character.takeDamage(this.wtype.damage);
                         hitany = true;
                     }
-
-                    // TODO need to add support for rocket
-                    //  - hitType for ranged weapons in WeaponTypes.json
-                    //      - single - what is written above
-                    //      - blast - for rockets - does aoe damage to ALL 
-                    //      characters in range, even player
-                    //  - parse that upon hit and do single damage (above) or
-                    //  spawn at most ONE blast and deal damage to all in radius
-                    //  - for blast also show impact audio and impact sprites
                 });
             
-                // Check collision with map bounds and remove if so
+                // Handle any collisions (either with character or with bounds)
                 if (hitany || !this.owner.arena.isValidBoxLocation(projbox)) {
-                    this.projectiles.splice(i, 1);
+                    this.projectiles.splice(i, 1); // Remove projectile
+
+                    // Create blast animation object if this weapon has
+                    // blast sprites
+                    if (this.wtype.blastsprites) {
+                        this.blasts.push({
+                            pos: projectile.pos,
+                            creationFrame: frameCount
+                        });
+                    }
+
+                    // Play impact sound if there is one
+                    if (this.wtype.impactaudio)
+                        this.wtype.impactaudio.play();
+
+                    // Deal any AoE damage
+                    if (this.wtype.blastradius) {
+                        const blst2 = this.wtype.blastradius
+                                * this.wtype.blastradius; // radius squared
+                        this.owner.arena.characters.forEach((chr) => {
+                            const dst2 = this.owner.arena.pathing.dist2(
+                                    projectile.pos, chr.location);
+                            if (dst2 < blst2) chr.takeDamage(this.wtype.damage);
+                        });
+                    }
+
                     break;
                 }
             }
@@ -154,12 +178,50 @@ class Weapon {
      * Draws all active projectiles and effects made by this weapon.
      */
     draw() {
+        // Draw projectiles
         this.projectiles.forEach((projectile) => {
+            const curidx = Math.floor((frameCount - projectile.creationFrame)
+                    / this.ANIMATION_DELAY) % this.wtype.projsprites.length,
+                  img = this.wtype.projsprites[curidx];
+
+            // Center mode -> translate origin to projectile location
+            // -> rotate to correct orientation -> draw
             imageMode(CENTER);
-            image(this.wtype.projsprite, projectile.pos.x, projectile.pos.y,
-                    this.projwidth, this.projheight);
+            translate(projectile.pos.x, projectile.pos.y);
+            rotate(Math.atan2(projectile.vel.y, projectile.vel.x));
+            image(img, 0, 0, this.projwidth, this.projheight);
+
+            // Undo everything
             imageMode(CORNER);
+            resetMatrix();
         });
+
+        // Remove any completed blast animations
+        this.blasts = this.blasts.filter((blast) => {
+            const idx = (frameCount - blast.creationFrame),
+                  lim = this.wtype.blastsprites.length * this.ANIMATION_DELAY;
+            return idx < lim;
+        });
+
+        // Draw blasts
+        for (let i=this.blasts.length-1; i>=0; i--) {
+            const blast = this.blasts[i],
+                  curidx = Math.floor((frameCount - blast.creationFrame)
+                    / this.ANIMATION_DELAY);
+
+            // Remove blast animation object if animation finished
+            if (curidx >= this.wtype.blastsprites.length) {
+                this.blasts.splice(i, 1);
+                break;
+            }
+
+            // Otherwise, draw sprite.
+            const img = this.wtype.blastsprites[curidx],
+                  dwh = this.wtype.blastradius << 1;
+            imageMode(CENTER);
+            image(img, blast.pos.x, blast.pos.y, dwh, dwh);
+            imageMode(CORNER);
+        }
     }
 
     /**
